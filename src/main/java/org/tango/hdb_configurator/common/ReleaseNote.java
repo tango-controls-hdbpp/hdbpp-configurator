@@ -16,7 +16,9 @@ public interface ReleaseNote {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center>	<h2>org.tango.hdb_configurator.tools Release Notes </h2>\n" + 
-		"	(Generated 08-03-2017  13:06:03)</center><br>\n" + 
+		"	(Generated 23-05-2017  13:18:05)</center><br>\n" + 
+		"<li><b>hdb_configurator-2.2 - 23/05/17:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Moved to gitub.<br>" + 
 		"<li><b>hdb_configurator-2.1 - 28/02/17:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; First release installed with strategies<br>" + 
 		"<li><b>hdb_configurator-2.0a - 14/12/16:</b><br>" + 

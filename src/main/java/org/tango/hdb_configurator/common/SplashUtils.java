@@ -58,7 +58,7 @@ public class SplashUtils {
     private static boolean splashActive = false;
     private static final String packageName = "org.tango.hdb_configurator";
     public static final String revNumber =
-            "2.1  -  08-03-2017  13:06:03";
+            "2.2  -  23-05-2017  13:18:05";
 
     private static SplashUtils instance = new SplashUtils();
     private static final String imageFile = "FullTangoLogo.gif";
