@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HDB++ Introduction &mdash; HDB++ Tools 2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="HDB++ Tools 2.0 documentation" href="index.html" />
+    <link rel="next" title="Configurator" href="configurator.html" />
+    <link rel="prev" title="HDB++ Tools documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="configurator.html" title="Configurator"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="HDB++ Tools documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">HDB++ Tools 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="hdb-introduction">
+<h1>HDB++ Introduction<a class="headerlink" href="#hdb-introduction" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><ul class="simple">
+<li>The <a class="reference external" href="http://www.tango-controls.org/">TANGO</a> archiving system is a tool allowing <a class="reference external" href="http://www.tango-controls.org/">TANGO</a> users to store
+the readings coming from a <a class="reference external" href="http://www.tango-controls.org/">TANGO</a> based control system into a database.</li>
+<li>The archived data are essential for the day by day operation of complex
+scientific facilities for instance.</li>
+<li>They can be used for long term monitoring of subsystems, statistics,
+parameters correlation or comparison of operating setups over time.</li>
+<li>To take advantage of the fast and lightweight event-driven communication
+provided by <a class="reference external" href="http://www.tango-controls.org/">TANGO</a> release 9 with the adoption of ZeroMQ, a novel
+archiving system for the <a class="reference external" href="http://www.tango-controls.org/">TANGO</a> Controls framework, named HDB++,
+has been designed and developed, resulting from a collaboration between <a class="reference external" href="http://www.elettra.trieste.it/">Elettra</a> and <a class="reference external" href="http://www.esrf.eu/">ESRF</a> at the beginning.</li>
+<li>HDB++ design allows <a class="reference external" href="http://www.tango-controls.org/">TANGO</a> users to store data with microsecond timestamp resolution
+into traditional database management systems such as <a class="reference external" href="http://www.mysql.com/">MySQL</a> or into NoSQL databases such as Apache <a class="reference external" href="http://cassandra.apache.org/">Cassandra</a>.</li>
+</ul>
+</div></blockquote>
+<div class="section" id="hdb-global-principle">
+<h2>HDB++ Global principle<a class="headerlink" href="#hdb-global-principle" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p class="first">A <a class="reference external" href="http://www.tango-controls.org/">TANGO</a> device (<strong>HdbConfigurationManager</strong> class) manage one or several <strong>HdbEventSubscriber</strong> device(s).</p>
+</li>
+<li><dl class="first docutils">
+<dt>Each <strong>HdbEventSubscriber</strong> <a class="reference external" href="http://www.tango-controls.org/">TANGO</a> device is in charge to subscribe to archive events for a set of attributes.</dt>
+<dd><p class="first last">When an event is received the attribute content is stored to the history database (depending on the used library).</p>
+</dd>
+</dl>
+</li>
+</ul>
+<img alt="_images/Principle.png" src="_images/Principle.png" />
+<ul>
+<li><dl class="first docutils">
+<dt>Several <strong>HdbConfigurationManager</strong> device could be defined.</dt>
+<dd><dl class="first last docutils">
+<dt>For instance:</dt>
+<dd><ul class="first last simple">
+<li>One for the accelerator</li>
+<li>One for each beamline.</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="tools-introduction">
+<h1>Tools Introduction<a class="headerlink" href="#tools-introduction" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="goal">
+<h2>Goal<a class="headerlink" href="#goal" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>Configurator:</strong></dt>
+<dd><ul class="first last simple">
+<li>The first goal of this tool is to add attributes to archiver.</li>
+<li>The second goal is to start and stop attributes archiving.</li>
+<li>The second goal is to manage contexts and strategies (see <a class="reference external" href="./strategies.html">Strategies and Contexts</a>)</li>
+</ul>
+</dd>
+<dt><strong>Diagnotics:</strong></dt>
+<dd><ul class="first last simple">
+<li>The first goal is to know at a quick glance, if everything is OK in HDB++ system, and otherwise to be able to diagnose a problem and solve it.</li>
+<li>The second goal is to have statistics to know the HDB++ load and attribute distribution on archivers.</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="start-up">
+<h2>Start up<a class="headerlink" href="#start-up" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p class="first">Tools are Java <a class="reference external" href="http://www.tango-controls.org/">Tango</a> GUI.</p>
+</li>
+<li><dl class="first docutils">
+<dt>That means that the $CLASSPATH needs:</dt>
+<dd><ul class="first last simple">
+<li>JTango.jar</li>
+<li>ATKWidget.jar</li>
+<li>ATKCore.jar</li>
+<li>Jive.jar</li>
+<li>hdb_configurator.jar</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>To run them, the manager device name must be exported as an environment variable:</dt>
+<dd><p class="first last"><strong>e.g:</strong> <em>export HdbManager=sys/hdb-manager/accelerator</em></p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Then start the java class:</dt>
+<dd><p class="first last"><em>java org.tango.hdb_configurator.configurator.HdbConfigurator</em></p>
+</dd>
+<dt>or</dt>
+<dd><p class="first last"><em>java org.tango.hdb_configurator.diagnostics.HdbDiagnostics</em></p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo_tangocontrols.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">HDB++ Introduction</a><ul>
+<li><a class="reference internal" href="#hdb-global-principle">HDB++ Global principle</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tools-introduction">Tools Introduction</a><ul>
+<li><a class="reference internal" href="#goal">Goal</a></li>
+<li><a class="reference internal" href="#start-up">Start up</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">HDB++ Tools documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="configurator.html"
+                        title="next chapter">Configurator</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/introduction.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="configurator.html" title="Configurator"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="HDB++ Tools documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">HDB++ Tools 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2017, Tango Community, Pascal Verdier.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

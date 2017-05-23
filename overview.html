@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>Java Server and Client API Classes</title>
+</head>
+<body>
+
+<HR>
+<b>HDB++ configurator classes<br><br>
+    See : <a href=ReleaseNote.html> Release Note </a></b>
+<br>
+
+<h1> Getting started with java HDB++ configurator api </h1>
+
+<br>
+<br>
+The quickest way of getting started is by studying this example:
+<br>
+<br>
+<i>
+    <font COLOR="#3b648b">   <!--- DeepSkyBlue4 --->
+       /** <br>
+        *   Example of using the HDB++ configurator API <br>
+        */ <br>
+    </Font>
+    package my_package;
+    <br>
+    <br>
+    import org.Tango.hdb_configurator.configurator.HdbAttribute; <br>
+    import org.Tango.hdb_configurator.configurator.ManageAttributes; <br>
+    import fr.esrf.TangoDs.Except; <br>
+    import fr.esrf.Tango.DevFailed; <br>
+    <br>
+    public class MyAttributeManagement {
+    <ul>
+        public static void main (String args[])  {
+        <ul>
+            try {
+            <ul>
+                <FONT COLOR="#3b648b">
+                    //  Create a hdb attributeList list<br>
+                    //  These attributes are pushed by the device code and
+                        they will be started later<br>
+                </Font>
+                ArrayList&lt;HdbAttribute&gt; hdbAttributes = new ArrayList&lt;HdbAttribute&gt;();<br>
+                hdbAttributes.add(new HdbAttribute("sr/v-rga/c1-cv6000/mass12",
+                        ManageAttributes.PUSHED_BY_CODE, ManageAttributes.STOP_ARCHIVING));<br>
+                hdbAttributes.add(new HdbAttribute("sr/v-rga/c1-cv6000/mass14",
+                        ManageAttributes.PUSHED_BY_CODE, ManageAttributes.STOP_ARCHIVING));<br>
+                hdbAttributes.add(new HdbAttribute("sr/v-rga/c1-cv6000/mass15",
+                        ManageAttributes.PUSHED_BY_CODE, ManageAttributes.STOP_ARCHIVING));<br>
+                hdbAttributes.add(new HdbAttribute("sr/v-rga/c1-cv6000/mass16",
+                        ManageAttributes.PUSHED_BY_CODE, ManageAttributes.STOP_ARCHIVING));<br>
+                <br>
+                <FONT COLOR="#3b648b">
+                    // Add these attributes to an archiver<br>
+                </Font>
+                String archiver = "tango/hdb/es-2";<br>
+                ManageAttributes.addAttributes(archiver, hdbAttributes);<br>
+
+                <br><br>
+               <FONT COLOR="#3b648b">
+                    //  Create a attributeList name list to be started<br>
+                </Font>
+                ArrayList&lt;String&gt; attributeNames = new ArrayList&lt;String&gt;();<br>
+                attributeNames.add("sr/v-rga/c1-cv6000/mass12");<br>
+                attributeNames.add("sr/v-rga/c1-cv6000/mass14");<br>
+                attributeNames.add("sr/v-rga/c1-cv6000/mass15");<br>
+                attributeNames.add("sr/v-rga/c1-cv6000/mass16");<br>
+                <br>
+                <FONT COLOR="#3b648b">
+                    // Start archiving<br>
+                </Font>
+                ManageAttributes.addAttributes(attributeNames);<br>
+            </ul>
+            }
+            catch (DevFailed e) {
+            <ul>
+                Except.print_exception(e);
+            </ul>
+            }
+        </ul>
+        }
+    </ul>
+    }
+</i>
+<br><br>
+</body>
+</html>

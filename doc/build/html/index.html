@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HDB++ Tools documentation &mdash; HDB++ Tools 2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="HDB++ Tools 2.0 documentation" href="#" />
+    <link rel="next" title="HDB++ Introduction" href="introduction.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="introduction.html" title="HDB++ Introduction"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">HDB++ Tools 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="hdb-tools-documentation">
+<h1><a class="reference external" href="http://www.tango-controls.org/community/projects/hdbplus/">HDB++</a> Tools documentation<a class="headerlink" href="#hdb-tools-documentation" title="Permalink to this headline">¶</a></h1>
+<table border="1" class="docutils">
+<colgroup>
+<col width="80%" />
+<col width="20%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><ul class="first last simple">
+<li><a class="reference external" href="http://www.tango-controls.org/community/projects/hdbplus/">HDB++</a> is the <a class="reference external" href="http://www.tango-controls.org/">TANGO</a> History Database.</li>
+<li>It can be used with <a class="reference external" href="http://www.mysql.com/">Mysql</a> or <a class="reference external" href="http://cassandra.apache.org/">Cassandra</a> database.</li>
+<li>It is based on <a class="reference external" href="http://www.tango-controls.org/">TANGO</a> archive events.</li>
+</ul>
+</td>
+<td><a class="reference internal" href="_images/logo_tangocontrols.png"><img alt="TangoLogo" src="_images/logo_tangocontrols.png" style="width: 160.8px; height: 51.2px;" /></a></td>
+</tr>
+</tbody>
+</table>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">HDB++ Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#hdb-global-principle">HDB++ Global principle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html#tools-introduction">Tools Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#goal">Goal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#start-up">Start up</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configurator.html">Configurator</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configurator.html#adding-attribute">Adding attribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configurator.html#adding-several-attributes">Adding several attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configurator.html#adding-a-large-number-of-attributes">Adding a large number of attributes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configurator.html#by-loading-a-file">By loading a file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configurator.html#by-code">By code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configurator.html#start-stop-remove">Start/Stop/Remove,....</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configurator.html#multiple-tango-host">Multiple TANGO_HOST</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configurator.html#archiver-labels">Archiver labels</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configurator.html#using-jive">Using Jive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configurator.html#using-the-configuartor-tool">Using the Configuartor tool</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configurator.html#defining-contexts">Defining contexts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configurator.html#manage-attribute-strategy">Manage attribute strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configurator.html#by-archiver">By archiver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configurator.html#by-strategy">By strategy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="diagnostics.html">Diagnostics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="diagnostics.html#main-window">Main window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diagnostics.html#faulty-attributes">Faulty attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diagnostics.html#attribute-statistics">Attribute statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diagnostics.html#change-context">Change context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diagnostics.html#distribution">Distribution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="strategies.html">Strategies and Contexts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="strategies.html#contexts">Contexts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strategies.html#strategies">Strategies</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<ul class="last simple">
+<li>Since release 2.0 the GUI manage the storage <a class="reference external" href="./strategies.html">strategy based on contexts</a>.</li>
+<li>It is compatible only with a release of HdbConfigurationManager and HdbEventSubscriber managing strategies too.</li>
+</ul>
+</div>
+<p>For classes information, see <a class="reference external" href="prg_references/index.html">Programmer References</a></p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/logo_tangocontrols.png" alt="Logo"/>
+            </a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="introduction.html"
+                        title="next chapter">HDB++ Introduction</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="introduction.html" title="HDB++ Introduction"
+             >next</a> |</li>
+        <li><a href="#">HDB++ Tools 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2017, Tango Community, Pascal Verdier.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

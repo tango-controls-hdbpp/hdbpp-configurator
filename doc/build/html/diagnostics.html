@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Diagnostics &mdash; HDB++ Tools 2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="HDB++ Tools 2.0 documentation" href="index.html" />
+    <link rel="next" title="Strategies and Contexts" href="strategies.html" />
+    <link rel="prev" title="Configurator" href="configurator.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="strategies.html" title="Strategies and Contexts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="configurator.html" title="Configurator"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">HDB++ Tools 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="diagnostics">
+<h1>Diagnostics<a class="headerlink" href="#diagnostics" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>This is tool is used to control the behaviour of your HDB++ system.</li>
+<li>It controls your &#8216;HdbConfiguratorManager&#8217; and &#8216;HdbEventSubscriber&#8217; devices.</li>
+<li>It can be launched by <strong>View / Diagnostics</strong> menu in configurator GUI.</li>
+<li>Or directly by the command: <strong>java org.tango.hdb_configurator.diagnostics.HdbDiagnostics</strong></li>
+</ul>
+<div class="section" id="main-window">
+<h2>Main window<a class="headerlink" href="#main-window" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>The main window display a table where:</dt>
+<dd><ul class="first last">
+<li><p class="first">rows are archivers (last row is the manager).</p>
+</li>
+<li><dl class="first docutils">
+<dt>columns are the number of attribute faulty, started, paused, stopped and statistics.</dt>
+<dd><p class="first last">And finaly the archiver context.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<img alt="_images/Diagnostics.png" src="_images/Diagnostics.png" />
+</li>
+<li><p class="first">By a double click on a cell (or using right click menu) you can have a detailed display.</p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="faulty-attributes">
+<h2>Faulty attributes<a class="headerlink" href="#faulty-attributes" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>If you click on a <strong>Faulty</strong> cell, you can see:</dt>
+<dd><ul class="first last simple">
+<li>The list of faulty attributes</li>
+<li>The error message</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">By a right click on <strong>Selection</strong> Column, you can stop or remove selected attributes.</p>
+</li>
+</ul>
+<img alt="_images/FaultyAttributes.png" src="_images/FaultyAttributes.png" />
+</div></blockquote>
+</div>
+<div class="section" id="attribute-statistics">
+<h2>Attribute statistics<a class="headerlink" href="#attribute-statistics" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>Some statistics are computed (Events and Failures by period) by the <strong>HdbEventSubscriber</strong> device.</li>
+<li>For instance if the property <strong>StatisticsTimeWindow</strong> is 1, you have the number of events and failures by seconds.</li>
+<li>If you click on a statistics cell you will have statistics by attribute since last reset.</li>
+</ul>
+<img alt="_images/AttributeStatistics.png" src="_images/AttributeStatistics.png" />
+</div></blockquote>
+</div>
+<div class="section" id="change-context">
+<h2>Change context<a class="headerlink" href="#change-context" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>If you double click on l;ast column (Context), you can change the specified <strong>HdbEventSubscriber</strong> context.</li>
+<li>The better way is to do it on <strong>HdbConfiguratorManager</strong> (last row) to change context on all archivers.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="distribution">
+<h2>Distribution<a class="headerlink" href="#distribution" title="Permalink to this headline">¶</a></h2>
+<p>Distribution window is available using <strong>View / Distribution</strong> menu.</p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>The first tab gives a chart displaying the distribution:</dt>
+<dd><ul class="first last simple">
+<li>Number of faulty attributes by archiver.</li>
+<li>Number of <em>OK</em> attributes by archiver.</li>
+<li>Number of events received by archiver since last reset.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<img alt="_images/Distribution-1.png" src="_images/Distribution-1.png" />
+</div></blockquote>
+<div class="line-block">
+<div class="line">* The second tab gives a chart displaying the maximum:
+     - Process time (from event reception to storage)
+     - Store time (time to store value)
+     - Pending (number of attributes waiting to be archived)</div>
+</div>
+<blockquote>
+<div><img alt="_images/Distribution-2.png" src="_images/Distribution-2.png" />
+</div></blockquote>
+<div class="line-block">
+<div class="line">* The third tab gives the same information as numeric values in a table.</div>
+</div>
+<blockquote>
+<div><img alt="_images/Distribution-3.png" src="_images/Distribution-3.png" />
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo_tangocontrols.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Diagnostics</a><ul>
+<li><a class="reference internal" href="#main-window">Main window</a></li>
+<li><a class="reference internal" href="#faulty-attributes">Faulty attributes</a></li>
+<li><a class="reference internal" href="#attribute-statistics">Attribute statistics</a></li>
+<li><a class="reference internal" href="#change-context">Change context</a></li>
+<li><a class="reference internal" href="#distribution">Distribution</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="configurator.html"
+                        title="previous chapter">Configurator</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="strategies.html"
+                        title="next chapter">Strategies and Contexts</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/diagnostics.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="strategies.html" title="Strategies and Contexts"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="configurator.html" title="Configurator"
+             >previous</a> |</li>
+        <li><a href="index.html">HDB++ Tools 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2017, Tango Community, Pascal Verdier.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

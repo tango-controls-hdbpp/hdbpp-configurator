@@ -1,0 +1,281 @@
+//+======================================================================
+// :  $
+//
+// Project:   Tango
+//
+// Description:  java source code for Tango manager tool..
+//
+// : pascal_verdier $
+//
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,
+//						European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
+// This file is part of Tango.
+//
+// Tango is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Tango is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+//
+// :  $
+//
+//-======================================================================
+
+package org.tango.hdb_configurator.common;
+
+import fr.esrf.Tango.DevFailed;
+
+import java.util.*;
+
+/**
+ * This class defines an attribute to be added to a subscriber
+ * It extends a Strategy to be stored or not in HDB
+ * @author verdier
+ */
+
+public class HdbAttribute extends Strategy {
+    private String  name;
+    private boolean pushedByCode;
+    private boolean startIt;
+    private boolean isError = false;
+    //===============================================================
+    /**
+     * Create a HdbAttribute object.
+     *
+     * @param name  specified attribute name.
+     */
+    //===============================================================
+    public HdbAttribute(String name, Strategy strategy) throws DevFailed {
+        this.name = name;
+        try {
+            //  Get attribute strategy as String
+            String attributeStrategy = ArchiverUtils.getAttributeStrategy(name);
+            setStrategy(strategy, attributeStrategy);
+        }
+        catch (DevFailed e) {
+            //  Set default ones
+            setStrategy(strategy);
+            System.err.println(e.errors[0].desc);
+        }
+    }
+    //===============================================================
+    /**
+     * Create a HdbAttribute object.
+     *
+     * @param name  specified attribute name.
+     */
+    //===============================================================
+    public HdbAttribute(String name, Strategy strategy, String strategyStr) throws DevFailed {
+        this.name = name;
+            setStrategy(strategy, strategyStr);
+    }
+    //===============================================================
+    /**
+     * Create a HdbAttribute object representing an error
+     * @param name  specified attribute name.
+     */
+    //===============================================================
+    public HdbAttribute(String name) {
+        this.name = name;
+        isError = true;
+    }
+    //===============================================================
+    /**
+     * Create a HdbAttribute object
+     * @param name            specified attribute name.
+     * @param pushedByCode    true if event will be pushed by device code.
+     */
+    //===============================================================
+    public HdbAttribute(String name, boolean pushedByCode) {
+        this(name, pushedByCode, true);
+    }
+    //===============================================================
+    /**
+     * Create a HdbAttribute object
+     * @param name            specified attribute name.
+     * @param pushedByCode    true if event will be pushed by device code.
+     * @param startIt         true if attribute archiving must be started.
+     */
+    //===============================================================
+    public HdbAttribute(String name, boolean pushedByCode, boolean startIt) {
+        this.name = name;
+        this.pushedByCode = pushedByCode;
+        this.startIt = startIt;
+    }
+    //===============================================================
+    /**
+     * Returns the attribute name
+     * @return the attribute name
+     */
+    //===============================================================
+    public String getName() {
+        return name;
+    }
+    //===============================================================
+    /**
+     *
+     * @param pushedByCode true if event pushed by code
+     */
+    //===============================================================
+    public void setPushedByCode(boolean pushedByCode) {
+        this.pushedByCode = pushedByCode;
+    }
+    //===============================================================
+    /**
+     * Returns true if the event is pushed by the device class code.
+     * @return true if the event is pushed by the device class code.
+     */
+    //===============================================================
+    public boolean isPushedByCode() {
+        return pushedByCode;
+    }
+    //===============================================================
+    /**
+     * Returns true if the attribute must be started when added to subscriber.
+     * @return true if the attribute must be started when added to subscriber.
+     */
+    //===============================================================
+    public boolean needsStart() {
+        return startIt;
+    }
+    //===============================================================
+    //===============================================================
+    public void setStrategy(Strategy strategy) {
+        for (Context context : strategy)
+            add(context);
+    }
+    //===============================================================
+    //===============================================================
+    public void updateUsedContexts(Strategy strategy) {
+        if (isEmpty()) {
+            //  If empty add context
+            for (Context context : strategy) {
+                add(context);
+            }
+        }
+        else
+        for (int i=0 ; i<size() && i<strategy.size() ; i++) {
+            //  Else just update
+            Context context = get(i);
+            context.setUsed(strategy.get(i).isUsed());
+        }
+    }
+    //===============================================================
+    //===============================================================
+    public void setStrategy(Strategy strategy, String contextNames) {
+        StringTokenizer stk = new StringTokenizer(contextNames, "|");
+        List<String> contextList = new ArrayList<>();
+        while (stk.hasMoreTokens())
+            contextList.add(stk.nextToken());
+
+        //  Add a copy of input strategy
+        for (Context context : strategy) {
+            //  Check if used
+            boolean used = false;
+            for (String contextName : contextList) {
+                if (context.getName().equalsIgnoreCase(contextName))
+                    used = true;
+            }
+            // build new context and add to this
+            Context newContext = new Context(context.getName(), used, context.getDescription());
+            this.add(newContext);
+        }
+    }
+    //===============================================================
+    //===============================================================
+    public Strategy getStrategyCopy() {
+        Strategy strategy = new Strategy();
+        for (Context context : this) {
+            Context newContext = new Context(
+                    context.getName(),context.getDescription(), context.isDefault());
+            newContext.setUsed(context.isUsed());
+            strategy.add(newContext);
+        }
+        return strategy;
+    }
+    //===============================================================
+    //===============================================================
+    public String toString() {
+        return name+"     " + strategyToString();
+    }
+    //===============================================================
+    //===============================================================
+    public String strategyToString() {
+        StringBuilder sb = new StringBuilder();
+        for (Context context : this)
+            if (context.isUsed())
+                sb.append(context.getName()).append("|");
+        //  Check to remove last '|'
+        String str = sb.toString();
+        if (str.endsWith("|")) {
+            str = str.substring(0, str.length()-1);
+        }
+        return  str;
+    }
+    //===============================================================
+    //===============================================================
+    public boolean isError() {
+        return isError;
+    }
+    //===============================================================
+    //===============================================================
+    private NameComponents nameComponents = null;
+    //===============================================================
+    //===============================================================
+    public List<String> getNameComponents() {
+        if (nameComponents==null) {
+            nameComponents = new NameComponents(name);
+        }
+        return nameComponents;
+    }
+    //===============================================================
+    //===============================================================
+    private class NameComponents extends ArrayList<String> {
+        //===========================================================
+        private NameComponents(String name) {
+            int start = name.lastIndexOf('/');
+            String attributeName = name.substring(start+1);
+
+            int end = start;
+            start = name.lastIndexOf('/', end-1);
+            String member = name.substring(start+1, end);
+
+            end = start;
+            start = name.lastIndexOf('/', end-1);
+            String family = name.substring(start+1, end);
+
+            end = start;
+            start = name.lastIndexOf('/', end-1);
+            String domain = name.substring(start+1, end);
+
+            end = start;
+            start = name.lastIndexOf('/', end-1);
+            String tangoHost = name.substring(start+1, end);
+
+            add(tangoHost);
+            add(domain);
+            add(family);
+            add(member);
+            add(attributeName);
+        }
+        //===========================================================
+        public String toString() {
+            String str = "";
+            for (String s : this) str += " - " + s + "\n";
+            return str;
+        }
+        //===========================================================
+    }
+    //===============================================================
+    //===============================================================
+}

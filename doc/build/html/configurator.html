@@ -1,0 +1,387 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configurator &mdash; HDB++ Tools 2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="HDB++ Tools 2.0 documentation" href="index.html" />
+    <link rel="next" title="Diagnostics" href="diagnostics.html" />
+    <link rel="prev" title="HDB++ Introduction" href="introduction.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="diagnostics.html" title="Diagnostics"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="introduction.html" title="HDB++ Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">HDB++ Tools 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="configurator">
+<h1>Configurator<a class="headerlink" href="#configurator" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>The configurator is separated in two parts</dt>
+<dd><ul class="first last">
+<li><p class="first"><strong>Left side:</strong> a tree (jive like) to select attributes to be stored.</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Right side:</strong> a list of attributes managed by the selected archiver.</dt>
+<dd><p class="first last">This list contains attribute name and its strategy.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<div class="section" id="adding-attribute">
+<h2>Adding attribute<a class="headerlink" href="#adding-attribute" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>An attribute could be simply added to a subscriber by a simple selection in a JTree (jive like).</dt>
+<dd><p class="first last">use double click or <strong>+</strong> button</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Select the expected archiver to assign the attribute.</p>
+</li>
+<li><p class="first">Select the expected strategy.</p>
+</li>
+<li><p class="first">Set the archiving event properties if needed or set the Event push by code button if it the case.</p>
+</li>
+</ul>
+<img alt="_images/AddAttribute.png" src="_images/AddAttribute.png" />
+</div></blockquote>
+</div>
+<div class="section" id="adding-several-attributes">
+<h2>Adding several attributes<a class="headerlink" href="#adding-several-attributes" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>You can select several attributes.</li>
+<li>To add them, just click on <strong>+</strong> button</li>
+<li>You will not be able to set the archiving event properties (could be different for each attribute).</li>
+<li>But you will be able to select the archiver, strategy and to Event push by code button if it is the case.</li>
+</ul>
+<img alt="_images/AddAttributes.png" src="_images/AddAttributes.png" />
+</div></blockquote>
+</div>
+<div class="section" id="adding-a-large-number-of-attributes">
+<h2>Adding a large number of attributes<a class="headerlink" href="#adding-a-large-number-of-attributes" title="Permalink to this headline">¶</a></h2>
+<p>Two ways to add a large list of attribute</p>
+<div class="section" id="by-loading-a-file">
+<h3>By loading a file<a class="headerlink" href="#by-loading-a-file" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>By loading a file containing a list of attribute names.</dt>
+<dd><p class="first last">Use menu <strong>File / Open</strong> and select your file containing only an attribute list.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="by-code">
+<h3>By code<a class="headerlink" href="#by-code" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>By code, using classes:</dt>
+<dd><ul class="first simple">
+<li><a class="reference external" href="prg_references/org/tango/hdb_configurator/configurator/ManageAttributes.html">org.tango.hdb_configurator.hdb_configurator.ManageAttributes</a></li>
+<li><a class="reference external" href="prg_references/org/tango/hdb_configurator/configurator/HdbAttribute.html">org.tango.hdb_configurator.configurator.HdbAttributes</a></li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>// Example of using the HDB++ configurator API
+
+import org.Tango.hdb_configurator.configurator.HdbAttribute;
+import org.Tango.hdb_configurator.configurator.ManageAttributes;
+import fr.esrf.TangoDs.Except;
+import fr.esrf.Tango.DevFailed;
+
+public class MyAttributeManagement {
+    public static void main (String args[]) {
+        try {
+            // Create a hdb attribute list
+            // These attributes are pushed by the device code
+            List&lt;HdbAttribute&gt; hdbAttributes = new ArrayList&lt;HdbAttribute&gt;();
+            hdbAttributes.add(new HdbAttribute(&quot;sr/v-rga/c1-cv6000/mass12&quot;, true));
+            hdbAttributes.add(new HdbAttribute(&quot;sr/v-rga/c1-cv6000/mass14&quot;, true));
+            hdbAttributes.add(new HdbAttribute(&quot;sr/v-rga/c1-cv6000/mass15&quot;, true));
+            hdbAttributes.add(new HdbAttribute(&quot;sr/v-rga/c1-cv6000/mass16&quot;, true));
+
+            // Add send these attributes to an event subscriber
+            String archiver = &quot;tango/hdb-es/vacuum&quot;;
+            ManageAttributes.addAttributes(archiver, hdbAttributes);
+        } catch (DevFailed e) {
+            Except.print_exception(e);
+        }
+    }
+}
+</pre></div>
+</div>
+<p class="last">For more information, see <a class="reference external" href="prg_references/index.html">Programmer References</a></p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="start-stop-remove">
+<h2>Start/Stop/Remove,....<a class="headerlink" href="#start-stop-remove" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>When attributes have been added to an archiver, you can easily:</dt>
+<dd><ul class="first last simple">
+<li>Change strategy</li>
+<li>Stop or pause archiving</li>
+<li>Remove attributes</li>
+<li>Change the archiver</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<img alt="_images/StopAttribute.png" src="_images/StopAttribute.png" />
+</div></blockquote>
+</div>
+<div class="section" id="multiple-tango-host">
+<h2>Multiple TANGO_HOST<a class="headerlink" href="#multiple-tango-host" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>Start the Configurator tool with the same TANGO_HOST environment variable your HDB++ servers.</dt>
+<dd><dl class="first docutils">
+<dt>Export an environment variable <em>HdbManager*</em> with the configurator device name</dt>
+<dd><p class="first last">e.g. : HdbManager=tango/hdb/manager</p>
+</dd>
+</dl>
+<p class="last">By default, your JTree will represent this control system.
+You will be available to change this TANGO_HOST by a right click on root.
+Change the new TANGO_HOST and click OK.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<img alt="_images/ChangeTangoHost.png" src="_images/ChangeTangoHost.png" />
+<ul>
+<li><p class="first">Another way to work on 2 different control systems could be done by exporting
+another environment variable <strong>EVENT_TANGO_HOST</strong></p>
+<p><strong>e.g. :</strong> <em>EVENT_TANGO_HOST=id32:20000</em></p>
+<p>The control system tree will represent this second control system at startup.</p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="archiver-labels">
+<h2>Archiver labels<a class="headerlink" href="#archiver-labels" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>By a free property <strong>HdbConfigurator / ArchiverLabels</strong> you can define a label each archiver.</dt>
+<dd><p class="first last">It will be used by the configurator tool to display information.
+If this property is not defined the GUI propse the archiver device name.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<div class="section" id="using-jive">
+<h3>Using Jive<a class="headerlink" href="#using-jive" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><img alt="_images/ArchiverLabels.png" src="_images/ArchiverLabels.png" />
+</div></blockquote>
+</div>
+<div class="section" id="using-the-configuartor-tool">
+<h3>Using the Configuartor tool<a class="headerlink" href="#using-the-configuartor-tool" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="first last reference internal image-reference" href="_images/ArchiverLabels-2.png"><img alt="_images/ArchiverLabels-2.png" src="_images/ArchiverLabels-2.png" style="width: 288.0px; height: 137.4px;" /></a>
+</td>
+<td><a class="first last reference internal image-reference" href="_images/ArchiverLabels-3.png"><img alt="_images/ArchiverLabels-3.png" src="_images/ArchiverLabels-3.png" style="width: 435.0px; height: 549.0px;" /></a>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="defining-contexts">
+<h2>Defining contexts<a class="headerlink" href="#defining-contexts" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>Use <strong>Tools / Manage Strategies and Contexts</strong> menu.</li>
+<li>Add or remove contexts with descriptions.</li>
+<li>Select the default context.</li>
+</ul>
+<img alt="_images/Contexts.png" src="_images/Contexts.png" />
+</div></blockquote>
+</div>
+<div class="section" id="manage-attribute-strategy">
+<h2>Manage attribute strategy<a class="headerlink" href="#manage-attribute-strategy" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="by-archiver">
+<h3>By archiver<a class="headerlink" href="#by-archiver" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>In the right side of the tool, the list of attributes managed by the selected archiver display the attribute name and its strategy.</li>
+<li>You can change this strtegy using right click menu.</li>
+<li>Then select the context(s) defining the new attribute strategy.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you click on head of column, the context will be selected for all attributes.</p>
+</div>
+<img alt="_images/ChangeStrategy.png" src="_images/ChangeStrategy.png" />
+</div></blockquote>
+</div>
+<div class="section" id="by-strategy">
+<h3>By strategy<a class="headerlink" href="#by-strategy" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p class="first">Use <strong>Tools / Manage attributes by strategies</strong> menu.</p>
+</li>
+<li><p class="first">Attributes will be sorted by strategis.</p>
+</li>
+<li><dl class="first docutils">
+<dt>To change strategy, you can select:</dt>
+<dd><ul class="first last simple">
+<li>attribute(s)</li>
+<li>members (all attributes of selected members)</li>
+<li>families (all attributes of all members of selected families)</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Then click on <strong>Change Selection Strategy</strong> and select new strategy as by archiver.</p>
+</li>
+</ul>
+<img alt="_images/ByStrategy.png" src="_images/ByStrategy.png" />
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo_tangocontrols.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Configurator</a><ul>
+<li><a class="reference internal" href="#adding-attribute">Adding attribute</a></li>
+<li><a class="reference internal" href="#adding-several-attributes">Adding several attributes</a></li>
+<li><a class="reference internal" href="#adding-a-large-number-of-attributes">Adding a large number of attributes</a><ul>
+<li><a class="reference internal" href="#by-loading-a-file">By loading a file</a></li>
+<li><a class="reference internal" href="#by-code">By code</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#start-stop-remove">Start/Stop/Remove,....</a></li>
+<li><a class="reference internal" href="#multiple-tango-host">Multiple TANGO_HOST</a></li>
+<li><a class="reference internal" href="#archiver-labels">Archiver labels</a><ul>
+<li><a class="reference internal" href="#using-jive">Using Jive</a></li>
+<li><a class="reference internal" href="#using-the-configuartor-tool">Using the Configuartor tool</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#defining-contexts">Defining contexts</a></li>
+<li><a class="reference internal" href="#manage-attribute-strategy">Manage attribute strategy</a><ul>
+<li><a class="reference internal" href="#by-archiver">By archiver</a></li>
+<li><a class="reference internal" href="#by-strategy">By strategy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="introduction.html"
+                        title="previous chapter">HDB++ Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="diagnostics.html"
+                        title="next chapter">Diagnostics</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/configurator.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="diagnostics.html" title="Diagnostics"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="introduction.html" title="HDB++ Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">HDB++ Tools 2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2017, Tango Community, Pascal Verdier.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

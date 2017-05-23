@@ -1,0 +1,17 @@
+#--------------------------------------------
+# Copy programmer references to
+#  html directory if necessary
+#--------------------------------------------
+HTML_DIR=build/html
+PREF_DIR=prg_references
+
+# Try to change directory to know if exists
+
+if  cd  $HTML_DIR/$PREF_DIR; then
+	# It already exists
+	echo "$PREF_DIR already in $HTML_DIR"
+else
+	# Does not exist  ->  copy it
+	echo "Updating  $PREF_DIR in $HTML_DIR"
+	cp -R $PREF_DIR  $HTML_DIR
+fi
