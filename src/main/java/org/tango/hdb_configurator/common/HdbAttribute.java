@@ -48,6 +48,7 @@ public class HdbAttribute extends Strategy {
     private boolean pushedByCode;
     private boolean startIt;
     private boolean isError = false;
+    private long ttl = 0;
     //===============================================================
     /**
      * Create a HdbAttribute object.
@@ -77,7 +78,7 @@ public class HdbAttribute extends Strategy {
     //===============================================================
     public HdbAttribute(String name, Strategy strategy, String strategyStr) throws DevFailed {
         this.name = name;
-            setStrategy(strategy, strategyStr);
+        setStrategy(strategy, strategyStr);
     }
     //===============================================================
     /**
@@ -205,6 +206,23 @@ public class HdbAttribute extends Strategy {
     }
     //===============================================================
     //===============================================================
+    public void setTTL(long ttl) {
+        this.ttl = ttl;
+    }
+    //===============================================================
+    //===============================================================
+    public long getTTL() {
+        return ttl;
+    }
+    //===============================================================
+    //===============================================================
+    public String getTtlString() {
+        if (ttl==0)
+            return "- - -";
+        return Long.toString(ttl/24) + " day" + (ttl>24? "s":"");
+    }
+    //===============================================================
+    //===============================================================
     public String toString() {
         return name+"     " + strategyToString();
     }
@@ -229,20 +247,27 @@ public class HdbAttribute extends Strategy {
     }
     //===============================================================
     //===============================================================
-    private NameComponents nameComponents = null;
+    private AttributeNameComponents nameComponents = null;
     //===============================================================
     //===============================================================
     public List<String> getNameComponents() {
         if (nameComponents==null) {
-            nameComponents = new NameComponents(name);
+            nameComponents = new AttributeNameComponents(name);
         }
         return nameComponents;
     }
     //===============================================================
     //===============================================================
-    private class NameComponents extends ArrayList<String> {
+
+
+
+
+    //===============================================================
+    /* A list of attribute name components ( domain, family,...)*/
+    //===============================================================
+    private class AttributeNameComponents extends ArrayList<String> {
         //===========================================================
-        private NameComponents(String name) {
+        private AttributeNameComponents(String name) {
             int start = name.lastIndexOf('/');
             String attributeName = name.substring(start+1);
 

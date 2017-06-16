@@ -177,15 +177,19 @@ public class ArchiverUtils {
             System.out.println("  - Attribute:\t" + hdbAttribute.getName());
             System.out.println("  - Strategy:\t" + hdbAttribute.strategyToString());
             System.out.println("  - Push evt:\t" + hdbAttribute.isPushedByCode());
+            System.out.println("  - TTL:     \t" + hdbAttribute.getTtlString());
         }
         try {
             //  Configure attributes
-            DeviceAttribute[] deviceAttributeList = new DeviceAttribute[] {
-                new DeviceAttribute("SetAttributeName",   hdbAttribute.getName()),
-                new DeviceAttribute("SetArchiver",        subscriberName),
-                new DeviceAttribute("SetStrategy",        hdbAttribute.strategyToString()),
-                new DeviceAttribute("SetCodePushedEvent", hdbAttribute.isPushedByCode())
-            };
+            DeviceAttribute[] deviceAttributeList = new DeviceAttribute[5];
+            int i=0;
+            deviceAttributeList[i++] = new DeviceAttribute("SetAttributeName",   hdbAttribute.getName());
+            deviceAttributeList[i++] = new DeviceAttribute("SetArchiver",        subscriberName);
+            deviceAttributeList[i++] = new DeviceAttribute("SetStrategy",        hdbAttribute.strategyToString());
+            deviceAttributeList[i++] = new DeviceAttribute("SetCodePushedEvent", hdbAttribute.isPushedByCode());
+            deviceAttributeList[i] = new DeviceAttribute("SetTTL");
+            deviceAttributeList[i].insert_ul(hdbAttribute.getTTL());
+
             configureProxy.write_attribute(deviceAttributeList);
 
             //  And send the command to add the attribute.
@@ -209,17 +213,18 @@ public class ArchiverUtils {
     //======================================================================
     /**
      * Use AttributeAssign to move an attribute to another subscriber
-     * @param managerProxy      manager proxy
-     * @param attribute     attribute
-     * @param subscriberName    target subscriber name
+     * @param managerProxy   manager proxy
+     * @param attribute      attribute
+     * @param subscriberName target subscriber name
      * @throws DevFailed in case of call device failed.
      */
     //======================================================================
     public static void moveAttribute(DeviceProxy managerProxy,
                                      HdbAttribute attribute,
                                      String subscriberName) throws DevFailed {
+        // ToDo TTL not yet available in AttributeAssign !!!!!
         DeviceData  argIn = new DeviceData();
-        argIn.insert(new String[] { attribute.getName(), subscriberName, attribute.strategyToString() });
+         argIn.insert(new String[] { attribute.getName(), subscriberName, attribute.strategyToString() });
         System.out.println(subscriberName + ":\n" + attribute.getName() + " : " + attribute.strategyToString());
         managerProxy.command_inout("AttributeAssign", argIn);
     }

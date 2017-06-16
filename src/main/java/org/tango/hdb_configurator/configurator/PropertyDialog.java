@@ -68,6 +68,7 @@ public class PropertyDialog extends JDialog implements TangoConst {
     private AttributeInfoEx attributeInfoEx;
     private boolean manageProperties;
     private SelectionContextPanel strategyPanel;
+    private String nbDayStr;
 
     private boolean canceled = false;
     private static final int MaxRows = 30;
@@ -134,6 +135,9 @@ public class PropertyDialog extends JDialog implements TangoConst {
     //===============================================================
     //===============================================================
     private void initOwnComponents(String defaultItem) {
+        ttlTextField.setEnabled(false);
+        nbDayStr = Long.toString(TangoUtils.getDefaultTTL());
+
         //  Change panel look for property and subscription panels
         propertyPanel.setBorder(
                 BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Event Properties"));
@@ -166,7 +170,6 @@ public class PropertyDialog extends JDialog implements TangoConst {
     //===============================================================
     //===============================================================
     private void addStrategyPanel(Subscriber subscriber) throws DevFailed {
-        //  ToDo get strategy list/info from property ?
         Strategy strategy = Strategy.getContextsFromDB(subscriber);
         strategyPanel = new SelectionContextPanel(strategy);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -201,6 +204,9 @@ public class PropertyDialog extends JDialog implements TangoConst {
         pushedByCodeButton = new javax.swing.JRadioButton();
         subscriberComboBox = new javax.swing.JComboBox<>();
         archiverLabel = new javax.swing.JLabel();
+        ttlButton = new javax.swing.JRadioButton();
+        ttlTextField = new javax.swing.JTextField();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         propertyPanel = new javax.swing.JPanel();
         javax.swing.JLabel absLbl = new javax.swing.JLabel();
         javax.swing.JLabel relLbl = new javax.swing.JLabel();
@@ -268,7 +274,7 @@ public class PropertyDialog extends JDialog implements TangoConst {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         subscriptionPanel.add(pushedByCodeButton, gridBagConstraints);
 
@@ -280,6 +286,7 @@ public class PropertyDialog extends JDialog implements TangoConst {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
         subscriptionPanel.add(subscriberComboBox, gridBagConstraints);
 
@@ -291,6 +298,35 @@ public class PropertyDialog extends JDialog implements TangoConst {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(10, 22, 0, 0);
         subscriptionPanel.add(archiverLabel, gridBagConstraints);
+
+        ttlButton.setText("Set TTL  ");
+        ttlButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ttlButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
+        subscriptionPanel.add(ttlButton, gridBagConstraints);
+
+        ttlTextField.setColumns(4);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
+        subscriptionPanel.add(ttlTextField, gridBagConstraints);
+
+        jLabel2.setText(" days");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
+        subscriptionPanel.add(jLabel2, gridBagConstraints);
 
         centerPanel.add(subscriptionPanel, java.awt.BorderLayout.NORTH);
 
@@ -463,24 +499,28 @@ public class PropertyDialog extends JDialog implements TangoConst {
     //===============================================================
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private boolean checkValues() {
+        if (getNbDays()<0) {
+            ErrorPane.showErrorMessage(this, null, new Exception("TTL input syntax error"));
+            return false;
+        }
         if (manageProperties) {
             try {
-                String value;
-                value = absTxt.getText().trim();
-                if (!value.equals(Tango_AlrmValueNotSpec)) {
-                    Double.parseDouble(value);
+                String strValue;
+                strValue = absTxt.getText().trim();
+                if (!strValue.equals(Tango_AlrmValueNotSpec)) {
+                    Double.parseDouble(strValue);
                 }
-                value = relTxt.getText().trim();
-                if (!value.equals(Tango_AlrmValueNotSpec)) {
-                    Double.parseDouble(value);
+                strValue = relTxt.getText().trim();
+                if (!strValue.equals(Tango_AlrmValueNotSpec)) {
+                    Double.parseDouble(strValue);
                 }
-                value = eventPeriodTxt.getText().trim();
-                if (!value.equals(Tango_AlrmValueNotSpec)) {
-                    Integer.parseInt(value);
+                strValue = eventPeriodTxt.getText().trim();
+                if (!strValue.equals(Tango_AlrmValueNotSpec)) {
+                    Integer.parseInt(strValue);
                 }
-                value = pollingPeriodTxt.getText().trim();
-                if (!value.equals("Not Polled")) {
-                    Integer.parseInt(value);
+                strValue = pollingPeriodTxt.getText().trim();
+                if (!strValue.equals("Not Polled")) {
+                    Integer.parseInt(strValue);
                 }
             } catch (Exception e) {
                 ErrorPane.showErrorMessage(this, null, e);
@@ -589,7 +629,35 @@ public class PropertyDialog extends JDialog implements TangoConst {
             }
         }
     }//GEN-LAST:event_subscriberComboBoxActionPerformed
-
+    //===============================================================
+    //===============================================================
+    @SuppressWarnings("UnusedParameters")
+    private void ttlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ttlButtonActionPerformed
+        //  ToDo
+        JRadioButton button = (JRadioButton) evt.getSource();
+        if (button.isSelected())
+            ttlTextField.setText(nbDayStr);
+        else {
+            //  Get value (as str) for next time
+            nbDayStr = ttlTextField.getText();
+            ttlTextField.setText("");
+        }
+        ttlTextField.setEnabled(button.isSelected());
+    }//GEN-LAST:event_ttlButtonActionPerformed
+    //===============================================================
+    //===============================================================
+    private long getNbDays() {
+        // check if TTL is set
+        if (ttlButton.isSelected()) {
+            try {
+                return Long.parseLong(ttlTextField.getText());
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        }
+        else
+            return 0;
+    }
     //===============================================================
     //===============================================================
     private boolean listHasChanged(Strategy strategy1, Strategy strategy2) {
@@ -657,6 +725,7 @@ public class PropertyDialog extends JDialog implements TangoConst {
     }
     //===============================================================
     //===============================================================
+    @SuppressWarnings("WeakerAccess")
     public boolean isCanceled() {
         return canceled;
     }
@@ -667,6 +736,7 @@ public class PropertyDialog extends JDialog implements TangoConst {
             attribute.setPushedByCode(pushedByCodeButton.isSelected());
             Strategy strategy = strategyPanel.getStrategy();
             attribute.updateUsedContexts(strategy);
+            attribute.setTTL(getNbDays()*24); //  in hours
         }
         return attributeList;
     }
@@ -694,6 +764,8 @@ public class PropertyDialog extends JDialog implements TangoConst {
     private javax.swing.JComboBox<String> subscriberComboBox;
     private javax.swing.JPanel subscriptionPanel;
     private javax.swing.JLabel titleLabel;
+    private javax.swing.JRadioButton ttlButton;
+    private javax.swing.JTextField ttlTextField;
     // End of variables declaration//GEN-END:variables
     //===============================================================
 

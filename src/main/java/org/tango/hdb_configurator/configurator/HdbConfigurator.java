@@ -36,21 +36,25 @@
 
 package org.tango.hdb_configurator.configurator;
 
-import org.tango.hdb_configurator.common.*;
-import org.tango.hdb_configurator.configurator.strategy.*;
-
 import fr.esrf.Tango.DevFailed;
 import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoDs.Except;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
+import org.tango.hdb_configurator.common.*;
+import org.tango.hdb_configurator.configurator.strategy.EditStrategiesDialog;
+import org.tango.hdb_configurator.configurator.strategy.SelectionStrategiesDialog;
+import org.tango.hdb_configurator.configurator.strategy.StrategyMainPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 //=======================================================
@@ -62,7 +66,7 @@ import java.util.StringTokenizer;
  * @author  Pascal Verdier
  */
 //=======================================================
-@SuppressWarnings({"MagicConstant", "Convert2Diamond"})
+@SuppressWarnings({"MagicConstant", "Convert2Diamond", "WeakerAccess"})
 public class HdbConfigurator extends JFrame {
 
     private JFrame parent;
@@ -267,12 +271,18 @@ public class HdbConfigurator extends JFrame {
         AttributeTable table = (AttributeTable) event.getSource();
         Point clickedPoint = new Point(event.getX(), event.getY());
         int selectedRow = table.rowAtPoint(clickedPoint);
+        int selectedCol = table.columnAtPoint(clickedPoint);
         int mask = event.getModifiers();
         //  Check button clicked
         if ((mask & MouseEvent.BUTTON1_MASK)!=0 && event.getClickCount()==2) {
             try {
                 //  Double click --> change strategy
-                changeArchivingStrategy(table, selectedRow);
+                if (selectedCol==AttributeTable.ATTRIBUTE_TTL) {
+                    changeAttributeTTL(table, selectedRow);
+                }
+                else {
+                    changeArchivingStrategy(table, selectedRow);
+                }
             }
             catch (DevFailed e) {
                 ErrorPane.showErrorMessage(this, e.getMessage(), e);
@@ -286,6 +296,20 @@ public class HdbConfigurator extends JFrame {
                 menu.showMenu(event, table.getSelectedAttributes());
             }
         }
+    }
+	//=======================================================
+	//=======================================================
+    private void changeAttributeTTL(AttributeTable table, int row) throws DevFailed {
+        List<HdbAttribute> attributes = new ArrayList<>(1);
+        attributes.add(table.getAttribute(row));
+        changeAttributeTTL(attributes);
+    }
+	//=======================================================
+    //=======================================================
+    private void changeAttributeTTL(List<HdbAttribute> hdbAttributeList) throws DevFailed {
+        String subscriberName = (String) archiverComboBox.getSelectedItem();
+        Subscriber subscriber = subscriberMap.getSubscriberByLabel(subscriberName);
+        new TTLDialog(this, hdbAttributeList, subscriber).setVisible(true);
     }
 	//=======================================================
 	//=======================================================
@@ -1439,17 +1463,19 @@ public class HdbConfigurator extends JFrame {
      */
     //======================================================
     private static final int ARCHIVING_STRATEGY  = 0;
-    private static final int START_ARCHIVING  = 1;
-    private static final int STOP_ARCHIVING   = 2;
-    private static final int PAUSE_ARCHIVING  = 3;
-    private static final int REMOVE_ATTRIBUTE = 4;
-    private static final int MOVE_TO = 5;
+    private static final int ARCHIVING_TTL    = 1;
+    private static final int START_ARCHIVING  = 2;
+    private static final int STOP_ARCHIVING   = 3;
+    private static final int PAUSE_ARCHIVING  = 4;
+    private static final int REMOVE_ATTRIBUTE = 5;
+    private static final int MOVE_TO = 6;
     private static final int COPY_AS_TEXT = 7;
 
     private static final int OFFSET = 2;    //	Label And separator
 
     private static String[] menuLabels = {
             "Change Archiving Strategy",
+            "Change Archiving TTL",
             "Start Archiving",
             "Stop Archiving",
             "Pause Archiving",
@@ -1564,6 +1590,9 @@ public class HdbConfigurator extends JFrame {
                 switch (itemIndex) {
                     case ARCHIVING_STRATEGY:
                         changeArchivingStrategy(attributeList);
+                        break;
+                    case ARCHIVING_TTL:
+                        changeAttributeTTL(attributeList);
                         break;
                     case START_ARCHIVING:
                         ManageAttributes.startAttributes(configuratorProxy, attributeList);

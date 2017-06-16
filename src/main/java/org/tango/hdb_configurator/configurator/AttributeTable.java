@@ -39,7 +39,6 @@ import org.tango.hdb_configurator.common.HdbAttribute;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.util.ArrayList;
@@ -60,10 +59,11 @@ public class AttributeTable extends JTable {
     private int tableWidth = 0;
     private DataTableModel model;
 
-	private static final String[] columnNames = { "Attribute", "Strategy", };
-	private static final int[] columnWidth = { 500, 100 };
+	private static final String[] columnNames = { "Attribute", "Strategy", "TTL"};
+	private static final int[] columnWidth = { 500, 100, 60 };
 	private static final int ATTRIBUTE_NAME     = 0;
 	private static final int ATTRIBUTE_STRATEGY = 1;
+	        static final int ATTRIBUTE_TTL = 2;
 	//===============================================================
 	/**
 	 *	Creates new form UpTimeTable
@@ -187,8 +187,10 @@ public class AttributeTable extends JTable {
             switch (column) {
                 case ATTRIBUTE_NAME:
                     return hdbAttribute.getName();
+                case ATTRIBUTE_STRATEGY:
+                    return "  " + hdbAttribute.strategyToString();
                 default:
-                    return hdbAttribute.strategyToString();
+                    return "  " + hdbAttribute.getTtlString();
             }
 		}
 		//==========================================================
@@ -218,9 +220,9 @@ public class AttributeTable extends JTable {
 
 
 	//==============================================================
-	/**
+	/*
 	 * Renderer to set cell color
-	 */
+	 *
 	//==============================================================
 	public class LabelCellRenderer extends JLabel implements TableCellRenderer {
 
@@ -229,7 +231,6 @@ public class AttributeTable extends JTable {
 			//setFont(new Font("Dialog", Font.BOLD, 11));
 			setOpaque(true); //MUST do this for background to show up.
 		}
-
 		//==========================================================
 		public Component getTableCellRendererComponent(
 				JTable table, Object value,
@@ -243,11 +244,15 @@ public class AttributeTable extends JTable {
 				case ATTRIBUTE_STRATEGY:
 					setText(attributeList.get(row).strategyToString());
 					break;
+				case ATTRIBUTE_TTL:
+					setText(attributeList.get(row).getTtlString());
+					break;
 			}
 			return this;
 		}
 		//==========================================================
 	}
+     */
 	//==============================================================
 	//==============================================================
 }

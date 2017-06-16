@@ -49,12 +49,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
 
+@SuppressWarnings({"WeakerAccess", "SameParameterValue"})
 public class Utils {
     //private static SubscriberMap subscriberMap = null;
     private static Hashtable<String,SubscriberMap> subscriberTable = new Hashtable<>();
     //private static DeviceProxy  configuratorProxy = null;
     private static Hashtable<String, DeviceProxy>  configuratorProxyTable = new Hashtable<>();
-    private static Utils instance = null;
+    private static Utils instance = new Utils();
     private static final String DefaultImagePath = "/org/tango/hdb_configurator/img/";
     private static MainPanel jive = null;
     private static ImageIcon orangeBall = null;
@@ -70,8 +71,6 @@ public class Utils {
     //======================================================================
     //======================================================================
     public static Utils getInstance() {
-        if (instance==null)
-            instance = new Utils();
         return instance;
     }
     //===============================================================
@@ -497,4 +496,6 @@ public class Utils {
         textField.setSelectionEnd(message.length());
         textField.copy();
     }
+    //===============================================================
+    //===============================================================
 }

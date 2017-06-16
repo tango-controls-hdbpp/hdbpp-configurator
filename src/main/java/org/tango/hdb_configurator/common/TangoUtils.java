@@ -54,6 +54,8 @@ import java.util.StringTokenizer;
 
 public class TangoUtils {
 
+    private static boolean ttlRead = false;
+    private static long defaultTTL = 31; // days
     public static final String deviceHeader = "tango://";
     //======================================================================
     //======================================================================
@@ -281,8 +283,7 @@ public class TangoUtils {
      */
     //======================================================================
     public static List<String[]> getSubscriberLabels() throws DevFailed {
-        DbDatum datum = ApiUtil.get_db_obj().get_property(
-                "HdbConfigurator", "ArchiverLabels");
+        DbDatum datum = ApiUtil.get_db_obj().get_property("HdbConfigurator", "ArchiverLabels");
         List<String[]> labels = new ArrayList<>();
         if (datum.is_empty())
             return labels;
@@ -433,6 +434,22 @@ public class TangoUtils {
         if (servers.length==0)
             return null;
         return servers[0].substring(0, servers[0].indexOf('/'));
+    }
+    //===============================================================
+    //===============================================================
+    public static long getDefaultTTL() {
+        if(!ttlRead) {
+            try  {
+                DbDatum datum = ApiUtil.get_db_obj().get_property("HdbConfigurator", "DefaultTTL");
+                if (!datum.is_empty())
+                    defaultTTL = datum.extractLong();
+                ttlRead = true;
+            }
+            catch (DevFailed e) {
+                System.err.println(e.errors[0].desc);
+            }
+        }
+        return defaultTTL;
     }
     //======================================================================
     //======================================================================

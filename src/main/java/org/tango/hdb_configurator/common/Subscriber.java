@@ -56,6 +56,7 @@ import java.util.List;
  */
 //======================================================
 //======================================================
+@SuppressWarnings("WeakerAccess")
 public class Subscriber extends DeviceProxy {
     public String name;
     protected String label;
@@ -95,6 +96,8 @@ public class Subscriber extends DeviceProxy {
                 "AttributeList", TangoConst.NOT_STATELESS);
         adapter.addTangoChangeListener(changeListener,
                 "AttributeStrategyList", TangoConst.NOT_STATELESS);
+        adapter.addTangoChangeListener(changeListener,
+                "AttributeTTLList", TangoConst.NOT_STATELESS);
         adapter.addTangoChangeListener(changeListener,
                 "AttributeStartedList", TangoConst.NOT_STATELESS);
         adapter.addTangoChangeListener(changeListener,
@@ -350,11 +353,21 @@ public class Subscriber extends DeviceProxy {
                         //  Always
                         newAttribute.get(Strategy.ALWAYS_INDEX).setUsed(true);
                         unCompatibleAttributes.add(newAttribute);
+                        break;
                     }
                 }
             }
         }
         return unCompatibleAttributes;
+    }
+    //===============================================================
+    //===============================================================
+    public void setTTL(List<HdbAttribute> attributeList, long ttl) throws DevFailed {
+        for (HdbAttribute attribute : attributeList) {
+            DeviceData argIn = new DeviceData();
+            argIn.insert(new String[] { attribute.getName(), Long.toString(ttl)});
+            command_inout("SetAttributeTTL", argIn);
+        }
     }
     //===============================================================
     //===============================================================
@@ -421,6 +434,7 @@ public class Subscriber extends DeviceProxy {
                         // Update global HdbAttribute list
                         case "AttributeList":
                         case "AttributeStrategyList":
+                        case "AttributeTTLList":
                             manageAttributeMap(attribute);
                             break;
                     }
@@ -469,6 +483,18 @@ public class Subscriber extends DeviceProxy {
                         //  remove existing strategy and replace by new one
                         attribute.clear();
                         attribute.setStrategy(strategy, strategiesStr[i]);
+                    }
+                }
+                mustBeRepaint = true;
+                break;
+
+            case "AttributeTTLList":
+                long[] ttlList = deviceAttribute.extractULongArray();
+                for (int i=0 ; i<attributeNames.length && i<ttlList.length ; i++) {
+                    HdbAttribute attribute = hdbAttributeMap.get(attributeNames[i]);
+                    if (attribute != null) {
+                        //  Set the TTL value
+                        attribute.setTTL(ttlList[i]);
                     }
                 }
                 mustBeRepaint = true;
