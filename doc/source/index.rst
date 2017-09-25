@@ -34,10 +34,13 @@ Contents:
    introduction
    configurator
    diagnostics
-   strategies
+   features
    
 .. warning::
-    * Since release 2.0 the GUI manage the storage `strategy based on contexts <./strategies.html>`_.
-    * It is compatible only with a release of HdbConfigurationManager and HdbEventSubscriber managing strategies too.
+    * Since release 2.0 the GUI manage the storage `strategy based on contexts <./features.html>`_.
+        It is compatible only with a release of HdbConfigurationManager and HdbEventSubscriber managing features too.
+    
+    * Since release 3.0 the GUI manage the `TTL (Time To Live) storage <./features.html#ttl-time-to-live>`_.
+        It is compatible only with a release of HdbConfigurationManager and HdbEventSubscriber managing TTL too.
     
 For classes information, see `Programmer References <prg_references/index.html>`_

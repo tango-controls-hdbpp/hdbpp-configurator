@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Configurator &mdash; HDB++ Tools 2.0 documentation</title>
+    <title>Configurator &#8212; HDB++ Tools 2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,19 +17,21 @@
         VERSION:     '2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="HDB++ Tools 2.0 documentation" href="index.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Diagnostics" href="diagnostics.html" />
     <link rel="prev" title="HDB++ Introduction" href="introduction.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,14 +43,14 @@
         <li class="right" >
           <a href="introduction.html" title="HDB++ Introduction"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">HDB++ Tools 2.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">HDB++ Tools 2.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="configurator">
 <h1>Configurator<a class="headerlink" href="#configurator" title="Permalink to this headline">¶</a></h1>
@@ -124,32 +126,32 @@
 <li><a class="reference external" href="prg_references/org/tango/hdb_configurator/configurator/ManageAttributes.html">org.tango.hdb_configurator.hdb_configurator.ManageAttributes</a></li>
 <li><a class="reference external" href="prg_references/org/tango/hdb_configurator/configurator/HdbAttribute.html">org.tango.hdb_configurator.configurator.HdbAttributes</a></li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre>// Example of using the HDB++ configurator API
+<div class="highlight-default"><div class="highlight"><pre><span class="o">//</span> <span class="n">Example</span> <span class="n">of</span> <span class="n">using</span> <span class="n">the</span> <span class="n">HDB</span><span class="o">++</span> <span class="n">configurator</span> <span class="n">API</span>
 
-import org.Tango.hdb_configurator.configurator.HdbAttribute;
-import org.Tango.hdb_configurator.configurator.ManageAttributes;
-import fr.esrf.TangoDs.Except;
-import fr.esrf.Tango.DevFailed;
+<span class="kn">import</span> <span class="nn">org.Tango.hdb_configurator.configurator.HdbAttribute</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.Tango.hdb_configurator.configurator.ManageAttributes</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">fr.esrf.TangoDs.Except</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">fr.esrf.Tango.DevFailed</span><span class="p">;</span>
 
-public class MyAttributeManagement {
-    public static void main (String args[]) {
-        try {
-            // Create a hdb attribute list
-            // These attributes are pushed by the device code
-            List&lt;HdbAttribute&gt; hdbAttributes = new ArrayList&lt;HdbAttribute&gt;();
-            hdbAttributes.add(new HdbAttribute(&quot;sr/v-rga/c1-cv6000/mass12&quot;, true));
-            hdbAttributes.add(new HdbAttribute(&quot;sr/v-rga/c1-cv6000/mass14&quot;, true));
-            hdbAttributes.add(new HdbAttribute(&quot;sr/v-rga/c1-cv6000/mass15&quot;, true));
-            hdbAttributes.add(new HdbAttribute(&quot;sr/v-rga/c1-cv6000/mass16&quot;, true));
+<span class="n">public</span> <span class="k">class</span> <span class="nc">MyAttributeManagement</span> <span class="p">{</span>
+    <span class="n">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span> <span class="p">(</span><span class="n">String</span> <span class="n">args</span><span class="p">[])</span> <span class="p">{</span>
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">hdb</span> <span class="n">attribute</span> <span class="nb">list</span>
+            <span class="o">//</span> <span class="n">These</span> <span class="n">attributes</span> <span class="n">are</span> <span class="n">pushed</span> <span class="n">by</span> <span class="n">the</span> <span class="n">device</span> <span class="n">code</span>
+            <span class="n">List</span><span class="o">&lt;</span><span class="n">HdbAttribute</span><span class="o">&gt;</span> <span class="n">hdbAttributes</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">HdbAttribute</span><span class="o">&gt;</span><span class="p">();</span>
+            <span class="n">hdbAttributes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new</span> <span class="n">HdbAttribute</span><span class="p">(</span><span class="s">&quot;sr/v-rga/c1-cv6000/mass12&quot;</span><span class="p">,</span> <span class="n">true</span><span class="p">));</span>
+            <span class="n">hdbAttributes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new</span> <span class="n">HdbAttribute</span><span class="p">(</span><span class="s">&quot;sr/v-rga/c1-cv6000/mass14&quot;</span><span class="p">,</span> <span class="n">true</span><span class="p">));</span>
+            <span class="n">hdbAttributes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new</span> <span class="n">HdbAttribute</span><span class="p">(</span><span class="s">&quot;sr/v-rga/c1-cv6000/mass15&quot;</span><span class="p">,</span> <span class="n">true</span><span class="p">));</span>
+            <span class="n">hdbAttributes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new</span> <span class="n">HdbAttribute</span><span class="p">(</span><span class="s">&quot;sr/v-rga/c1-cv6000/mass16&quot;</span><span class="p">,</span> <span class="n">true</span><span class="p">));</span>
 
-            // Add send these attributes to an event subscriber
-            String archiver = &quot;tango/hdb-es/vacuum&quot;;
-            ManageAttributes.addAttributes(archiver, hdbAttributes);
-        } catch (DevFailed e) {
-            Except.print_exception(e);
-        }
-    }
-}
+            <span class="o">//</span> <span class="n">Add</span> <span class="n">send</span> <span class="n">these</span> <span class="n">attributes</span> <span class="n">to</span> <span class="n">an</span> <span class="n">event</span> <span class="n">subscriber</span>
+            <span class="n">String</span> <span class="n">archiver</span> <span class="o">=</span> <span class="s">&quot;tango/hdb-es/vacuum&quot;</span><span class="p">;</span>
+            <span class="n">ManageAttributes</span><span class="o">.</span><span class="n">addAttributes</span><span class="p">(</span><span class="n">archiver</span><span class="p">,</span> <span class="n">hdbAttributes</span><span class="p">);</span>
+        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">DevFailed</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">Except</span><span class="o">.</span><span class="n">print_exception</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p class="last">For more information, see <a class="reference external" href="prg_references/index.html">Programmer References</a></p>
@@ -304,7 +306,7 @@ If this property is not defined the GUI propse the archiver device name.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/logo_tangocontrols.png" alt="Logo"/>
@@ -342,29 +344,28 @@ If this property is not defined the GUI propse the archiver device name.</p>
   <h4>Next topic</h4>
   <p class="topless"><a href="diagnostics.html"
                         title="next chapter">Diagnostics</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/configurator.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/configurator.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -376,12 +377,12 @@ If this property is not defined the GUI propse the archiver device name.</p>
         <li class="right" >
           <a href="introduction.html" title="HDB++ Introduction"
              >previous</a> |</li>
-        <li><a href="index.html">HDB++ Tools 2.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">HDB++ Tools 2.0 documentation</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2017, Tango Community, Pascal Verdier.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Tango Community, Pascal Verdier.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>

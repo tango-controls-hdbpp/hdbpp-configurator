@@ -17,8 +17,8 @@
 #
 #-======================================================================
 
-MAJOR_RELEASE = 2
-MINOR_RELEASE = 2
+MAJOR_RELEASE = 3
+MINOR_RELEASE = 0
 APPLI_VERS	=	$(MAJOR_RELEASE).$(MINOR_RELEASE)
 
 PACKAGE      = org.tango.hdb_configurator
