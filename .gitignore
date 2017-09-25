@@ -3,5 +3,5 @@
 
 .idea/
 target/
-hdb_configurator.iml
+hdbpp-configurator.iml
 doc/build/
