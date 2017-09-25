@@ -79,12 +79,15 @@ public class TTLDialog extends JDialog {
 		for (HdbAttribute hdbAttribute : hdbAttributeList) {
 		    if (hdbAttribute.getTTL()>0) {
 		        nbDayStr = Long.toString(hdbAttribute.getTTL()/24);
-		        break;
+                ttlButton.setSelected(true);
+                ttlTextField.setText(nbDayStr);
+                break;
             }
         }
         //  If nothing found take default one
 		if (nbDayStr==null)
             nbDayStr = Long.toString(TangoUtils.getDefaultTTL());
+
 
 		pack();
  		ATKGraphicsUtils.centerDialog(this);

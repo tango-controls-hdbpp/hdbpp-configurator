@@ -161,6 +161,7 @@ public class SubscriberMap {
         }
         catch (DevFailed e) {
             SplashUtils.getInstance().showSplash(false);
+            e.printStackTrace();
             ErrorPane.showErrorMessage(new JFrame(), e.getMessage(), e);
             SplashUtils.getInstance().showSplash(true);
         }
@@ -204,8 +205,7 @@ public class SubscriberMap {
     public List<Subscriber> getSubscriberList() {
         Collection<Subscriber> collection = label2device.values();
         List<Subscriber> subscribers = new ArrayList<>();
-        for (Subscriber subscriber : collection)
-            subscribers.add(subscriber);
+        subscribers.addAll(collection);
         return subscribers;
     }
     //======================================================

@@ -136,7 +136,7 @@ public class ArchiverUtils {
         System.out.println(proxy.get_name() + " locked");
     }
     //======================================================================
-    /**
+    /*
      * Add an attribute to specified subscriber with default strategy.
      * @param configureProxy configurator device proxy
      * @param subscriberName specified subscriber
@@ -144,7 +144,7 @@ public class ArchiverUtils {
      * @param pushedByCode true if the event could be pushed by device code
      * @param lockIt true if the configurator device must be locked or false if already done.
      * @throws DevFailed in case of read device failed.
-     */
+     *
     //======================================================================
     public static void addAttribute(DeviceProxy configureProxy,
                                             String subscriberName,
@@ -152,7 +152,7 @@ public class ArchiverUtils {
                                             boolean pushedByCode,
                                             boolean lockIt) throws DevFailed {
         addAttribute(configureProxy, subscriberName, new HdbAttribute(attributeName, pushedByCode, false), lockIt);
-    }
+    }*/
     //======================================================================
     /**
      * Add an attribute to specified subscriber
@@ -222,9 +222,10 @@ public class ArchiverUtils {
     public static void moveAttribute(DeviceProxy managerProxy,
                                      HdbAttribute attribute,
                                      String subscriberName) throws DevFailed {
-        // ToDo TTL not yet available in AttributeAssign !!!!!
+        // Assign to specified subscriber
         DeviceData  argIn = new DeviceData();
-         argIn.insert(new String[] { attribute.getName(), subscriberName, attribute.strategyToString() });
+         argIn.insert(new String[] { attribute.getName(),
+                 subscriberName, attribute.strategyToString(), Long.toString(attribute.getTTL()) });
         System.out.println(subscriberName + ":\n" + attribute.getName() + " : " + attribute.strategyToString());
         managerProxy.command_inout("AttributeAssign", argIn);
     }

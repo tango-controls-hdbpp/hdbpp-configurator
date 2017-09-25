@@ -74,7 +74,7 @@ public class HdbAttribute extends Strategy {
      * Create a HdbAttribute object.
      *
      * @param name  specified attribute name.
-     */
+     *
     //===============================================================
     public HdbAttribute(String name, Strategy strategy, String strategyStr) throws DevFailed {
         this.name = name;
@@ -97,6 +97,18 @@ public class HdbAttribute extends Strategy {
      * @param pushedByCode    true if event will be pushed by device code.
      */
     //===============================================================
+    public HdbAttribute(String name, Strategy strategy, boolean pushedByCode) {
+        this.name = name;
+        this.setStrategy(strategy);
+        this.pushedByCode = pushedByCode;
+    }
+    //===============================================================
+    /**
+     * Create a HdbAttribute object
+     * @param name            specified attribute name.
+     * @param pushedByCode    true if event will be pushed by device code.
+     *
+    //===============================================================
     public HdbAttribute(String name, boolean pushedByCode) {
         this(name, pushedByCode, true);
     }
@@ -106,7 +118,7 @@ public class HdbAttribute extends Strategy {
      * @param name            specified attribute name.
      * @param pushedByCode    true if event will be pushed by device code.
      * @param startIt         true if attribute archiving must be started.
-     */
+     *
     //===============================================================
     public HdbAttribute(String name, boolean pushedByCode, boolean startIt) {
         this.name = name;
