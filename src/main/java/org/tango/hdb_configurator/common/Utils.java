@@ -489,7 +489,7 @@ public class Utils {
     }
     //===============================================================
     //===============================================================
-    private static final JTextField textField = new JTextField();
+    private static final JTextArea textField = new JTextArea();
     public static void copyToClipboard(final String message) {
         textField.setText(message);
         textField.setSelectionStart(0);

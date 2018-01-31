@@ -52,6 +52,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 
@@ -79,6 +80,7 @@ public class FaultyAttributesDialog extends JDialog {
     private Subscriber subscriber;
     private SubscriberMap subscriberMap;
     private int selectedRow    = -1;
+    private int selectedColumn = 0;
     private static List<String> defaultTangoHosts;
 
 
@@ -169,26 +171,24 @@ public class FaultyAttributesDialog extends JDialog {
         else {
             //  Do it for all subscribers
             List<Subscriber> subscriberList = subscriberMap.getSubscriberList();
-            String errorMessage = "";
+            StringBuilder errorMessage = new StringBuilder();
             for (Subscriber subscriber : subscriberList) {
                 try {
                     buildRecords(subscriber);
                 }
                 catch (DevFailed e) {
-                    errorMessage += e.errors[0].desc;
+                    errorMessage.append(e.errors[0].desc);
                 }
             }
-            if (!errorMessage.isEmpty()) {
-                Utils.popupError(this, errorMessage);
+            if (errorMessage.length()>0) {
+                Utils.popupError(this, errorMessage.toString());
             }
         }
 
 
             //  Copy to filtered (no filter at start up)
         filteredFaultyAttributes = new ArrayList<>();
-        for (FaultyAttribute faultyAttribute : faultyAttributes) {
-            filteredFaultyAttributes.add(faultyAttribute);
-        }
+        filteredFaultyAttributes.addAll(faultyAttributes);
         Collections.sort(filteredFaultyAttributes, new AttributeComparator());
     }
     //===============================================================
@@ -267,7 +267,6 @@ public class FaultyAttributesDialog extends JDialog {
     }
     //===============================================================
     //===============================================================
-    private int selectedColumn = 0;
     private void tableHeaderActionPerformed(MouseEvent event) {
         JTableHeader    tableHeader = (JTableHeader) event.getSource();
         selectedColumn = tableHeader.columnAtPoint(event.getPoint());
@@ -281,13 +280,17 @@ public class FaultyAttributesDialog extends JDialog {
             if (selectedColumn==SELECTION) {
                 headerPopupMenu.showMenu(event);
             }
+            else
+            if (selectedColumn==ATTRIBUTE_NAME) {
+                headerPopupMenu.showMenu(event);
+            }
         }
     }
     //===============================================================
     //===============================================================
     private void tableActionPerformed(MouseEvent event) {
 
-        //	get selected signal
+        //	Get selected signal
         Point clickedPoint = new Point(event.getX(), event.getY());
         int row = table.rowAtPoint(clickedPoint);
         selectedRow = row;
@@ -733,6 +736,49 @@ public class FaultyAttributesDialog extends JDialog {
         //===========================================================
     }
     //=========================================================================
+    private static JFileChooser fileChooser = null;
+    //=========================================================================
+    private void saveInFile() {
+        try {
+            StringBuilder sb = new StringBuilder("Attribute Names\tFault Description\n");
+            for (FaultyAttribute attribute : faultyAttributes) {
+                sb.append(attribute.attributeName).append('\t').append(attribute.faultDescription).append('\n');
+            }
+            if (fileChooser == null) {
+                //  Build file chooser
+                fileChooser = new JFileChooser(new File("").getAbsolutePath());
+                fileChooser.setApproveButtonText("Save");
+            }
+
+            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                if (file != null) {
+                    if (file.exists()) {
+                        if (JOptionPane.showConfirmDialog(this,
+                                "File already exists.\nOverwrite it ?",
+                                "Confirm",
+                                JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION) {
+                            return;
+                        }
+                    }
+                    Utils.writeFile(file.getName(), sb.toString());
+                }
+            }
+        }
+        catch (DevFailed e) {
+            ErrorPane.showErrorMessage(this, null, e);
+        }
+    }
+    //=========================================================================
+    //=========================================================================
+    private void copyAttributeList() {
+        StringBuilder sb = new StringBuilder();
+        for (FaultyAttribute attribute : faultyAttributes) {
+            sb.append(attribute.attributeName).append('\n');
+        }
+        Utils.copyToClipboard(sb.toString());
+    }
+    //=========================================================================
     //=========================================================================
 
 
@@ -748,12 +794,10 @@ public class FaultyAttributesDialog extends JDialog {
         public int getColumnCount() {
             return columnNames.length;
         }
-
         //==========================================================
         public int getRowCount() {
             return filteredFaultyAttributes.size();
         }
-
         //==========================================================
         public String getColumnName(int columnIndex) {
             String title;
@@ -770,7 +814,6 @@ public class FaultyAttributesDialog extends JDialog {
 
             return title;
         }
-
         //==========================================================
         public Object getValueAt(int row, int column) {
             //  Value to display is returned by
@@ -870,7 +913,9 @@ public class FaultyAttributesDialog extends JDialog {
     private static final int STOP_STORAGE     = 0;
     private static final int REMOVE_ATTRIBUTE = 1;
     private static final int SELECT_ALL       = 2;
-    //private static final int UN_SELECT_ALL  = 3;
+    private static final int UN_SELECT_ALL    = 3;
+    private static final int COPY_ATTRIBUTE_LIST = 4;
+    private static final int SAVE_IN_FILE = 5;
     private static final int OFFSET = 2;    //	Label And separator
 
     private static String[] headerMenuLabels = {
@@ -878,6 +923,8 @@ public class FaultyAttributesDialog extends JDialog {
             "Remove Archiving for Selected Attributes",
             "Select All",
             "Un Select All",
+            "Copy attribute list",
+            "Save to file",
     };
     //=======================================================
     //=======================================================
@@ -907,7 +954,16 @@ public class FaultyAttributesDialog extends JDialog {
         //======================================================
         private void showMenu(MouseEvent event) {
             title.setText("Selection");
-            show(table, event.getX(), event.getY());
+
+            getComponent(STOP_STORAGE+OFFSET).setVisible(selectedColumn==SELECTION);
+            getComponent(REMOVE_ATTRIBUTE+OFFSET).setVisible(selectedColumn==SELECTION);
+            getComponent(SELECT_ALL+OFFSET).setVisible(selectedColumn==SELECTION);
+            getComponent(UN_SELECT_ALL+OFFSET).setVisible(selectedColumn==SELECTION);
+
+            getComponent(COPY_ATTRIBUTE_LIST+OFFSET).setVisible(selectedColumn==ATTRIBUTE_NAME);
+            getComponent(SAVE_IN_FILE+OFFSET).setVisible(selectedColumn==ATTRIBUTE_NAME);
+
+            show(table.getTableHeader(), event.getX(), event.getY());
         }
         //======================================================
         private void menuActionPerformed(ActionEvent evt) {
@@ -924,8 +980,15 @@ public class FaultyAttributesDialog extends JDialog {
                 case REMOVE_ATTRIBUTE:
                     removeSelectedAttributes();
                     break;
-                default:
+                case SELECT_ALL:
+                case UN_SELECT_ALL:
                     setAttributeSelection(itemIndex==SELECT_ALL);
+                    break;
+                case COPY_ATTRIBUTE_LIST:
+                    copyAttributeList();
+                    break;
+                case SAVE_IN_FILE:
+                    saveInFile();
                     break;
             }
         }

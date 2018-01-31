@@ -110,6 +110,7 @@ public class ManageAttributes {
     //===============================================================
     /**
      *  Add a list of attributes to specified subscriber
+     * @param configuratorProxy DeviceProxy on configurator manager device
      * @param subscriberName    specified subscriber device name
      * @param hdbAttributes     specified attribute to be added.
      * @throws DevFailed in case of bad subscriber name or connection failed.
