@@ -450,7 +450,6 @@ public class Utils {
         System.out.println(tangoHost);
 
         //  Start hdb viewer
-        /*
         try {
             HDBViewer.MainPanel hdbViewer = new HDBViewer.MainPanel(false, true);
             hdbViewer.setTimeInterval(3); // Last day
@@ -461,7 +460,6 @@ public class Utils {
         catch (Exception | Error e) {
             Except.throw_exception("HdbFailed", e.toString());
         }
-        */
     }
  //===============================================================
     //===============================================================

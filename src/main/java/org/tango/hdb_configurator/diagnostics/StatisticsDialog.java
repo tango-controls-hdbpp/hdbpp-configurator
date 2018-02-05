@@ -237,7 +237,7 @@ public class StatisticsDialog extends JDialog {
     private void buildRecords() throws DevFailed {
         String[] statAttributeNames = {
                 "AttributeList", "AttributeRecordFreqList", "AttributeEventNumberList" };
-        String errorMessage = "";
+        StringBuilder errorMessage = new StringBuilder();
         hdbAttributes = new ArrayList<>();
         for (Subscriber subscriber : subscribers) {
             try {
@@ -271,7 +271,7 @@ public class StatisticsDialog extends JDialog {
                 }
             }
             catch (DevFailed e) {
-                errorMessage += e.errors[0].desc + "\n";
+                errorMessage.append(e.errors[0].desc).append("\n");
             }
         }
         readTime = System.currentTimeMillis();
@@ -279,11 +279,9 @@ public class StatisticsDialog extends JDialog {
 
         //  Copy to filtered (no filter at start up)
         filteredHdbAttributes = new ArrayList<>();
-        for (HdbAttribute hdbAttribute : hdbAttributes) {
-            filteredHdbAttributes.add(hdbAttribute);
-        }
-        if (!errorMessage.isEmpty())
-            Except.throw_exception("ReadSubscriberFailed", errorMessage);
+        filteredHdbAttributes.addAll(hdbAttributes);
+        if (errorMessage.length()>0)
+            Except.throw_exception("ReadSubscriberFailed", errorMessage.toString());
     }
     //===============================================================
     //===============================================================
@@ -531,19 +529,19 @@ public class StatisticsDialog extends JDialog {
     private void resetItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetItemActionPerformed
         if (JOptionPane.showConfirmDialog(this, "Reset event counter on all archivers ?",
                 "Reset Counters", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION) {
-            String errorMessage = "";
+            StringBuilder errorMessage = new StringBuilder();
             for (Subscriber subscriber : subscribers) {
                 try {
                     subscriber.command_inout("ResetStatistics");
                 }
                 catch (DevFailed e) {
-                    errorMessage += subscriber.getLabel() + ": "+e.errors[0].desc+"\n";
+                    errorMessage.append(subscriber.getLabel()).append(": ").append(e.errors[0].desc).append("\n");
                 }
             }
 
             //  If at least one failed, display message
-            if (!errorMessage.isEmpty()) {
-                JOptionPane.showMessageDialog(this, errorMessage, "Reset Failed", JOptionPane.ERROR_MESSAGE);
+            if (errorMessage.length()>0) {
+                JOptionPane.showMessageDialog(this, errorMessage.toString(), "Reset Failed", JOptionPane.ERROR_MESSAGE);
             }
             updateItemActionPerformed(null);
         }
@@ -947,7 +945,7 @@ public class StatisticsDialog extends JDialog {
                 }
             }
             //  Check if extraction available
-            String s = System.getProperty("HDB_TYPE");
+            String s = System.getenv("HDB_TYPE");
             getComponent(OFFSET + READ_HDB).setVisible(s!=null && !s.isEmpty());
         }
         //======================================================

@@ -74,17 +74,7 @@
     <dependencies>
         <dependency>
             <groupId>org.tango</groupId>
-            <artifactId>TangORB</artifactId>
-            <version>RELEASE</version>
-        </dependency>
-        <!--dependency>
-            <groupId>org.tango.gui</groupId>
-            <artifactId>jhdbextractor</artifactId>
-            <version>RELEASE</version>
-        </dependency-->
-        <dependency>
-            <groupId>com.toedter</groupId>
-            <artifactId>jcalendar</artifactId>
+            <artifactId>jhdbviewer</artifactId>
             <version>RELEASE</version>
         </dependency>
         <dependency>

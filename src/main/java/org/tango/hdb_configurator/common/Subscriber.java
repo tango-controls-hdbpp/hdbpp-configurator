@@ -96,8 +96,9 @@ public class Subscriber extends DeviceProxy {
                 "AttributeList", TangoConst.NOT_STATELESS);
         adapter.addTangoChangeListener(changeListener,
                 "AttributeStrategyList", TangoConst.NOT_STATELESS);
-        adapter.addTangoChangeListener(changeListener,
-                "AttributeTTLList", TangoConst.NOT_STATELESS);
+        if (System.getenv("NO_TTL")==null)
+            adapter.addTangoChangeListener(changeListener,
+                    "AttributeTTLList", TangoConst.NOT_STATELESS);
         adapter.addTangoChangeListener(changeListener,
                 "AttributeStartedList", TangoConst.NOT_STATELESS);
         adapter.addTangoChangeListener(changeListener,

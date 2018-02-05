@@ -761,7 +761,7 @@ public class HdbDiagnostics extends JFrame {
             }
         }
         //======================================================
-        private void showMenu(MouseEvent event, String label, Subscriber subscriber) throws DevFailed {
+        private void showMenu(MouseEvent event, String label, Subscriber subscriber) {
 
             subscriberLabel.setText(label);
             selectedSubscriber = subscriber;
