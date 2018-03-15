@@ -445,7 +445,11 @@ public class Subscriber extends DeviceProxy {
                 }
             }
             catch (DevFailed e) {
-                setError(e.errors[0].desc);
+                if (e.errors[0].desc.startsWith("No heartbeat from")) {
+                    System.out.println(e.errors[0].desc);
+                }
+                else
+                    setError(e.errors[0].desc);
             }
             catch (Exception e) {
                 e.printStackTrace();
