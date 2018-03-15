@@ -68,7 +68,6 @@ import java.util.StringTokenizer;
 //=======================================================
 @SuppressWarnings({"MagicConstant", "Convert2Diamond", "WeakerAccess"})
 public class HdbConfigurator extends JFrame {
-
     private JFrame parent;
     private DeviceProxy configuratorProxy;
     private ListPopupMenu  menu = new ListPopupMenu();
@@ -95,7 +94,7 @@ public class HdbConfigurator extends JFrame {
         this.parent = parent;
         SplashUtils.getInstance().startSplash();
         SplashUtils.getInstance().increaseSplashProgress(10, "Building GUI");
-        setTitle("HdbConfigurator  - " + SplashUtils.revNumber);
+        setTitle(Utils.getInstance().getApplicationName());
 
         initComponents();
         initOwnComponents();
@@ -154,7 +153,7 @@ public class HdbConfigurator extends JFrame {
     }
 	//=======================================================
 	//=======================================================
-    private void buildTable() throws DevFailed {
+    private void buildTable() {
         SplashUtils.getInstance().increaseSplashProgress(15, "Reading devices");
 
         JScrollPane[] scrollPanes = new JScrollPane[] {
@@ -313,14 +312,14 @@ public class HdbConfigurator extends JFrame {
     }
 	//=======================================================
 	//=======================================================
-    private void changeArchivingStrategy(AttributeTable table, int row) throws DevFailed {
+    private void changeArchivingStrategy(AttributeTable table, int row) {
         List<HdbAttribute> attributes = new ArrayList<>(1);
         attributes.add(table.getAttribute(row));
         changeArchivingStrategy(attributes);
     }
 	//=======================================================
 	//=======================================================
-    private void changeArchivingStrategy(List<HdbAttribute> attributeList) throws DevFailed {
+    private void changeArchivingStrategy(List<HdbAttribute> attributeList) {
         try {
             //  Get a copy of strategies in case of cancel
             List<Strategy> strategyCopies = new ArrayList<>();
@@ -351,7 +350,7 @@ public class HdbConfigurator extends JFrame {
     }
 	//=======================================================
 	//=======================================================
-    private void updateAttributeList(Subscriber subscriber) throws DevFailed {
+    private void updateAttributeList(Subscriber subscriber) {
         JLabel[] labels = new JLabel[] {
                 startedAttrLabel, pausedAttrLabel, stoppedAttrLabel
         };
@@ -486,8 +485,7 @@ public class HdbConfigurator extends JFrame {
             for (HdbAttribute unCompatible : unCompatibleList) {
                 if (attribute.getName().equals(unCompatible.getName())) {
                     attribute.clear();
-                    for (Context context : unCompatible)
-                        attribute.add(context);
+                    attribute.addAll(unCompatible);
                 }
             }
         }
@@ -1015,7 +1013,7 @@ public class HdbConfigurator extends JFrame {
     //=======================================================
     @SuppressWarnings("UnusedParameters")
     private void releaseNoteItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_releaseNoteItemActionPerformed
-        new PopupHtml(this).show(ReleaseNote.str);
+        new PopupHtml(this).show(ReleaseNotes.htmlString);
     }//GEN-LAST:event_releaseNoteItemActionPerformed
 
     //=======================================================
@@ -1140,18 +1138,16 @@ public class HdbConfigurator extends JFrame {
 
     //=======================================================
     //=======================================================
-    private boolean addSubscriber() {
+    private void addSubscriber() {
         try {
             if (new CreateSubscriberPanel(this, configuratorProxy,
                     CreateSubscriberPanel.CREATE).showDialog()==JOptionPane.OK_OPTION) {
                 restartApplication();
-                return true;
             }
         }
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this, null, e);
         }
-        return false;
     }
     //=======================================================
     //=======================================================

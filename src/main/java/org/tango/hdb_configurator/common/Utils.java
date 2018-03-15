@@ -75,6 +75,15 @@ public class Utils {
     }
     //===============================================================
     //===============================================================
+    public String getApplicationName() {
+        String applicationName = getClass().getPackage().getImplementationTitle();
+        String release = getClass().getPackage().getImplementationVersion();
+        if (release!=null)
+            applicationName += "-" + release;
+        return applicationName;
+    }
+    //===============================================================
+    //===============================================================
     public ImageIcon getIcon(String filename) throws DevFailed {
         java.net.URL url =
                 getClass().getResource(DefaultImagePath + filename);
@@ -172,7 +181,6 @@ public class Utils {
         }
         jive.setVisible(true);
         jive.goToDeviceNode(deviceName);
-        System.out.println("Go to device node "+deviceName);
     }
     //===============================================================
     //===============================================================

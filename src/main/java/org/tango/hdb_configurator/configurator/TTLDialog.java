@@ -68,12 +68,17 @@ public class TTLDialog extends JDialog {
 	 *	Creates new form TTLDialog
 	 */
 	//===============================================================
-	TTLDialog(JFrame parent, List<HdbAttribute> hdbAttributeList, Subscriber subscriber) throws DevFailed {
+	TTLDialog(JFrame parent, List<HdbAttribute> hdbAttributeList, Subscriber subscriber) {
 		super(parent, true);
 		this.parent = parent;
 		this.hdbAttributeList = hdbAttributeList;
         this.subscriber = subscriber;
         initComponents();
+        ttlTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okBtnActionPerformed(evt);
+            }
+        });
 
 		//  Get the first TTL found as default
 		for (HdbAttribute hdbAttribute : hdbAttributeList) {

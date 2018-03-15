@@ -56,9 +56,6 @@ public class SplashUtils {
     private static Splash splash = null;
     private static int splashProgress = 0;
     private static boolean splashActive = false;
-    private static final String packageName = "org.tango.hdb_configurator";
-    public static final String revNumber =
-            "2.2  -  23-05-2017  13:18:05";
 
     private static SplashUtils instance = new SplashUtils();
     private static final String imageFile = "FullTangoLogo.gif";
@@ -73,12 +70,6 @@ public class SplashUtils {
         if (splash!=null) {
             splash.setVisible(false);
         }
-        //  Create a new one
-        String title = packageName;
-        int end = revNumber.indexOf("-");
-        if (end > 0)
-            title += " - " + revNumber.substring(0, end).trim();
-
         //	Create a splash window.
         JSmoothProgressBar myBar = new JSmoothProgressBar();
         myBar.setStringPainted(true);
@@ -88,7 +79,7 @@ public class SplashUtils {
         try {
             ImageIcon icon = Utils.getInstance().getIcon(imageFile);
             splash = new Splash(icon, Color.black, myBar);
-            splash.setTitle(title);
+            splash.setTitle(Utils.getInstance().getApplicationName());
             splash.setMessage("Starting....");
             splash.setVisible(true);
             splashProgress = 0;

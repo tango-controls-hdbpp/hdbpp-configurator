@@ -88,7 +88,7 @@ public class StrategyMainPanel extends JDialog {
     private void buildForm(String configuratorDeviceName) throws DevFailed {
         SplashUtils.getInstance().startSplash();
         SplashUtils.getInstance().increaseSplashProgress(10, "Building GUI");
-        setTitle("HdbConfigurator  - " + SplashUtils.revNumber);
+        setTitle(Utils.getInstance().getApplicationName());
 
         initComponents();
         setIconImage(Utils.getInstance().getIcon("hdb++.gif").getImage());

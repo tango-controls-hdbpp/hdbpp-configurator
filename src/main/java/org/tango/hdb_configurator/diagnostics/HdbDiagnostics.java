@@ -104,7 +104,7 @@ public class HdbDiagnostics extends JFrame {
         this.subscriberMap = subscriberMap;
         SplashUtils.getInstance().startSplash();
         SplashUtils.getInstance().increaseSplashProgress(10, "Building GUI");
-        setTitle("HdbDiagnostics  - " + SplashUtils.revNumber);
+        setTitle(Utils.getInstance().getApplicationName());
 
         buildSubscriberMap = (subscriberMap==null);
         initComponents();
