@@ -16,7 +16,7 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 15-03-2018  13:18</center>\n" + 
+		"generated: 24-04-2018  16:23</center>\n" + 
 		"<li><b>hdb_configurator-3.1 - 15/03/18:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; TTL tested in real control system.<br>" + 
 		"&nbsp; &nbsp; &nbsp; Problem on No Heartbeat display fixed.<br>" + 

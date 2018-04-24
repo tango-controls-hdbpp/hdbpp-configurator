@@ -204,9 +204,7 @@ public class SubscriberMap {
     //======================================================
     public List<Subscriber> getSubscriberList() {
         Collection<Subscriber> collection = label2device.values();
-        List<Subscriber> subscribers = new ArrayList<>();
-        subscribers.addAll(collection);
-        return subscribers;
+        return new ArrayList<>(collection);
     }
     //======================================================
     //======================================================

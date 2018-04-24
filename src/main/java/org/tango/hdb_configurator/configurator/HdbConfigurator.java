@@ -548,6 +548,7 @@ public class HdbConfigurator extends JFrame {
         javax.swing.JMenuItem exitItem = new javax.swing.JMenuItem();
         javax.swing.JMenu viewMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem diagnosticsItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem jMenuItem1 = new javax.swing.JMenuItem();
         javax.swing.JMenu toolMenu = new javax.swing.JMenu();
         addSubscriberItem = new javax.swing.JMenuItem();
         removeSubscriberItem = new javax.swing.JMenuItem();
@@ -820,6 +821,16 @@ public class HdbConfigurator extends JFrame {
             }
         });
         viewMenu.add(diagnosticsItem);
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem1.setMnemonic('T');
+        jMenuItem1.setText("TTL attribute list");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        viewMenu.add(jMenuItem1);
 
         menuBar.add(viewMenu);
 
@@ -1242,6 +1253,21 @@ public class HdbConfigurator extends JFrame {
             ErrorPane.showErrorMessage(this, null, e);
         }
     }//GEN-LAST:event_principleItemActionPerformed
+    //=======================================================
+    //=======================================================
+    @SuppressWarnings("UnusedParameters")
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        try {
+            SplashUtils.getInstance().startSplash();
+            SplashUtils.getInstance().increaseSplashProgress(10, "Building GUI");
+            new TtlTableDialog(this, subscriberMap).setVisible(true);
+        }
+        catch (DevFailed e) {
+            SplashUtils.getInstance().stopSplash();
+            ErrorPane.showErrorMessage(this, null, e);
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
 	//=======================================================
 	//=======================================================

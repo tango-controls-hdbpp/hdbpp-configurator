@@ -164,17 +164,14 @@ public class HdbAttribute extends Strategy {
     //===============================================================
     //===============================================================
     public void setStrategy(Strategy strategy) {
-        for (Context context : strategy)
-            add(context);
+        this.addAll(strategy);
     }
     //===============================================================
     //===============================================================
     public void updateUsedContexts(Strategy strategy) {
         if (isEmpty()) {
             //  If empty add context
-            for (Context context : strategy) {
-                add(context);
-            }
+            this.addAll(strategy);
         }
         else
         for (int i=0 ; i<size() && i<strategy.size() ; i++) {
@@ -236,7 +233,10 @@ public class HdbAttribute extends Strategy {
     //===============================================================
     //===============================================================
     public String toString() {
-        return name+"     " + strategyToString();
+        StringBuilder sb = new StringBuilder( name+"     " + strategyToString());
+        if (ttl>0)
+            sb.append("  (ttl=").append(getTtlString()).append(")");
+        return sb.toString();
     }
     //===============================================================
     //===============================================================

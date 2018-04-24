@@ -48,7 +48,7 @@ import java.util.List;
 
 //===============================================================
 /**
- *	JDialog Class to display info
+ *	JDialog Class to display TTL info
  *
  *	@author  Pascal Verdier
  */

@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.2 - 25/04/18:
+    TTL attribute table added.
+
 #### hdb_configurator-3.1 - 15/03/18:
     TTL tested in real control system.
     Problem on No Heartbeat display fixed.

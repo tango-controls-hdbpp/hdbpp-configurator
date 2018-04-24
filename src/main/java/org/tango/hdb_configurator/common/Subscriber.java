@@ -108,6 +108,11 @@ public class Subscriber extends DeviceProxy {
     }
     //======================================================
     //======================================================
+    public Hashtable<String, HdbAttribute> getHdbAttributeMap() {
+        return hdbAttributeMap;
+    }
+    //======================================================
+    //======================================================
     public DeviceProxy getConfiguratorProxy() {
         return configuratorProxy;
     }
