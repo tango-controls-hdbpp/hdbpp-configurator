@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.3 - 25/04/18:
+    Improve attribute selection in table.
+
 #### hdb_configurator-3.2 - 25/04/18:
     TTL attribute table added.
 

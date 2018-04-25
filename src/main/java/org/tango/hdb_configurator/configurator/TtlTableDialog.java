@@ -41,6 +41,8 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -91,7 +93,6 @@ public class TtlTableDialog extends JDialog {
     private void buildTabbedTables() {
         int idx=0;
         for (TtlTable ttlTable : ttlTableList) {
-            System.out.println(ttlTable);
             JScrollPane scrollPane = new JScrollPane(ttlTable);
             tabbedPane.add(scrollPane);
             tabbedPane.setTitleAt(idx++, ttlTable.subscriber.getLabel());
@@ -140,7 +141,7 @@ public class TtlTableDialog extends JDialog {
             }
         });
 
-        titleLabel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Dialog", Font.BOLD, 18));
         titleLabel.setText("Dialog Title");
         topPanel.add(titleLabel);
 
@@ -234,9 +235,12 @@ public class TtlTableDialog extends JDialog {
             TtlTableModel model = new TtlTableModel(this);
             setModel(model);
             setRowSelectionAllowed(true);
-            setColumnSelectionAllowed(true);
             setDragEnabled(false);
-
+            addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent event) {
+                    tableActionPerformed(event);
+                }
+            });
             //  Set column width
             final Enumeration columnEnum = getColumnModel().getColumns();
             int i = 0;
@@ -247,6 +251,16 @@ public class TtlTableDialog extends JDialog {
                 tableColumn.setPreferredWidth(columnWidth[i++]);
             }
         }
+        //===========================================================
+        private void tableActionPerformed(MouseEvent event) {
+            if (event.getClickCount()==2) {
+                if (parent instanceof HdbConfigurator) {
+                    ((HdbConfigurator) parent).selectArchiver(subscriber.getLabel());
+                    ((HdbConfigurator) parent).selectAttributeInList(ttlAttributes.get(getSelectedRow()).getName());
+                    doClose();
+                }
+            }
+         }
         //===========================================================
         public String toString() {
             StringBuilder sb = new StringBuilder(subscriber.getLabel()+'\n');

@@ -75,7 +75,6 @@ public class AttributeTable extends JTable {
         model = new DataTableModel();
         setModel(model);
 		setRowSelectionAllowed(true);
-		setColumnSelectionAllowed(true);
 		setDragEnabled(false);
 		setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		getTableHeader().setFont(new Font("Dialog", Font.BOLD, 12));
@@ -92,11 +91,31 @@ public class AttributeTable extends JTable {
     }
     //===============================================================
     //===============================================================
-    void setSelected(int row) {
-        //  Seems that does not work. (?)
-        getSelectionModel().setSelectionInterval(row, row);
-        //this.setRowSelectionInterval(row, row);
-        //model.fireTableDataChanged();
+    void setSelectedRow(final int row) {
+	    // Needs to done later after subscriber and Started/Stopped selection
+        new SelectionThread(this, row).start();
+    }
+    //===============================================================
+    //===============================================================
+    private class SelectionThread extends Thread {
+	    private JTable table;
+	    private int row;
+	    private SelectionThread(JTable table, int row) {
+	        this.table = table;
+	        this.row = row;
+        }
+        public void run() {
+            try { sleep(500); } catch (InterruptedException e) {}
+            //  Do the selection
+            table.setRowSelectionInterval(row, row);
+            //  Set selection visible
+            JScrollPane scrollPane = (JScrollPane) table.getParent().getParent();
+            JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+            double ratio = (double)row/attributeList.size() * scrollBar.getMaximum();
+            if (ratio>2)  ratio-=2; // to be nicer
+            scrollBar.setValue((int)ratio);
+            table.repaint();
+        }
     }
     //===============================================================
     //===============================================================

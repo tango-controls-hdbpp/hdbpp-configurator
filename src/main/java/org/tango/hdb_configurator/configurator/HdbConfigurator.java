@@ -1337,29 +1337,35 @@ public class HdbConfigurator extends JFrame {
     }
     //=======================================================
     //=======================================================
-    private boolean selectAttributeInList(String attributeName, AttributeTable table) {
+    private int attributeRow(AttributeTable table, String attributeName) {
         List<HdbAttribute> attributeList = table.getAttributeList();
         int row = 0;
         for (HdbAttribute attribute : attributeList) {
             if (attribute.getName().equalsIgnoreCase(attributeName)) {
-                table.setSelected(row);
-                return true;
+                return row;
             }
             row++;
         }
-        return false;
+        return -1;
     }
-	//=======================================================
-	//=======================================================
+    //=======================================================
+    //=======================================================
     public void selectAttributeInList(String attributeName) {
+        //  Search in which table.
         AttributeTable  table = attributeTableList.get(Subscriber.ATTRIBUTE_STARTED);
-        if (!selectAttributeInList(attributeName, table)) {
+        int row = attributeRow(table, attributeName);
+        if (row<0) {
             table = attributeTableList.get(Subscriber.ATTRIBUTE_STOPPED);
-            if(!selectAttributeInList(attributeName, table)) {
+            row = attributeRow(table, attributeName);
+            if(row<0) {
                 table = attributeTableList.get(Subscriber.ATTRIBUTE_PAUSED);
-                selectAttributeInList(attributeName, table);
+                row = attributeRow(table, attributeName);
+                if (row<0)
+                    return;
             }
         }
+        //  Do selection
+        table.setSelectedRow(row);
     }
 	//=======================================================
 	//=======================================================
