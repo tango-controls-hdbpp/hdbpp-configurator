@@ -1,8 +1,3 @@
-
-
-[ ![Download](https://api.bintray.com/packages/tango-controls/maven/ hdbpp-configurator/images/download.svg) ](https://bintray.com/tango-controls/maven/ hdbpp-configurator/_latestVersion)
-
-
 # Java GUI configurator for TANGO HDB++
 
  - The TANGO archiving system is a tool allowing TANGO users to store the readings coming from a TANGO based control system into a database.
@@ -13,6 +8,11 @@
 	    resulting from a collaboration between Elettra and ESRF at the beginning.
  - HDB++ design allows TANGO users to store data with microsecond timestamp resolution into traditional database management systems
 	    such as MySQL or into NoSQL databases such as Apache Cassandra. 
+
+
+
+[ ![Download](https://api.bintray.com/packages/tango-controls/maven/hdbpp-configurator/images/download.svg) ](https://bintray.com/tango-controls/maven/hdbpp-configurator/_latestVersion)
+
 
 See:
 http://www.esrf.fr/computing/cs/tango/tango_doc/tools_doc/hdb++-configurator/
