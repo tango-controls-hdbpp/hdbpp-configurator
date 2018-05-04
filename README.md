@@ -10,7 +10,9 @@
 	    such as MySQL or into NoSQL databases such as Apache Cassandra. 
 
 
+
 [ ![Download](https://api.bintray.com/packages/tango-controls/maven/ hdbpp-configurator/images/download.svg) ](https://bintray.com/tango-controls/maven/ hdbpp-configurator/_latestVersion)
+
 
 See:
 http://www.esrf.fr/computing/cs/tango/tango_doc/tools_doc/hdb++-configurator/
