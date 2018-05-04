@@ -45,9 +45,6 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Enumeration;
@@ -70,8 +67,6 @@ public class ArchiverAliasesDialog extends JDialog {
 	private JFrame	parent;
 	private ArrayList<Archiver> archivers = new ArrayList<>();
 	private JTable	table;
-	private TablePopupMenu	popupMenu = new TablePopupMenu();
-	private DataTableModel dataTableModel;
     private int tableWidth;
 
 	private int returnValue = JOptionPane.OK_OPTION;
@@ -115,15 +110,8 @@ public class ArchiverAliasesDialog extends JDialog {
 	//===============================================================
 	//===============================================================
 	private void buildTable() {
-
-		dataTableModel = new DataTableModel();
-
 		// Create the table
-		table = new JTable(dataTableModel);
-		table.setRowSelectionAllowed(true);
-		table.setColumnSelectionAllowed(true);
-		table.setDragEnabled(false);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table = new JTable(new DataTableModel());
 		table.getTableHeader().setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
 		table.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -184,39 +172,16 @@ public class ArchiverAliasesDialog extends JDialog {
 		int row = table.rowAtPoint(clickedPoint);
 		selectedArchiver = archivers.get(row);
 		table.repaint();
-
-		if (event.getClickCount() == 2) {
-			changeAlias();
-		}
-		else {
-			int mask = event.getModifiers();
-
-			//  Check button clicked
-			if ((mask & MouseEvent.BUTTON3_MASK) != 0) {
-				popupMenu.showMenu(event, selectedArchiver);
-			}
-		}
 	}
 	//===============================================================
 	//===============================================================
-	private void changeAlias() {
-		boolean done = false;
-		while (!done) {
-			String newAlias = JOptionPane.showInputDialog(this,
-					"New alias for " + selectedArchiver.deviceName, selectedArchiver.alias);
-			if (newAlias!=null) {
-				try {
-					checkNewAliasName(newAlias);
-					selectedArchiver.alias = newAlias;
-					dataTableModel.fireTableDataChanged();
-					done = true;
-				} catch (Exception e) {
-					ErrorPane.showErrorMessage(this, null, e);
-				}
-			}
-			else
-				done = true;
-		}
+	private void changeAlias(String newAlias) {
+        try {
+            checkNewAliasName(newAlias);
+            selectedArchiver.alias = newAlias;
+        } catch (Exception e) {
+            ErrorPane.showErrorMessage(this, null, e);
+        }
 	}
 	//===============================================================
 	//===============================================================
@@ -343,8 +308,7 @@ public class ArchiverAliasesDialog extends JDialog {
 	 */
 	//===============================================================
 	private void doClose() {
-	
-		if (parent==null)
+			if (parent==null)
 			System.exit(0);
 		else {
 			setVisible(false);
@@ -376,16 +340,17 @@ public class ArchiverAliasesDialog extends JDialog {
 	//=========================================================================
 	public class DataTableModel extends AbstractTableModel {
 		//==========================================================
+		@Override
 		public int getColumnCount() {
 			return columnNames.length;
 		}
-
 		//==========================================================
+		@Override
 		public int getRowCount() {
 			return archivers.size();
 		}
-
 		//==========================================================
+		@Override
 		public String getColumnName(int columnIndex) {
 			String title;
 			if (columnIndex >= getColumnCount())
@@ -394,8 +359,14 @@ public class ArchiverAliasesDialog extends JDialog {
 				title = columnNames[columnIndex];
 			return title;
 		}
-
 		//==========================================================
+		@Override
+		public void setValueAt(Object value, int row, int column) {
+			//archivers.get(row).alias = (String) value;
+            changeAlias((String) value);
+		}
+		//==========================================================
+		@Override
 		public Object getValueAt(int row, int column) {
 			if (column==0)
 				return archivers.get(row).deviceName;
@@ -403,68 +374,12 @@ public class ArchiverAliasesDialog extends JDialog {
 				return archivers.get(row).alias;
 		}
 		//==========================================================
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			return column==ALIAS_NAME;
+		}
+		//==========================================================
 	}
 	//======================================================
 	//======================================================
-
-
-
-
-	//======================================================
-	/**
-	 * Popup menu class
-	 */
-	//======================================================
-	private static final int CHANGE_ALIAS = 0;
-	private static final int OFFSET = 2;    //	Label And separator
-
-	private static String[] menuLabels = {
-			"Change alias",
-	};
-	//=======================================================
-	//=======================================================
-	private class TablePopupMenu extends JPopupMenu {
-		private JLabel title;
-		//======================================================
-		private TablePopupMenu() {
-			title = new JLabel();
-			title.setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
-			add(title);
-			add(new JPopupMenu.Separator());
-
-			for (String menuLabel : menuLabels) {
-				if (menuLabel == null)
-					add(new Separator());
-				else {
-					JMenuItem btn = new JMenuItem(menuLabel);
-					btn.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							menuActionPerformed(evt);
-						}
-					});
-					add(btn);
-				}
-			}
-		}
-		//======================================================
-		//======================================================
-		private void showMenu(MouseEvent event, Archiver archiver) {
-			title.setText(archiver.deviceName);
-			show(table, event.getX(), event.getY());
-		}
-		//======================================================
-		private void menuActionPerformed(ActionEvent evt) {
-			//	Check component source
-			Object obj = evt.getSource();
-			int itemIndex = -1;
-			for (int i=0; i<menuLabels.length; i++)
-				if (getComponent(OFFSET + i) == obj)
-					itemIndex = i;
-			switch (itemIndex) {
-				case CHANGE_ALIAS:
-					changeAlias();
-					break;
-			}
-		}
-	}
 }
