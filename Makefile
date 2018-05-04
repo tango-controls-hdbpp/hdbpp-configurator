@@ -11,6 +11,8 @@
 #
 #-======================================================================
 
+all:
+
 
 SRC_HOME=src/main/java
 DOC_HEADER=	"HDB++ Java Configurator"
@@ -39,7 +41,8 @@ ifndef DOC_PATH
 		@echo "DOC_PATH is not set !"
 else
 		@echo "Install documentation in  $(DOC_PATH)/$(HDB_DIR)"
-		@rm -f $(DOC_PATH)/$(HDB_DIR).old
+		@rm -rf $(DOC_PATH)/$(HDB_DIR).old
 		@mv $(DOC_PATH)/$(HDB_DIR)    $(DOC_PATH)/$(HDB_DIR).old
-		@cp -R doc/build/html  $(DOC_PATH)/$(HDB_DIR)
+		@mkdir $(DOC_PATH)/$(HDB_DIR)
+		@cp -R doc/*  $(DOC_PATH)/$(HDB_DIR)
 endif
