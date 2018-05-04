@@ -36,11 +36,11 @@
 package org.tango.hdb_configurator.diagnostics;
 
 import fr.esrf.Tango.DevFailed;
-import fr.esrf.TangoApi.DeviceProxy;
+import fr.esrf.TangoApi.*;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
-import org.tango.hdb_configurator.common.Subscriber;
-import org.tango.hdb_configurator.common.SubscriberMap;
+import org.tango.hdb_configurator.common.SplashUtils;
+import org.tango.hdb_configurator.common.TangoUtils;
 import org.tango.hdb_configurator.common.Utils;
 
 import javax.swing.*;
@@ -48,11 +48,16 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 
 import static org.tango.hdb_configurator.common.Utils.getTableColumnWidth;
 import static org.tango.hdb_configurator.common.Utils.firstColumnBackground;
+import static org.tango.hdb_configurator.common.Utils.selectionBackground;
 
 
 //===============================================================
@@ -65,11 +70,15 @@ import static org.tango.hdb_configurator.common.Utils.firstColumnBackground;
 
 
 public class ServerInfoTable extends JDialog {
-
 	private JFrame	parent;
+	private JTable table;
 	private List <ServerInfo> serverInfoList = new ArrayList<>();
 	private static final String[] columnNames = { "Device", "Server", "Host", "Uptime"};
 	private int[] columnWidth;
+	private int selectedRow = -1;
+	private ServerPopupMenu popupMenu = new ServerPopupMenu();
+    private HashMap<String, String> subscriberLabels = null;
+
 	private static final int DEVICE_LABEL  = 0;
 	private static final int SERVER_NAME   = 1;
 	private static final int SERVER_HOST   = 2;
@@ -79,24 +88,74 @@ public class ServerInfoTable extends JDialog {
 	 *	Creates new form UpTimeTable
 	 */
 	//===============================================================
-	public ServerInfoTable(JFrame parent, SubscriberMap subscriberMap, boolean useManager) throws DevFailed {
+	public ServerInfoTable(JFrame parent) throws DevFailed {
 		super(parent, true);
+        SplashUtils.getInstance().startSplash();
+        SplashUtils.getInstance().setSplashProgress(10, "Building GUI");
 		this.parent = parent;
 		initComponents();
-		List<Subscriber> subscribers = subscriberMap.getSubscriberList();
-		for (Subscriber subscriber : subscribers) {
-			serverInfoList.add(new ServerInfo(subscriber.getLabel(), subscriber, false));
+
+        SplashUtils.getInstance().setSplashProgress(10, "Building Archiver objects");
+        List<String> subscriberDeviceNames = getSubscriberDeviceNames();
+		int i=0;
+		for (String  subscriberDeviceName : subscriberDeviceNames) {
+			serverInfoList.add(new ServerInfo(getLabel(
+			                subscriberDeviceName), subscriberDeviceName, i++==0));
 		}
-		if (useManager)
-			serverInfoList.add(new ServerInfo("Configurator", Utils.getConfiguratorProxy(), true));
 		Collections.sort(serverInfoList, new ServerComparator());
 
 		computeColumnWidth();
 		buildTable();
 		pack();
  		ATKGraphicsUtils.centerDialog(this);
-	}
-
+        SplashUtils.getInstance().stopSplash();
+    }
+	//===============================================================
+	//===============================================================
+    private List<String> getSubscriberDeviceNames() throws DevFailed {
+	    DeviceProxy configuratorProxy = Utils.getConfiguratorProxy();
+        DeviceAttribute attribute = configuratorProxy.read_attribute("ArchiverList");
+        String[] archivers = attribute.extractStringArray();
+        List<String> list = new ArrayList<>();
+        list.add(configuratorProxy.name());
+        list.addAll(Arrays.asList(archivers));
+        return list;
+    }
+	//===============================================================
+	//===============================================================
+    private String getLabel(String subscriberDeviceName) {
+        if (subscriberLabels==null) {
+            initializeSubscriberLabels();
+        }
+        String deviceName = TangoUtils.getOnlyDeviceName(subscriberDeviceName);
+        String label = subscriberLabels.get(deviceName);
+        if (label==null)
+    	    return subscriberDeviceName.substring(deviceName.lastIndexOf('/')+1);
+        else
+            return label;
+    }
+	//===============================================================
+	//===============================================================
+    private void initializeSubscriberLabels() {
+        subscriberLabels = new HashMap<>();
+        String[] properties = new String[0];
+        try {
+            DbDatum datum = ApiUtil.get_db_obj().get_property(
+                    "HdbConfigurator", "ArchiverLabels");
+            if (!datum.is_empty())
+                properties = datum.extractStringArray();
+        } catch (DevFailed e) {
+            System.err.println(e.toString());
+        }
+        for (String property : properties) {
+            StringTokenizer stk = new StringTokenizer(property, ":");
+            if (stk.countTokens()==2) {
+                String deviceName = stk.nextToken().trim();
+                String label = stk.nextToken().trim();
+                subscriberLabels.put(deviceName, label);
+            }
+        }
+    }
 	//===============================================================
 	//===============================================================
 	private void computeColumnWidth() {
@@ -107,20 +166,17 @@ public class ServerInfoTable extends JDialog {
 	    List<String> uptime = new ArrayList<>();
 
         for (ServerInfo serverInfo : serverInfoList) {
-            labels.add(serverInfo.name);
-            servers.add(serverInfo.server);
+            labels.add(serverInfo.label);
+            servers.add(serverInfo.serverName);
             hosts.add(serverInfo.host);
             uptime.add(serverInfo.uptime);
         }
 
 		//	get the label width
 		columnWidth[DEVICE_LABEL]  = getTableColumnWidth(labels);
-		columnWidth[SERVER_NAME]   = getTableColumnWidth(servers);
+		columnWidth[SERVER_NAME]   = getTableColumnWidth(servers) + 10; // for Icon
 		columnWidth[SERVER_HOST]   = getTableColumnWidth(hosts);
 		columnWidth[SERVER_UPTIME] = getTableColumnWidth(uptime);
-
-		//	Remove label
-		//getContentPane().remove(lbl);
 	}
 	//===============================================================
 	//===============================================================
@@ -128,13 +184,18 @@ public class ServerInfoTable extends JDialog {
 		DataTableModel model = new DataTableModel();
 
 		// Create the table
-		JTable table = new JTable(model);
+		table = new JTable(model);
 		table.setRowSelectionAllowed(true);
 		table.setColumnSelectionAllowed(true);
 		table.setDragEnabled(false);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.getTableHeader().setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+		table.getTableHeader().setFont(new java.awt.Font("Dialog", Font.BOLD, 14));
 		table.setDefaultRenderer(String.class, new LabelCellRenderer());
+        table.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent event) {
+                tableActionPerformed(event);
+            }
+        });
 
 		//	Put it in scrolled pane
 		JScrollPane scrollPane = new JScrollPane(table);
@@ -157,6 +218,32 @@ public class ServerInfoTable extends JDialog {
 		if (height>800) height = 800;
 		scrollPane.setPreferredSize(new Dimension(width, height+40));
 	}
+    //===============================================================
+    //===============================================================
+    private void tableActionPerformed(MouseEvent event) {
+        selectedRow = table.rowAtPoint(new Point(event.getX(), event.getY()));
+        if ((event.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
+            popupMenu.showMenu(event);
+        }
+        table.repaint();
+    }
+	//===============================================================
+	//===============================================================
+	public void setSelection(String selection) {
+        int row=0;
+        for (ServerInfo serverInfo : serverInfoList) {
+            if (serverInfo.label.equals(selection) ||
+                serverInfo.serverName.equals(selection))
+                selectedRow = row;
+            row++;
+        }
+        repaint();
+    }
+    //===============================================================
+	//===============================================================
+
+
+
 	//===============================================================
     /** This method is called from within the constructor to
      * initialize the form.
@@ -178,7 +265,7 @@ public class ServerInfoTable extends JDialog {
             }
         });
 
-        titleLabel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Dialog", Font.BOLD, 18));
         titleLabel.setText("Information on HDB++ Servers");
         topPanel.add(titleLabel);
 
@@ -213,8 +300,12 @@ public class ServerInfoTable extends JDialog {
 	//===============================================================
 	//===============================================================
 	private void doClose() {
-		if (parent==null)
-			System.exit(0);
+
+		if (parent==null) {
+            for (ServerInfo serverInfo : serverInfoList)
+                serverInfo.runThread = false;
+            System.exit(0);
+        }
 		else {
 			setVisible(false);
 			dispose();
@@ -224,7 +315,29 @@ public class ServerInfoTable extends JDialog {
 	//===============================================================
 
 
-	//===============================================================
+
+
+    //===============================================================
+    /**
+     * @param args the command line arguments
+     */
+    //===============================================================
+    public static void main(String args[]) {
+        try {
+            new ServerInfoTable(null).setVisible(true);
+        }
+        catch(DevFailed e) {
+            SplashUtils.getInstance().stopSplash();
+            ErrorPane.showErrorMessage(new Frame(), null, e);
+            System.exit(0);
+        }
+    }
+    //==============================================================
+    //==============================================================
+
+
+
+    //===============================================================
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 	//===============================================================
@@ -236,24 +349,30 @@ public class ServerInfoTable extends JDialog {
 	//===============================================================
 	//===============================================================
 	private class ServerInfo {
-		private String name;
-		private String server = " - - - ";
+		private String label;
+		private String deviceName;
+		private DeviceProxy adminProxy;
+		private String serverName = " - - - ";
 		private String uptime = " - - - ";
 		private String host   = " - - - ";
 		private boolean configurator;
+		private boolean alive =  false;
+		private boolean runThread = true;
 		//===========================================================
-		private ServerInfo(String name, DeviceProxy proxy, boolean configurator) {
-			this.name = name;
-			this.configurator = configurator;
+		private ServerInfo(String name, String deviceName, boolean configurator) {
+            this.label = configurator? "ES Manager": name;
+            this.deviceName = deviceName;
+            this.configurator = configurator;
 			try {
-				String serverInfo = proxy.get_info().toString();
-				server = getInfo(serverInfo, "Server:");
+				String serverInfo = new DeviceProxy(deviceName).get_info().toString();
+				serverName = getInfo(serverInfo, "Server:");
 				uptime = getInfo(serverInfo, "last_exported:");
 				host   = getInfo(serverInfo, "host:");
 			}
 			catch (DevFailed e) {
 				System.err.println(e.toString());
 			}
+            new StateThread().start();
 		}
 		//===========================================================
 		private String getInfo(String serverInfo, String target) {
@@ -282,32 +401,137 @@ public class ServerInfoTable extends JDialog {
 			return target + ": not found";
 		}
 		//===========================================================
+        private void startServer() throws DevFailed {
+		    DeviceData argIn = new DeviceData();
+		    argIn.insert(serverName);
+		    new DeviceProxy("tango/admin/"+host).command_inout("DevStart", argIn);
+        }
+		//===========================================================
+        private void stopServer() throws DevFailed {
+		    adminProxy.command_inout("kill");
+        }
+		//===========================================================
+        private ImageIcon getStateIcon() {
+		    try {
+                if (alive)
+                    return Utils.getGreenBall();
+                else
+                    return Utils.getRedBall();
+            } catch (DevFailed e) {
+		        return null;
+            }
+        }
+		//===========================================================
+        private class StateThread extends Thread {
+            @Override
+            public void run() {
+                while (runThread) {
+                    boolean running;
+                    try {
+                        if (adminProxy==null)
+                            adminProxy = new DeviceProxy("dserver/"+serverName);
+                        adminProxy.ping();
+                        running = true;
+                    } catch (DevFailed e) {
+                        running = false;
+                    }
+                    if (table==null) {
+                        alive = running;
+                    }
+                    else
+                    if (running!=alive) {
+                        alive = running;
+                        table.repaint();
+                    }
+                    try { sleep(3000); } catch (InterruptedException e) { /* */ }
+                }
+            }
+        }
+		//===========================================================
 	}
 	//===============================================================
 	//===============================================================
 
 
 
+    //======================================================
+    /**
+     * Popup menu class
+     */
+    //======================================================
+    private static final int START_SERVER  = 0;
+    private static final int STOP_SERVER    = 1;
 
-	//===============================================================
-	/**
-	* @param args the command line arguments
-	*/
-	//===============================================================
-	public static void main(String args[]) {
-		try {
-			//  Get subscriber labels if any
-			SubscriberMap subscriberMap = new SubscriberMap(Utils.getConfiguratorProxy());
+    private static final int OFFSET = 2;    //	Label And separator
 
-			new ServerInfoTable(null, subscriberMap, true).setVisible(true);
-		}
-		catch(DevFailed e) {
-            ErrorPane.showErrorMessage(new Frame(), null, e);
-			System.exit(0);
-		}
-	}
-	//==============================================================
-	//==============================================================
+    private static String[] menuLabels = {
+            "Start Server",
+            "Stop Server",
+    };
+    //=======================================================
+    //=======================================================
+    private class ServerPopupMenu extends JPopupMenu {
+        private JLabel title;
+        //======================================================
+        private ServerPopupMenu() {
+            title = new JLabel();
+            title.setFont(new java.awt.Font("Dialog", Font.BOLD, 12));
+            add(title);
+            add(new JPopupMenu.Separator());
+            for (String menuLabel : menuLabels) {
+                JMenuItem btn = new JMenuItem(menuLabel);
+                btn.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        menuActionPerformed(evt);
+                    }
+                });
+                add(btn);
+            }
+        }
+        //======================================================
+        //noinspection PointlessArithmeticExpression
+        private void showMenu(MouseEvent event) {
+            ServerInfo serverInfo = serverInfoList.get(selectedRow);
+            title.setText("  " + serverInfo.label);
+            getComponent(OFFSET + START_SERVER).setVisible(!serverInfo.alive);
+            getComponent(OFFSET + STOP_SERVER).setVisible(serverInfo.alive);
+
+            show(table, event.getX(), event.getY());
+        }
+        //======================================================
+        private void menuActionPerformed(ActionEvent evt) {
+            //	Check component source
+            Object obj = evt.getSource();
+            int itemIndex = -1;
+            for (int i = 0 ; i<menuLabels.length ; i++)
+                if (getComponent(OFFSET + i) == obj)
+                    itemIndex = i;
+            ServerInfo serverInfo = serverInfoList.get(selectedRow);
+
+            try {
+                switch (itemIndex) {
+                    case START_SERVER:
+                        serverInfo.startServer();
+                        break;
+                    case STOP_SERVER:
+                        if (JOptionPane.showConfirmDialog(this,
+                                "Stop  " + serverInfo.label + " ?", "Confirm",
+                                JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)
+                            serverInfo.stopServer();
+                        break;
+                }
+            }
+            catch (DevFailed e) {
+                ErrorPane.showErrorMessage(this, null, e);
+            }
+        }
+    }
+	//===============================================================
+    //===============================================================
+
+
+
+
 
 
 
@@ -322,16 +546,17 @@ public class ServerInfoTable extends JDialog {
 	//==============================================================
 	public class DataTableModel extends AbstractTableModel {
 		//==========================================================
+        @Override
 		public int getColumnCount() {
 			return columnNames.length;
 		}
-
 		//==========================================================
+        @Override
 		public int getRowCount() {
 			return serverInfoList.size();
 		}
-
 		//==========================================================
+        @Override
 		public String getColumnName(int columnIndex) {
 			String title;
 			if (columnIndex >= getColumnCount())
@@ -344,10 +569,10 @@ public class ServerInfoTable extends JDialog {
 				int index = title.indexOf('/', "tango://".length());
 				title = title.substring(index+1);
 			}
-
 			return title;
 		}
 		//==========================================================
+        @Override
 		public Object getValueAt(int row, int column) {
 			//  Value to display is returned by
 			// LabelCellRenderer.getTableCellRendererComponent()
@@ -364,6 +589,7 @@ public class ServerInfoTable extends JDialog {
 		 * @return the cell class at first row for specified column.
 		 */
 		//==========================================================
+        @Override
 		public Class getColumnClass(int column) {
 			if (isVisible()) {
 				return getValueAt(0, column).getClass();
@@ -372,6 +598,10 @@ public class ServerInfoTable extends JDialog {
 				return null;
 		}
 		//==========================================================
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
 		//==========================================================
 	}
 	//==============================================================
@@ -388,34 +618,44 @@ public class ServerInfoTable extends JDialog {
 
 		//==========================================================
 		public LabelCellRenderer() {
-			//setFont(new Font("Dialog", Font.BOLD, 11));
 			setOpaque(true); //MUST do this for background to show up.
 		}
-
 		//==========================================================
+        @Override
 		public Component getTableCellRendererComponent(
 				JTable table, Object value,
 				boolean isSelected, boolean hasFocus,
 				int row, int column) {
 			setBackground(getBackground(row, column));
+			ServerInfo serverInfo = serverInfoList.get(row);
+			setIcon(null);
+			setToolTipText(null);
 			switch (column) {
 				case DEVICE_LABEL:
-					setText(serverInfoList.get(row).name);
+				    setToolTipText(serverInfo.deviceName);
+					setText(serverInfo.label);
 					break;
 				case SERVER_NAME:
-					setText(serverInfoList.get(row).server);
+				    setIcon(serverInfo.getStateIcon());
+					setText(serverInfo.serverName);
 					break;
 				case SERVER_HOST:
-					setText(serverInfoList.get(row).host);
+					setText(serverInfo.host);
 					break;
 				case SERVER_UPTIME:
-					setText(serverInfoList.get(row).uptime);
+					setText(serverInfo.uptime);
 					break;
 			}
+			if (serverInfo.configurator)
+				setFont(new Font("Dialog", Font.BOLD, 14));
+			else
+				setFont(new Font("Dialog", Font.PLAIN, 12));
 			return this;
 		}
 		//==========================================================
 		private Color getBackground(int row, int column) {
+            if (row==selectedRow)
+                return selectionBackground;
 			if (serverInfoList.get(row).configurator)
 				return firstColumnBackground;
 			switch (column) {
@@ -446,7 +686,7 @@ public class ServerInfoTable extends JDialog {
 				return -1;
 			if (serverInfo2.configurator)
 				return 1;
-			return alphabeticalSort(serverInfo1.name, serverInfo2.name);
+			return alphabeticalSort(serverInfo1.label, serverInfo2.label);
 		}
 		//======================================================
 		private int alphabeticalSort(String s1, String s2) {

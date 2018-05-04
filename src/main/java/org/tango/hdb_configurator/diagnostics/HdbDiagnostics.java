@@ -73,6 +73,7 @@ public class HdbDiagnostics extends JFrame {
     private int  statisticsTimeWindow;
     private long statisticsResetTime;
     private boolean buildSubscriberMap;
+    private ServerInfoTable serverInfoTable = null;
 
     private static final String[] ATTRIBUTES = {
             "AttributeNokNumber",
@@ -565,7 +566,9 @@ public class HdbDiagnostics extends JFrame {
     private void serverInformationItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverInformationItemActionPerformed
         // TODO add your handling code here:
         try {
-            new ServerInfoTable(this, subscriberMap, buildSubscriberMap).setVisible(true);
+            if (serverInfoTable==null)
+                serverInfoTable = new ServerInfoTable(this);
+            serverInfoTable.setVisible(true);
         }
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this, e.getMessage(), e);
@@ -622,7 +625,7 @@ public class HdbDiagnostics extends JFrame {
                     */
                     break;
                 case RECORD_FREQUENCY:
-                case FAILURE_FREQUENCY:
+                //case FAILURE_FREQUENCY:
                     new StatisticsDialog(this, subscriber,
                             statisticsTimeWindow, statisticsResetTime).setVisible(true);
                     return;
@@ -661,6 +664,19 @@ public class HdbDiagnostics extends JFrame {
     private void testDevice(DeviceProxy deviceProxy) {
         try {
             TangoUtils.testDevice(this, deviceProxy.name());
+        }
+        catch (DevFailed e) {
+            ErrorPane.showErrorMessage(this, null, e);
+        }
+    }
+	//=======================================================
+	//=======================================================
+    private void serverStatus(Subscriber subscriber) {
+        try {
+            if (serverInfoTable==null)
+                serverInfoTable = new ServerInfoTable(this);
+            serverInfoTable.setSelection( subscriber.getLabel());
+            serverInfoTable.setVisible(true);
         }
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this, null, e);
@@ -708,12 +724,13 @@ public class HdbDiagnostics extends JFrame {
     private static final int PAUSED_ATTRIBUTES  = 2;
     private static final int STOPPED_ATTRIBUTES = 3;
     private static final int PENDING_ATTRIBUTES = 4;
-    private static final int RECORD_FREQUENCY   = 5;
-    private static final int STOP_FAULTY        = 6;
-    private static final int COPY_DEVICE_NAME   = 7;
+    private static final int SERVER_STATUS      = 5;
+    private static final int RECORD_FREQUENCY   = 6;
+    private static final int STOP_FAULTY        = 7;
+    private static final int COPY_DEVICE_NAME   = 8;
 
-    private static final int TEST_ARCHIVER      = 8;
-    private static final int TEST_CONFIGURATOR  = 9;
+    private static final int TEST_ARCHIVER      = 9;
+    private static final int TEST_CONFIGURATOR  = 10;
     private static final int OFFSET = 3;    //	Label And separator
 
     private static final int FAILURE_FREQUENCY  = 6; // not used for menu (Column number)
@@ -725,6 +742,7 @@ public class HdbDiagnostics extends JFrame {
             "Paused Attributes",
             "Stopped Attributes",
             "Pending Attributes",
+            "Server Status",
             "Record Frequency",
             "Stop Faulty Attributes",
             "Copy device name",
@@ -805,6 +823,9 @@ public class HdbDiagnostics extends JFrame {
                     Utils.copyToClipboard(selectedSubscriber.getName());
                     break;
 
+                case SERVER_STATUS:
+                    serverStatus(selectedSubscriber);
+                    break;
                 case TEST_ARCHIVER:
                     testDevice(selectedSubscriber);
                     break;

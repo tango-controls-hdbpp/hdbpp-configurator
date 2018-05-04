@@ -93,7 +93,7 @@ public class TableScalarViewer extends JPanel {
         errorBtn.setContentAreaFilled(false);
         errorBtn.setMargin(new java.awt.Insets(0, 0, 0, 0));
         errorBtn.setVisible(false);
-        //errorBtn.setIcon(Utils.getInstance().getIcon("redball.gif"));
+        //errorBtn.setIcon(Utils.getInstance().getIcon("redBall.gif"));
         errorBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 errorBtnActionPerformed();

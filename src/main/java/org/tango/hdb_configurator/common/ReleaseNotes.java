@@ -16,7 +16,9 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 25-04-2018  13:55</center>\n" + 
+		"generated: 04-05-2018  10:02</center>\n" + 
+		"<li><b>hdb_configurator-3.4 - 04/05/18:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Improve ServerInfoTable management.<br>" + 
 		"<li><b>hdb_configurator-3.3 - 25/04/18:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Improve attribute selection in table.<br>" + 
 		"<li><b>hdb_configurator-3.2 - 25/04/18:</b><br>" + 

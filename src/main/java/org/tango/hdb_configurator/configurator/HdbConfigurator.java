@@ -1640,7 +1640,7 @@ public class HdbConfigurator extends JFrame {
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE)==JOptionPane.YES_OPTION) {
                             ManageAttributes.removeAttributes(configuratorProxy,
-                                    attributeList.toArray(new HdbAttribute[attributeList.size()]));
+                                    attributeList.toArray(new HdbAttribute[0]));
                             updateAttributeList(archiver);
                             new UpdateSubscribedThread(attributeList).start();
                             attributeTree.updateAttributeInfo(attributeList);

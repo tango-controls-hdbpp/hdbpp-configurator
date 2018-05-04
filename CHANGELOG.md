@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.4 - 04/05/18:
+    Improve ServerInfoTable management.
+
 #### hdb_configurator-3.3 - 25/04/18:
     Improve attribute selection in table.
 

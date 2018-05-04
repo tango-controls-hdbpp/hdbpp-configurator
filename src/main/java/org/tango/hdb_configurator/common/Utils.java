@@ -58,6 +58,7 @@ public class Utils {
     private static Utils instance = new Utils();
     private static final String DefaultImagePath = "/org/tango/hdb_configurator/img/";
     private static MainPanel jive = null;
+    private static ImageIcon redBall = null;
     private static ImageIcon orangeBall = null;
     private static ImageIcon greenBall = null;
     private static final boolean trace =
@@ -132,6 +133,13 @@ public class Utils {
         if (greenBall==null)
             greenBall = getInstance().getIcon("greenBall.gif");
         return greenBall;
+    }
+    //======================================================================
+    //======================================================================
+    public static ImageIcon getRedBall() throws DevFailed {
+        if (redBall==null)
+            redBall = getInstance().getIcon("redBall.gif");
+        return redBall;
     }
     //======================================================================
     //======================================================================
@@ -472,7 +480,7 @@ public class Utils {
  //===============================================================
     //===============================================================
     public static String getLongestLine(List<String> lines) {
-        return getLongestLine(lines.toArray(new String[lines.size()]));
+        return getLongestLine(lines.toArray(new String[0]));
     }
     //===============================================================
     //===============================================================
@@ -491,7 +499,7 @@ public class Utils {
      */
     //===============================================================
     public static int getTableColumnWidth(List<String> lines) {
-        return getLongestLine(lines).length() * 7 + hPadding;
+        return getLongestLine(lines).length() * 8 + hPadding;
     }
     //===============================================================
     //===============================================================

@@ -37,8 +37,8 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="titleLabel">
           <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Dialog" size="18" style="1"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="new java.awt.Font(&quot;Dialog&quot;, Font.BOLD, 18)" type="code"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Information on HDB++ Servers"/>
           </Properties>
