@@ -385,8 +385,8 @@ public class TangoUtils {
         dialog.setTitle(deviceName + " Device Panel");
         dialog.setContentPane(new jive.ExecDev(deviceName));
         dialog.pack();
-        dialog.setVisible(true);
         ATKGraphicsUtils.centerDialog(dialog);
+        dialog.setVisible(true);
     }
     //======================================================================
     //======================================================================

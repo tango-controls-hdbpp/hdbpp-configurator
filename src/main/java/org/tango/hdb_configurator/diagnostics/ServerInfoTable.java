@@ -239,6 +239,16 @@ public class ServerInfoTable extends JDialog {
         }
         repaint();
     }
+    //=======================================================
+    //=======================================================
+    private void testSelectedDevice() {
+        try {
+            TangoUtils.testDevice(this, serverInfoList.get(selectedRow).deviceName);
+        }
+        catch (DevFailed e) {
+            ErrorPane.showErrorMessage(this, null, e);
+        }
+    }
     //===============================================================
 	//===============================================================
 
@@ -460,13 +470,15 @@ public class ServerInfoTable extends JDialog {
      */
     //======================================================
     private static final int START_SERVER  = 0;
-    private static final int STOP_SERVER    = 1;
+    private static final int STOP_SERVER   = 1;
+    private static final int TEST_DEVICE   = 2;
 
     private static final int OFFSET = 2;    //	Label And separator
 
     private static String[] menuLabels = {
             "Start Server",
             "Stop Server",
+            "Test Subscriber device",
     };
     //=======================================================
     //=======================================================
@@ -518,6 +530,9 @@ public class ServerInfoTable extends JDialog {
                                 "Stop  " + serverInfo.label + " ?", "Confirm",
                                 JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)
                             serverInfo.stopServer();
+                        break;
+                    case TEST_DEVICE:
+                        testSelectedDevice();
                         break;
                 }
             }
