@@ -14,5 +14,8 @@
 [ ![Download](https://api.bintray.com/packages/tango-controls/maven/hdbpp-configurator/images/download.svg) ](https://bintray.com/tango-controls/maven/hdbpp-configurator/_latestVersion)
 
 
+[![Docs](https://img.shields.io/badge/Latest-Docs-orange.svg)](//www.esrf.fr/computing/cs/tango/tango_doc/tools_doc/hdb++-configurator/index.html)
+
+
 See:
 http://www.esrf.fr/computing/cs/tango/tango_doc/tools_doc/hdb++-configurator/
