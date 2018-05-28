@@ -429,7 +429,7 @@ public class TangoUtils {
     }
     //======================================================================
     //======================================================================
-    public static String getServerFileNameForClass(String className) throws DevFailed {
+    public static String getServerNameForClass(String className) throws DevFailed {
         String[] servers = getServersForClass(className);
         if (servers.length==0)
             return null;

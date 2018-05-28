@@ -92,19 +92,18 @@ public class Subscriber extends DeviceProxy {
         //  Subscribe to attribute lists events (one per table started, paused and stopped)
         TangoEventsAdapter  adapter = new TangoEventsAdapter(this);
         ChangeEventListener changeListener = new ChangeEventListener();
-        adapter.addTangoChangeListener(changeListener,
-                "AttributeList", TangoConst.NOT_STATELESS);
-        adapter.addTangoChangeListener(changeListener,
-                "AttributeStrategyList", TangoConst.NOT_STATELESS);
-        if (System.getenv("NO_TTL")==null)
-            adapter.addTangoChangeListener(changeListener,
-                    "AttributeTTLList", TangoConst.NOT_STATELESS);
-        adapter.addTangoChangeListener(changeListener,
-                "AttributeStartedList", TangoConst.NOT_STATELESS);
-        adapter.addTangoChangeListener(changeListener,
-                "AttributeStoppedList", TangoConst.NOT_STATELESS);
-        adapter.addTangoChangeListener(changeListener,
-                "AttributePausedList",  TangoConst.NOT_STATELESS);
+        adapter.addTangoChangeListener(
+                changeListener, "AttributeList", TangoConst.STATELESS);
+        adapter.addTangoChangeListener(
+                changeListener, "AttributeStrategyList", TangoConst.STATELESS);
+        adapter.addTangoChangeListener(
+                changeListener, "AttributeTTLList", TangoConst.STATELESS);
+        adapter.addTangoChangeListener(
+                changeListener, "AttributeStartedList", TangoConst.STATELESS);
+        adapter.addTangoChangeListener(
+                changeListener, "AttributeStoppedList", TangoConst.STATELESS);
+        adapter.addTangoChangeListener(
+                changeListener, "AttributePausedList",  TangoConst.STATELESS);
     }
     //======================================================
     //======================================================

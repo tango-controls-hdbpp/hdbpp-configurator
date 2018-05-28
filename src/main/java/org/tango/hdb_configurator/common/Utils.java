@@ -65,6 +65,7 @@ public class Utils {
             (System.getenv("trace")!=null && System.getenv("trace").equals("true"));
     public static final Color selectionBackground   = new Color(0xe0e0ff);
     public static final Color firstColumnBackground = new Color(0xe0e0e0);
+    public static final Color toolTipBackground = new Color(0xffffd0);
     //======================================================================
     //======================================================================
     private Utils() {
@@ -477,7 +478,7 @@ public class Utils {
             Except.throw_exception("HdbFailed", e.toString());
         }
     }
- //===============================================================
+    //===============================================================
     //===============================================================
     public static String getLongestLine(List<String> lines) {
         return getLongestLine(lines.toArray(new String[0]));

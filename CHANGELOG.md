@@ -1,5 +1,9 @@
 # Changelog
 
+#### hdb_configurator-3.5 - 28/05/18:
+    Fix a problem in double click on Diagnostics Frequency column.
+    Subscribe event is now stateless.
+
 #### hdb_configurator-3.4 - 04/05/18:
     Improve ServerInfoTable management.
 

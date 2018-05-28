@@ -47,6 +47,7 @@ import org.tango.hdb_configurator.configurator.strategy.SelectionStrategiesDialo
 import org.tango.hdb_configurator.configurator.strategy.StrategyMainPanel;
 
 import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -1431,6 +1432,8 @@ public class HdbConfigurator extends JFrame {
 	//=======================================================
     public static void main(String args[]) {
 		try {
+            UIManager.put("ToolTip.foreground", new ColorUIResource(Color.black));
+            UIManager.put("ToolTip.background", new ColorUIResource(Utils.toolTipBackground));
       		new HdbConfigurator(null).setVisible(true);
 		}
 		catch(DevFailed e) {

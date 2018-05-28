@@ -44,6 +44,7 @@ import org.tango.hdb_configurator.common.TangoUtils;
 import org.tango.hdb_configurator.common.Utils;
 
 import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -333,6 +334,8 @@ public class ServerInfoTable extends JDialog {
      */
     //===============================================================
     public static void main(String args[]) {
+        UIManager.put("ToolTip.foreground", new ColorUIResource(Color.black));
+        UIManager.put("ToolTip.background", new ColorUIResource(Utils.toolTipBackground));
         try {
             new ServerInfoTable(null).setVisible(true);
         }

@@ -65,12 +65,12 @@ public class CreateSubscriberPanel extends JDialog {
     private List<String>   instances = new ArrayList<>();
     private List<String>   archivers = new ArrayList<>();
     private List<String>   labels;
-    private SubscriberMap  subscriberMap = null;   //  Used only to remove
+    private SubscriberMap  subscriberMap;   //  Used only to remove
     private int action;
 
     private int option = JOptionPane.OK_OPTION;
-    private String managerFileName= null;
-    private String subscriberFileName= null;
+    private String managerName;
+    private String subscriberName;
     private static final String CLASS_NAME = "HdbEventSubscriber";
     public static final int CREATE = 0;
     public static final int REMOVE = 1;
@@ -89,9 +89,9 @@ public class CreateSubscriberPanel extends JDialog {
         classPanel.setVisible(false);
 
         //  Get manager device and server name and build subscriber map
-        managerFileName= configuratorProxy.get_server_name();
-        managerFileName= managerFileName.substring(0, managerFileName.indexOf('/'));
-        subscriberFileName= TangoUtils.getServerFileNameForClass(CLASS_NAME);
+        managerName = configuratorProxy.get_server_name();
+        managerName = managerName.substring(0, managerName.indexOf('/'));
+        subscriberName= TangoUtils.getServerNameForClass(CLASS_NAME);
         subscriberMap = new SubscriberMap(configuratorProxy);
 
         //  Customize dialog (Create or Remove)
@@ -110,12 +110,6 @@ public class CreateSubscriberPanel extends JDialog {
                     instanceComboBox.addItem(instance);
                 }
             }
-
-            /*
-            deviceComboBox.addItem("tango/hdb-es/id16ni");
-            labelComboBox.addItem("ID16 ni");
-            inManagerButton.setSelected(true);
-            */
 
             //  Initialize exe file name if first
             if (archiverDevices.length==0) {
@@ -158,11 +152,11 @@ public class CreateSubscriberPanel extends JDialog {
         String serverName = new DeviceProxy(deviceName).get_server_name();
         int idx = serverName.indexOf('/');
         if (idx>0) {
-            subscriberFileName= serverName.substring(0, idx);
+            subscriberName= serverName.substring(0, idx);
             return serverName.substring(idx+1);
         }
         else {
-            subscriberFileName= deviceName;
+            subscriberName= deviceName;
             return serverName;
         }
     }
@@ -395,10 +389,10 @@ public class CreateSubscriberPanel extends JDialog {
         }
         */
         if (inManagerButton.isSelected())
-            managerFileName= JOptionPane.showInputDialog(this, "Manager executable name ?", managerFileName);
+            managerName = JOptionPane.showInputDialog(this, "Manager executable name ?", managerName);
         else
-            subscriberFileName= JOptionPane.showInputDialog(this, "Subscriber executable name ?", managerFileName);
-        return subscriberFileName !=null;
+            subscriberName= JOptionPane.showInputDialog(this, "Subscriber executable name ?", managerName);
+        return subscriberName !=null;
     }
 	//===============================================================
 	//===============================================================
@@ -509,20 +503,20 @@ public class CreateSubscriberPanel extends JDialog {
             message += "in existing ";
         else
             message += "in new ";
-        message += subscriberFileName + '/' + instance + " server as " + CLASS_NAME + " class\n";
+        message += subscriberName + '/' + instance + " server as " + CLASS_NAME + " class\n";
         message += "This device will be used with " + label + " label.";
 
         //  Get confirmation.
         if (JOptionPane.showConfirmDialog(this,
                 message, "Confirmation", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION) {
 
-            createArchiverDevice(subscriberFileName+'/'+instance, deviceName, serverExists);
+            createArchiverDevice(subscriberName+'/'+instance, deviceName, serverExists);
             manageArchiveLabels(deviceName, label);
             addToManager(TangoUtils.fullName(deviceName));
             if (serverExists)
-                message = subscriberFileName +'/'+instance + "  has been updated.\nYou can re-start it.";
+                message = subscriberName +'/'+instance + "  has been updated.\nYou can re-start it.";
             else
-                message = subscriberFileName +'/'+instance + "  has been created.\nYou can start it.";
+                message = subscriberName +'/'+instance + "  has been created.\nYou can start it.";
             JOptionPane.showMessageDialog(this, message);
             return true;
         }
@@ -658,7 +652,7 @@ public class CreateSubscriberPanel extends JDialog {
                 Except.throw_exception("DeviceNotDefined",
                         "HDB manager device not defined");
             new CreateSubscriberPanel(null,
-                    new DeviceProxy(deviceName), CreateSubscriberPanel.CREATE).showDialog();
+                    new DeviceProxy(deviceName), CreateSubscriberPanel.REMOVE).showDialog();
 		}
 		catch(DevFailed e) {
 		    e.printStackTrace();

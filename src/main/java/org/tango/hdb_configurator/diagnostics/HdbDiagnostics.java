@@ -46,6 +46,7 @@ import org.tango.hdb_configurator.common.*;
 import org.tango.hdb_configurator.common.Strategy;
 
 import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.*;
@@ -625,7 +626,7 @@ public class HdbDiagnostics extends JFrame {
                     */
                     break;
                 case RECORD_FREQUENCY:
-                //case FAILURE_FREQUENCY:
+                case FAILURE_FREQUENCY:
                     new StatisticsDialog(this, subscriber,
                             statisticsTimeWindow, statisticsResetTime).setVisible(true);
                     return;
@@ -698,7 +699,9 @@ public class HdbDiagnostics extends JFrame {
 	//=======================================================
     public static void main(String args[]) {
 		try {
-      		new HdbDiagnostics(null).setVisible(true);
+		    UIManager.put("ToolTip.foreground", new ColorUIResource(Color.black));
+            UIManager.put("ToolTip.background", new ColorUIResource(Utils.toolTipBackground));
+            new HdbDiagnostics(null).setVisible(true);
 		}
 		catch(DevFailed e) {
             SplashUtils.getInstance().stopSplash();
@@ -724,8 +727,8 @@ public class HdbDiagnostics extends JFrame {
     private static final int PAUSED_ATTRIBUTES  = 2;
     private static final int STOPPED_ATTRIBUTES = 3;
     private static final int PENDING_ATTRIBUTES = 4;
-    private static final int SERVER_STATUS      = 5;
-    private static final int RECORD_FREQUENCY   = 6;
+    private static final int RECORD_FREQUENCY   = 5;
+    private static final int SERVER_STATUS      = 6;
     private static final int STOP_FAULTY        = 7;
     private static final int COPY_DEVICE_NAME   = 8;
 
@@ -742,8 +745,8 @@ public class HdbDiagnostics extends JFrame {
             "Paused Attributes",
             "Stopped Attributes",
             "Pending Attributes",
-            "Server Status",
             "Record Frequency",
+            "Server Status",
             "Stop Faulty Attributes",
             "Copy device name",
 

@@ -40,6 +40,7 @@ import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
 import org.tango.hdb_configurator.common.SubscriberMap;
 import org.tango.hdb_configurator.common.TangoUtils;
+import org.tango.hdb_configurator.common.Utils;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -327,9 +328,6 @@ public class ArchiverAliasesDialog extends JDialog {
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 	//===============================================================
-
-
-
 
 
 
