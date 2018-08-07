@@ -140,8 +140,14 @@ public class TangoUtils {
         //  get the canonical name and keep only FQDN
         try {
             String alias = InetAddress.getByName(host).getCanonicalHostName();
-            String fqdn = alias.substring(alias.indexOf('.'));
-            System.out.println("----------> " + fqdn);
+            int idx2 = alias.indexOf('.');
+            String fqdn = "";
+            if (idx2<0)
+                System.err.println("Cannot parse FQDN !");
+            else {
+                fqdn = alias.substring(idx2);
+                System.out.println("----------> " + fqdn);
+            }
             return deviceHeader + host + fqdn + attributeName.substring(idx);
         }
         catch (UnknownHostException e) {
