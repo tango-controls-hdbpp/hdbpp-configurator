@@ -39,16 +39,11 @@ import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import javax.swing.*;
 import java.util.List;
 
-
-//===============================================================
-
 /**
  * Class Description: Basic Dialog Class to select option
  *
  * @author Pascal Verdier
  */
-//===============================================================
-
 
 @SuppressWarnings("MagicConstant")
 public class Selector extends JDialog {
@@ -58,9 +53,25 @@ public class Selector extends JDialog {
      * Creates new form Selector
      */
     //===============================================================
-    public Selector(JFrame parent,
-                    String title, String question, List<String> values, String defaultValue) {
+    public Selector(JFrame parent, String title, String question, List<String> values, String defaultValue) {
         super(parent, true);
+        createDialog(title,question, values, defaultValue);
+    }
+    //===============================================================
+    /*
+     * Creates new form Selector
+     */
+    //===============================================================
+    public Selector(JDialog parent, String title, String question, List<String> values, String defaultValue) {
+        super(parent, true);
+        createDialog(title,question, values, defaultValue);
+    }
+    //===============================================================
+    /*
+     * Creates new form Selector
+     */
+    //===============================================================
+    public void createDialog(String title, String question, List<String> values, String defaultValue) {
         initComponents();
         comboBox.addItem("");
         for (int i=0 ; values!=null && i<values.size() ; i++) {
@@ -78,9 +89,7 @@ public class Selector extends JDialog {
         pack();
         ATKGraphicsUtils.centerDialog(this);
     }
-
     //===============================================================
-
     /**
      * This method is called from within the constructor to
      * initialize the form.
@@ -95,7 +104,7 @@ public class Selector extends JDialog {
         javax.swing.JPanel topPanel = new javax.swing.JPanel();
         titleLabel = new javax.swing.JLabel();
         javax.swing.JPanel centerPanel = new javax.swing.JPanel();
-        comboBox = new javax.swing.JComboBox<String>();
+        comboBox = new javax.swing.JComboBox<>();
         questionLabel = new javax.swing.JLabel();
         javax.swing.JPanel bottomPanel = new javax.swing.JPanel();
         javax.swing.JButton okBtn = new javax.swing.JButton();
@@ -160,8 +169,10 @@ public class Selector extends JDialog {
     //===============================================================
     @SuppressWarnings("UnusedParameters")
     private void comboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxActionPerformed
+        /*
         if (isVisible())
             okBtnActionPerformed(evt);
+         */
     }//GEN-LAST:event_comboBoxActionPerformed
 
     //===============================================================
@@ -169,7 +180,7 @@ public class Selector extends JDialog {
     @SuppressWarnings("UnusedParameters")
     private void okBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okBtnActionPerformed
         selection = (String) comboBox.getSelectedItem();
-        if (!selection.isEmpty())
+        if (selection!=null && !selection.isEmpty())
             doClose();
     }//GEN-LAST:event_okBtnActionPerformed
 

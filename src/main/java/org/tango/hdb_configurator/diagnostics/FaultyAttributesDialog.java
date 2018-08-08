@@ -56,19 +56,14 @@ import java.io.File;
 import java.util.*;
 import java.util.List;
 
-
-//===============================================================
 /**
- *	JDialog Class to display info
+ *	JDialog Class to display faulty attributes table
  *
  *	@author  Pascal Verdier
  */
-//===============================================================
-
 
 @SuppressWarnings("MagicConstant")
 public class FaultyAttributesDialog extends JDialog {
-
     private Component parent;
     private JDialog thisDialog;
     private ArrayList<FaultyAttribute> filteredFaultyAttributes;
@@ -938,17 +933,13 @@ public class FaultyAttributesDialog extends JDialog {
             add(new JPopupMenu.Separator());
 
             for (String menuLabel : headerMenuLabels) {
-                if (menuLabel == null)
-                    add(new Separator());
-                else {
-                    JMenuItem btn = new JMenuItem(menuLabel);
-                    btn.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            menuActionPerformed(evt);
-                        }
-                    });
-                    add(btn);
-                }
+                JMenuItem btn = new JMenuItem(menuLabel);
+                btn.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        menuActionPerformed(evt);
+                    }
+                });
+                add(btn);
             }
         }
         //======================================================
@@ -1026,17 +1017,13 @@ public class FaultyAttributesDialog extends JDialog {
             add(new JPopupMenu.Separator());
 
             for (String menuLabel : tableMenuLabels) {
-                if (menuLabel == null)
-                    add(new Separator());
-                else {
-                    JMenuItem btn = new JMenuItem(menuLabel);
-                    btn.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            menuActionPerformed(evt);
-                        }
-                    });
-                    add(btn);
-                }
+                JMenuItem btn = new JMenuItem(menuLabel);
+                btn.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        menuActionPerformed(evt);
+                    }
+                });
+                add(btn);
             }
         }
         //======================================================

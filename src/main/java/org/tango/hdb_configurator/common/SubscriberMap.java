@@ -42,10 +42,7 @@ import fr.esrf.TangoDs.Except;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 
 //======================================================
@@ -132,7 +129,7 @@ public class SubscriberMap {
     }
     //======================================================
     //======================================================
-    private void put(String deviceName, List<String[]> labels, DeviceProxy managerProxy) throws DevFailed {
+    private void put(String deviceName, List<String[]> labels, DeviceProxy managerProxy) {
         try {
             boolean found = false;
             //  Manage full device name
@@ -228,6 +225,27 @@ public class SubscriberMap {
         }
         return tangoHostList;
     }
-    //======================================================
-    //======================================================
+    //===============================================================
+    //===============================================================
+    public List<String> getSubscriberExeFiles() {
+        List<String> exeFiles = new ArrayList<>();
+        List<Subscriber> subscribers = getSubscriberList();
+        for (Subscriber subscriber : subscribers) {
+            try {
+                String serverName = subscriber.get_server_name();
+                if (serverName!=null && serverName.contains("/")) {
+                    String file = serverName.substring(0, serverName.indexOf('/'));
+                    //  Check if already in list
+                    if (!exeFiles.contains(file))
+                        exeFiles.add(file);
+                }
+            }
+            catch (DevFailed e) {
+                System.err.println(e.errors[0].desc);
+            }
+        }
+        return exeFiles;
+    }
+    //===============================================================
+    //===============================================================
 }

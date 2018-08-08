@@ -224,7 +224,7 @@ public class StatisticsDialog extends JDialog {
             String text = "<table>\n" +
                     "<tr><td> Reset done </td><td> "     + formatResetTime(resetTime) + " </td></tr>\n"+
                     "<tr><td>Statistics read </td><td> " + formatResetTime(readTime)  + " </td></tr>\n"+
-                    "<tr><td>Duration </td><td> " + Utils.strPeriod(sinceReset/1000)  + " </td></tr>\n"+
+                    "<tr><td>Duration </td><td> " + Utils.strPeriod((double) sinceReset/1000)  + " </td></tr>\n"+
                     "</table>";
 
             titleLabel.setToolTipText(Utils.buildTooltip(text));
@@ -713,7 +713,7 @@ public class StatisticsDialog extends JDialog {
 
             //  Average period since reset
             if (resetTime>0 && sinceReset>0 && nbEvents>0) {
-                resetPeriod = sinceReset/nbEvents;
+                resetPeriod = (double) sinceReset/nbEvents;
                 resetPeriodString = Utils.strPeriod(resetPeriod/1000);
             }
             else {
@@ -756,7 +756,7 @@ public class StatisticsDialog extends JDialog {
             sb.append("    (").append(subscriber.getName()).append(")\n");
             sb.append(nbStatistics).append(" events during ").append(Utils.strPeriod(duration)).append("\n");
             sb.append(nbEvents).append(" Since last reset : ").append(formatResetTime(resetTime)).append("\n");
-            sb.append("    - during ").append(Utils.strPeriod(sinceReset/1000));
+            sb.append("    - during ").append(Utils.strPeriod((double) sinceReset/1000));
 
             if (attributeStatus!=null) {
                 sb.append("\n\n----------------------- Attribute Status --------------------------\n");
@@ -932,17 +932,13 @@ public class StatisticsDialog extends JDialog {
             add(new JPopupMenu.Separator());
 
             for (String menuLabel : menuLabels) {
-                if (menuLabel == null)
-                    add(new Separator());
-                else {
-                    JMenuItem btn = new JMenuItem(menuLabel);
-                    btn.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            menuActionPerformed(evt);
-                        }
-                    });
-                    add(btn);
-                }
+                JMenuItem btn = new JMenuItem(menuLabel);
+                btn.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        menuActionPerformed(evt);
+                    }
+                });
+                add(btn);
             }
             //  Check if extraction available
             String s = System.getenv("HDB_TYPE");

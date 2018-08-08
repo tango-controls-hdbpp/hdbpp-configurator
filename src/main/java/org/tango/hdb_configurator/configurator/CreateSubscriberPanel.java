@@ -382,16 +382,15 @@ public class CreateSubscriberPanel extends JDialog {
 	//===============================================================
 	//===============================================================
     private boolean checkExeFile() {
-        /*
-        subscriberFileName = System.getenv("SubscriberExe");
-        if (subscriberFileName ==null) {
-            subscriberFileName= JOptionPane.showInputDialog(this, " Subscriber executable name ?");
-        }
-        */
         if (inManagerButton.isSelected())
             managerName = JOptionPane.showInputDialog(this, "Manager executable name ?", managerName);
-        else
-            subscriberName= JOptionPane.showInputDialog(this, "Subscriber executable name ?", managerName);
+        else {
+            List<String> exeFiles = subscriberMap.getSubscriberExeFiles();
+            Selector selector = new Selector(this,
+                    "Subscriber executable name ?", "",
+                    exeFiles, "");//exeFiles.get(0));
+            subscriberName = selector.showDialog();
+        }
         return subscriberName !=null;
     }
 	//===============================================================
