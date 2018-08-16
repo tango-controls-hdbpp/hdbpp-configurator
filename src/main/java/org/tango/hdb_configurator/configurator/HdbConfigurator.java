@@ -92,6 +92,14 @@ public class HdbConfigurator extends JFrame {
 	 */
 	//=======================================================
     public HdbConfigurator(JFrame parent) throws DevFailed {
+        this(parent, false);
+    }
+    //=======================================================
+    /**
+	 *	Creates new form HdbConfigurator
+	 */
+	//=======================================================
+    public HdbConfigurator(JFrame parent, boolean parentIsDiagnostic) throws DevFailed {
         this.parent = parent;
         SplashUtils.getInstance().startSplash();
         SplashUtils.getInstance().increaseSplashProgress(10, "Building GUI");
@@ -99,6 +107,8 @@ public class HdbConfigurator extends JFrame {
 
         initComponents();
         initOwnComponents();
+        if (parentIsDiagnostic)
+            diagnosticsPanel = parent;
         ManageAttributes.setDisplay(true);
         updateListThread = new UpdateListThread();
         updateListThread.start();
@@ -1133,8 +1143,13 @@ public class HdbConfigurator extends JFrame {
     @SuppressWarnings("UnusedParameters")
     private void diagnosticsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_diagnosticsItemActionPerformed
         try {
-            diagnosticsPanel = (JFrame) Utils.getInstance().startExternalApplication(
-                    this, "org.tango.hdb_configurator.diagnostics.HdbDiagnostics");
+            if (diagnosticsPanel==null) {
+                //  Start as external application to avoid cross compilation
+                diagnosticsPanel =
+                        (JFrame) Utils.getInstance().startExternalApplication(
+                                this, "org.tango.hdb_configurator.diagnostics.HdbDiagnostics");
+            }
+            diagnosticsPanel.setVisible(true);
         }
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this, e.toString(), e);
@@ -1415,7 +1430,7 @@ public class HdbConfigurator extends JFrame {
 	//=======================================================
     private void doClose() {
         updateListThread.stopIt = true;
-        if (parent!=null || (diagnosticsPanel!=null && diagnosticsPanel.isVisible())) {
+        if ((parent!=null && parent.isVisible()) || (diagnosticsPanel!=null && diagnosticsPanel.isVisible())) {
             setVisible(false);
             dispose();
         }

@@ -44,6 +44,7 @@ import fr.esrf.tangoatk.widget.util.ErrorPane;
 import org.tango.hdb_configurator.atktable.TableScalarViewer;
 import org.tango.hdb_configurator.common.*;
 import org.tango.hdb_configurator.common.Strategy;
+import org.tango.hdb_configurator.configurator.HdbConfigurator;
 
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
@@ -75,6 +76,7 @@ public class HdbDiagnostics extends JFrame {
     private long statisticsResetTime;
     private boolean buildSubscriberMap;
     private ServerInfoTable serverInfoTable = null;
+    private HdbConfigurator hdbConfigurator = null;
 
     private static final String[] ATTRIBUTES = {
             "AttributeNokNumber",
@@ -99,6 +101,8 @@ public class HdbDiagnostics extends JFrame {
 	//=======================================================
     public HdbDiagnostics(JFrame parent) throws DevFailed {
         this(parent, null);
+        if (parent instanceof  HdbConfigurator)
+            hdbConfigurator = (HdbConfigurator) parent;
     }
 	//=======================================================
     public HdbDiagnostics(JFrame parent, SubscriberMap subscriberMap) throws DevFailed {
@@ -464,21 +468,6 @@ public class HdbDiagnostics extends JFrame {
     }//GEN-LAST:event_exitForm
     //=======================================================
     //=======================================================
-    private void doClose() {
-        //  if parent not null and still visible.
-        if (parent!=null) {
-            if (parent.isVisible()) {
-                setVisible(false);
-                dispose();
-            }
-            else
-                System.exit(0);
-        }
-        else
-            System.exit(0);
-    }
-    //=======================================================
-    //=======================================================
     @SuppressWarnings("UnusedParameters")
     private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutItemActionPerformed
         String  message = "This application is able to display information on HDB event subscribers\n" +
@@ -576,6 +565,19 @@ public class HdbDiagnostics extends JFrame {
         }
     }//GEN-LAST:event_serverInformationItemActionPerformed
 
+ 	//=======================================================
+	//=======================================================
+    private void configureArchiver(Subscriber subscriber) {
+        try {
+            if (hdbConfigurator == null)
+                hdbConfigurator = new HdbConfigurator(this, true);
+            hdbConfigurator.selectArchiver(subscriber.getLabel());
+            hdbConfigurator.setVisible(true);
+        }
+        catch (DevFailed e) {
+            ErrorPane.showErrorMessage(this, null, e);
+        }
+    }
  	//=======================================================
 	//=======================================================
     private void stopFaultyAttributes(Subscriber subscriber) {
@@ -683,6 +685,18 @@ public class HdbDiagnostics extends JFrame {
             ErrorPane.showErrorMessage(this, null, e);
         }
     }
+    //=======================================================
+    //=======================================================
+    private void doClose() {
+        //  if parent not null and still visible.
+        if ((parent!=null && parent.isVisible()) ||
+                (hdbConfigurator!=null && hdbConfigurator.isVisible())) {
+            setVisible(false);
+            dispose();
+        }
+        else
+            System.exit(0);
+    }
 	//=======================================================
 	//=======================================================
 
@@ -728,12 +742,14 @@ public class HdbDiagnostics extends JFrame {
     private static final int STOPPED_ATTRIBUTES = 3;
     private static final int PENDING_ATTRIBUTES = 4;
     private static final int RECORD_FREQUENCY   = 5;
-    private static final int SERVER_STATUS      = 6;
-    private static final int STOP_FAULTY        = 7;
-    private static final int COPY_DEVICE_NAME   = 8;
+    //  Separator
+    private static final int CONFIGURE_ARCHIVER = 7;
+    private static final int SERVER_STATUS      = 8;
+    private static final int STOP_FAULTY        = 9;
+    private static final int COPY_DEVICE_NAME   = 10;
 
-    private static final int TEST_ARCHIVER      = 9;
-    private static final int TEST_CONFIGURATOR  = 10;
+    private static final int TEST_ARCHIVER      = 11;
+    private static final int TEST_CONFIGURATOR  = 12;
     private static final int OFFSET = 3;    //	Label And separator
 
     private static final int FAILURE_FREQUENCY  = 6; // not used for menu (Column number)
@@ -746,6 +762,8 @@ public class HdbDiagnostics extends JFrame {
             "Stopped Attributes",
             "Pending Attributes",
             "Record Frequency",
+            null,
+            "Configure Archiver",
             "Server Status",
             "Stop Faulty Attributes",
             "Copy device name",
@@ -818,6 +836,10 @@ public class HdbDiagnostics extends JFrame {
                 case PENDING_ATTRIBUTES:
                 case RECORD_FREQUENCY:
                     showAttributes(selectedSubscriber, itemIndex);
+                    break;
+
+                case CONFIGURE_ARCHIVER:
+                    configureArchiver(selectedSubscriber);
                     break;
                 case STOP_FAULTY:
                     stopFaultyAttributes(selectedSubscriber);
