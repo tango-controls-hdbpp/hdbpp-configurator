@@ -46,25 +46,25 @@ case "$1" in
 
 # ----------------------------------------------
     -configure)
-	#   Start Configurator
-       	java  $APPLI_PACKAGE.$APPLI_MAIN_CLASS
+        # Start Configurator
+        java  $APPLI_PACKAGE.$APPLI_MAIN_CLASS
     ;;
     
 # ----------------------------------------------
     -diag)
-       	# Display disgnostics
-       	java  $APPLI_PACKAGE.diagnostics.HdbDiagnostics
+        # Display disgnostics
+        java  $APPLI_PACKAGE.diagnostics.HdbDiagnostics
     ;;
     
 # ----------------------------------------------
     -servers)
-       	# Display servers status
-       	java  $APPLI_PACKAGE.diagnostics.ServerInfoTable
+        # Display servers status
+        java  $APPLI_PACKAGE.diagnostics.ServerInfoTable
     ;;
     
 # ----------------------------------------------
     *)
-	# Default case  --> Display Syntax
+        # Default case  --> Display Syntax
         DisplaySyntax
     ;;
 esac
