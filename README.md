@@ -1,4 +1,8 @@
-# Java GUI configurator for TANGO HDB++
+# Project hdbpp-configurator
+
+Maven Java project
+
+### Java GUI configurator for TANGO HDB++
 
  - The TANGO archiving system is a tool allowing TANGO users to store the readings coming from a TANGO based control system into a database.
  - The archived data are essential for the day by day operation of complex scientific facilities for instance.
@@ -10,8 +14,47 @@
 	    such as MySQL or into NoSQL databases such as Apache Cassandra. 
 
 
+## Cloning
+
+```
+git clone git@github.com:tango-controls-hdbpp/hdbpp-configurator
+```
+
+## Download
 
 [ ![Download](https://api.bintray.com/packages/tango-controls/maven/hdbpp-configurator/images/download.svg) ](https://bintray.com/tango-controls/maven/hdbpp-configurator/_latestVersion)
 
+## Documentation 
 
 [![Docs](https://img.shields.io/badge/Latest-Docs-orange.svg)](http://www.esrf.fr/computing/cs/tango/tango_doc/tools_doc/hdb++-configurator/index.html)
+
+
+## Building and Installation
+
+### Dependencies
+
+The project has the following dependencies.
+
+#### Project Dependencies 
+
+* Jive.jar
+* jhdbviewer.jar
+* JTango.jar
+* ATKCore.jar
+* ATKWidget.jar
+  
+
+#### Toolchain Dependencies 
+
+* javac 7 or higher
+* maven
+  
+
+
+### Build
+
+```
+cd hdbpp-configurator
+mvn package
+```
+
