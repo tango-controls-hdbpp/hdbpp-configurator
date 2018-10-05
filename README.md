@@ -37,11 +37,11 @@ The project has the following dependencies.
 
 #### Project Dependencies 
 
-* Jive.jar
-* jhdbviewer.jar
 * JTango.jar
 * ATKCore.jar
 * ATKWidget.jar
+* Jive.jar
+* jhdbviewer.jar (necessary only to compile, not necessary to run)
   
 
 #### Toolchain Dependencies 
