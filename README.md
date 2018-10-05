@@ -58,3 +58,6 @@ cd hdbpp-configurator
 mvn package
 ```
 
+### Run 
+see start_gui file as example.
+ - https://github.com/tango-controls-hdbpp/hdbpp-configurator/blob/master/start_gui
