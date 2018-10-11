@@ -65,7 +65,7 @@ Start up
         - ATKWidget.jar
         - ATKCore.jar
         - Jive.jar
-        - hdb_configurator.jar
+        - hdbpp-configurator.jar
     * To run them, the manager device name must be exported as an environment variable:
         **e.g:** *export HdbManager=sys/hdb-manager/accelerator*
     * Then start the java class:
