@@ -177,14 +177,21 @@ public class Subscriber extends DeviceProxy {
     }
     //=======================================================
     //=======================================================
-    public long getStatisticsResetTime() throws DevFailed {
-        DeviceAttribute attribute = read_attribute("StatisticsResetTime");
-        if (attribute.hasFailed())
+    public long getStatisticsResetTime() {
+        try {
+            DeviceAttribute attribute = read_attribute("StatisticsResetTime");
+            if (attribute.hasFailed())
+                return 0;
+            else {
+                double nbSeconds = attribute.extractDouble();
+                long nbMillis = (long) nbSeconds * 1000;
+                long now = System.currentTimeMillis();
+                return now - nbMillis;
+            }
+        }
+        catch (DevFailed e) {
             return 0;
-        double nbSeconds = attribute.extractDouble();
-        long nbMillis = (long) nbSeconds*1000;
-        long now = System.currentTimeMillis();
-        return now - nbMillis;
+        }
     }
     //=======================================================
     //=======================================================

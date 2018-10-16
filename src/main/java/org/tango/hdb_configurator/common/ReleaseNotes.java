@@ -16,7 +16,9 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 28-05-2018  09:38</center>\n" + 
+		"generated: 16-10-2018  14:50</center>\n" + 
+		"<li><b>hdb_configurator-3.8 - 16/10/18:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Fix a problem on diagnostics frame if a subscriber is down.<br>" + 
 		"<li><b>hdb_configurator-3.5 - 28/05/18:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Fix a problem in double click on Diagnostics Frequency column.<br>" + 
 		"&nbsp; &nbsp; &nbsp; Subscribe event is now stateless.<br>" + 

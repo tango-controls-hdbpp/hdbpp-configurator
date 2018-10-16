@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.8 - 16/10/18:
+    Fix a problem on diagnostics frame if a subscriber is down.
+
 #### hdb_configurator-3.5 - 28/05/18:
     Fix a problem in double click on Diagnostics Frequency column.
     Subscribe event is now stateless.

@@ -390,7 +390,7 @@ public class HdbConfigurator extends JFrame {
                                      JScrollPane scrollPane) {
 
         //  Display attributes in attributeTable
-        attributes = HdbAttributeComparator.sort(attributes);
+        HdbAttributeComparator.sort(attributes);
         attributeTable.updateAttributeList(attributes);
 
         String s = (attributes.size() > 1) ? "s" : "";
@@ -1544,9 +1544,6 @@ public class HdbConfigurator extends JFrame {
 
             int i=0;
             for (String menuLabel : menuLabels) {
-                if (menuLabel == null)
-                    add(new Separator());
-                else
                 if (i++==MOVE_TO){
                     add(subscriberMenu);
                 }
