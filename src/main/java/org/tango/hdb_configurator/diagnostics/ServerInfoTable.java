@@ -91,36 +91,64 @@ public class ServerInfoTable extends JDialog {
 	//===============================================================
 	public ServerInfoTable(JFrame parent) throws DevFailed {
 		super(parent, true);
-        SplashUtils.getInstance().startSplash();
-        SplashUtils.getInstance().setSplashProgress(10, "Building GUI");
-		this.parent = parent;
-		initComponents();
+		try {
+            SplashUtils.getInstance().startSplash();
+            SplashUtils.getInstance().setSplashProgress(10, "Building GUI");
+            this.parent = parent;
+            initComponents();
 
-        SplashUtils.getInstance().setSplashProgress(10, "Building Archiver objects");
-        List<String> subscriberDeviceNames = getSubscriberDeviceNames();
-		int i=0;
-		for (String  subscriberDeviceName : subscriberDeviceNames) {
-			serverInfoList.add(new ServerInfo(getLabel(
-			                subscriberDeviceName), subscriberDeviceName, i++==0));
-		}
-		Collections.sort(serverInfoList, new ServerComparator());
+            SplashUtils.getInstance().setSplashProgress(10, "Building Archiver objects");
+            List<String> subscriberDeviceNames = getSubscriberDeviceNames();
+            for (String subscriberDeviceName : subscriberDeviceNames) {
+                ServerInfo serverInfo =
+                        new ServerInfo(getLabel(subscriberDeviceName), subscriberDeviceName);
+                if (!isInList(serverInfo))
+                    serverInfoList.add(serverInfo);
+            }
+            Collections.sort(serverInfoList, new ServerComparator());
 
-		computeColumnWidth();
-		buildTable();
-		pack();
- 		ATKGraphicsUtils.centerDialog(this);
-        SplashUtils.getInstance().stopSplash();
+            computeColumnWidth();
+            buildTable();
+            pack();
+            ATKGraphicsUtils.centerDialog(this);
+            SplashUtils.getInstance().stopSplash();
+        }
+        catch (DevFailed e) {
+		    SplashUtils.getInstance().stopSplash();
+		    throw e;
+        }
+    }
+	//===============================================================
+	//===============================================================
+    private boolean isInList(ServerInfo server) {
+	    for (ServerInfo serverInfo : serverInfoList)
+    	    if (server.serverName.equals(serverInfo.serverName))
+    	        return true;
+        return false;
     }
 	//===============================================================
 	//===============================================================
     private List<String> getSubscriberDeviceNames() throws DevFailed {
-	    DeviceProxy configuratorProxy = Utils.getConfiguratorProxy();
-        DeviceAttribute attribute = configuratorProxy.read_attribute("ArchiverList");
-        String[] archivers = attribute.extractStringArray();
-        List<String> list = new ArrayList<>();
-        list.add(configuratorProxy.name());
-        list.addAll(Arrays.asList(archivers));
-        return list;
+	    String property = System.getProperty("HdbDeviceList");
+	    if (property==null) {
+	        //  Get it form manager
+            DeviceProxy configuratorProxy = Utils.getConfiguratorProxy();
+            DeviceAttribute attribute = configuratorProxy.read_attribute("ArchiverList");
+            String[] archivers = attribute.extractStringArray();
+            List<String> list = new ArrayList<>();
+            list.add(configuratorProxy.name());
+            list.addAll(Arrays.asList(archivers));
+            return list;
+        }
+        else {
+            //  Get it from property (coming from external process)
+            StringTokenizer stk = new StringTokenizer(property, ",");
+            List<String> list = new ArrayList<>();
+            while (stk.hasMoreTokens())
+                list.add(stk.nextToken());
+            System.out.println(property);
+            return list;
+        }
     }
 	//===============================================================
 	//===============================================================
@@ -368,16 +396,25 @@ public class ServerInfoTable extends JDialog {
 		private String serverName = " - - - ";
 		private String uptime = " - - - ";
 		private String host   = " - - - ";
-		private boolean configurator;
+		private boolean configurator = false;
 		private boolean alive =  false;
 		private boolean runThread = true;
 		//===========================================================
-		private ServerInfo(String name, String deviceName, boolean configurator) {
-            this.label = configurator? "ES Manager": name;
+		private ServerInfo(String name, String deviceName) {
             this.deviceName = deviceName;
-            this.configurator = configurator;
 			try {
-				String serverInfo = new DeviceProxy(deviceName).get_info().toString();
+			    DeviceProxy deviceProxy = new DeviceProxy(deviceName);
+                configurator = deviceProxy.get_class().contains("Config");
+                if (configurator) {
+                    if (name.equalsIgnoreCase("manager"))
+                        label = "ES Manager";
+                    else
+                        label = name + " manager";
+                }
+                else
+                    label = name;
+
+				String serverInfo = deviceProxy.get_info().toString();
 				serverName = getInfo(serverInfo, "Server:");
 				uptime = getInfo(serverInfo, "last_exported:");
 				host   = getInfo(serverInfo, "host:");

@@ -105,6 +105,7 @@ public class HdbDiagnostics extends JFrame {
             hdbConfigurator = (HdbConfigurator) parent;
     }
 	//=======================================================
+	//=======================================================
     public HdbDiagnostics(JFrame parent, SubscriberMap subscriberMap) throws DevFailed {
         this.parent = parent;
         this.subscriberMap = subscriberMap;
