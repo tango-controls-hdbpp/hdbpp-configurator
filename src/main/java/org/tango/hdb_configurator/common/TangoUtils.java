@@ -73,7 +73,7 @@ public class TangoUtils {
             return   ApiUtil.get_db_obj().get_tango_host();
         }
         else
-            return getTangoHost(eventTangoHost);
+            return getTangoHost(eventTangoHost.toLowerCase());
     }
     //======================================================================
     //======================================================================
@@ -154,6 +154,30 @@ public class TangoUtils {
             System.err.println(e.toString());
             return attributeName;
         }
+    }
+    //======================================================================
+    /**
+     * Get a list of TANGO_HOST which have restricted access.
+     * And compare with EVENT_TANGO_ACCESS to know if limited or not
+     * @return true if access are limited
+     * @throws DevFailed in case of database access failed
+     */
+    //======================================================================
+    public static boolean hasLimitedAccess() throws DevFailed {
+        String expert = System.getenv("EXPERT_MODE");
+        if (expert != null && expert.equals("false")) {
+            return true;
+        }
+        String eventTangoHost = getEventTangoHost();
+        DbDatum datum = ApiUtil.get_db_obj().get_property("HDB++", "LimitedAccessTangoHosts");
+        if (datum.is_empty())
+            return false; // everybody has full access
+        String[] tangoHosts = datum.extractStringArray();
+        for (String tangoHost : tangoHosts) {
+            if (eventTangoHost.equals(tangoHost) || eventTangoHost.startsWith(tangoHost))
+                return true;
+        }
+        return false;
     }
     //======================================================================
     //======================================================================

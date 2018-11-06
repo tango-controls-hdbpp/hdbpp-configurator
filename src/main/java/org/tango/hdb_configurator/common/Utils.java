@@ -49,11 +49,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
 
-@SuppressWarnings({"WeakerAccess", "SameParameterValue"})
 public class Utils {
-    //private static SubscriberMap subscriberMap = null;
     private static Hashtable<String,SubscriberMap> subscriberTable = new Hashtable<>();
-    //private static DeviceProxy  configuratorProxy = null;
     private static Hashtable<String, DeviceProxy>  configuratorProxyTable = new Hashtable<>();
     private static Utils instance = new Utils();
     private static final String DefaultImagePath = "/org/tango/hdb_configurator/img/";
@@ -68,10 +65,6 @@ public class Utils {
     public static final Color toolTipBackground = new Color(0xffffd0);
     //======================================================================
     //======================================================================
-    private Utils() {
-    }
-    //======================================================================
-    //======================================================================
     public static Utils getInstance() {
         return instance;
     }
@@ -82,6 +75,8 @@ public class Utils {
         String release = getClass().getPackage().getImplementationVersion();
         if (release!=null)
             applicationName += "-" + release;
+        else
+            applicationName = "HdbConfigurator not released";
         return applicationName;
     }
     //===============================================================
@@ -97,14 +92,12 @@ public class Utils {
         //noinspection ConstantConditions
         return new ImageIcon(url);
     }
-
     //===============================================================
     //===============================================================
     public ImageIcon getIcon(String filename, double ratio) throws DevFailed {
         ImageIcon icon = getIcon(filename);
         return getIcon(icon, ratio);
     }
-
     //===============================================================
     //===============================================================
     public ImageIcon getIcon(ImageIcon icon, double ratio) {
@@ -173,6 +166,7 @@ public class Utils {
     }
     //===============================================================
     //===============================================================
+
 
 
 

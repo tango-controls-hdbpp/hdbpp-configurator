@@ -21,7 +21,7 @@ APPLI_PACKAGE=org.tango.hdb_configurator
 APPLI_MAIN_CLASS=configurator.HdbConfigurator
 
 #
-# Gives the hdbpp-cm-es device
+# Gives the hdbpp-cm-srv device
 #
 export HdbManager=tango/hdb-cassandra/manager
 

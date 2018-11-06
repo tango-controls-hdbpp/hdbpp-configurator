@@ -1,5 +1,9 @@
 # Changelog
 
+#### hdb_configurator-3.9 - 06/11/18:
+    Add a HDB++/LimitedAccessTangoHosts free property
+    Small features for extenal process
+
 #### hdb_configurator-3.8 - 16/10/18:
     Fix a problem on diagnostics frame if a subscriber is down.
 

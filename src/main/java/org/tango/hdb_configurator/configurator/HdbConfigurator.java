@@ -114,8 +114,9 @@ public class HdbConfigurator extends JFrame {
         updateListThread.start();
 
         //  Check expert mode
-        String expert = System.getenv("EXPERT_MODE");
-        if (expert!=null && expert.equals("false")) {
+        if (TangoUtils.hasLimitedAccess()) {
+            System.out.println("Limited access for " + TangoUtils.getEventTangoHost());
+            //  Remove tools menu items
             addSubscriberItem.setVisible(false);
             removeSubscriberItem.setVisible(false);
             manageAliasesItem.setVisible(false);
@@ -124,8 +125,10 @@ public class HdbConfigurator extends JFrame {
 
         //  Check if change TANGO_HOST available
         String onlyOnCS = System.getenv("SingleControlSystem");
-        if (onlyOnCS!=null && onlyOnCS.equals("true"))
+        if (onlyOnCS!=null && onlyOnCS.equals("true")) {
+            //  Remove change Tango Host menu item
             changeCsItem.setVisible(false);
+        }
         pack();
         ATKGraphicsUtils.centerFrameOnScreen(this);
         SplashUtils.getInstance().stopSplash();
@@ -198,7 +201,10 @@ public class HdbConfigurator extends JFrame {
         if (subscriberMap.size()==0) {
             addSubscriber();
         }
-
+        if (subscriberMap.size()==1) {
+            //  Only one -> remove change archiver
+            archiverPanel.setVisible(false);
+        }
         //  Get subscriber labels if any
         archiverComboBox.removeAllItems();
         for (String subscriberName : subscriberMap.getLabelList())
@@ -527,7 +533,7 @@ public class HdbConfigurator extends JFrame {
         javax.swing.JScrollPane propertiesScrollPane = new javax.swing.JScrollPane();
         propertiesArea = new javax.swing.JTextArea();
         javax.swing.JPanel rightPanel = new javax.swing.JPanel();
-        javax.swing.JPanel archiverPanel = new javax.swing.JPanel();
+        archiverPanel = new javax.swing.JPanel();
         archiverLabel = new javax.swing.JLabel();
         archiverComboBox = new javax.swing.JComboBox<>();
         tabbedPane = new javax.swing.JTabbedPane();
@@ -957,7 +963,8 @@ public class HdbConfigurator extends JFrame {
     //=======================================================
     @SuppressWarnings("UnusedParameters")
     private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutItemActionPerformed
-        String  message = "This application is able to configure HDB++\n" +
+        String  message = Utils.getInstance().getApplicationName() +
+                "\n\nThis application is able to configure HDB++\n" +
                 "It is used to Add attributes to subscriber and\n" +
                 "Start and Stop HDB filling for selected attributes\n" +
                 "\nIt manages " + subscriberMap.size() + " event subscriber devices\n" +
@@ -1477,6 +1484,7 @@ public class HdbConfigurator extends JFrame {
     private javax.swing.JMenuItem addSubscriberItem;
     private javax.swing.JComboBox<String> archiverComboBox;
     private javax.swing.JLabel archiverLabel;
+    private javax.swing.JPanel archiverPanel;
     private javax.swing.JPanel attrTreePanel;
     private javax.swing.JTextField attributeField;
     private javax.swing.JMenuItem changeCsItem;
