@@ -53,7 +53,6 @@ import java.util.StringTokenizer;
 
 
 public class TangoUtils {
-
     private static boolean ttlRead = false;
     private static long defaultTTL = 31; // days
     public static final String deviceHeader = "tango://";

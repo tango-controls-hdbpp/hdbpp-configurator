@@ -65,11 +65,12 @@ import static org.tango.hdb_configurator.common.Utils.getTableColumnWidth;
 //===============================================================
 
 
-@SuppressWarnings("MagicConstant")
 public class SelectionStrategiesPanel extends JPanel {
     private List<HdbAttribute> hdbAttributeList;
     private List<String> columnNames = new ArrayList<>();
 	private Strategy strategy;
+	private int neverColumn = -1;
+
 	private static final int NAME = 0;
 	private static final int ALWAYS_COLUMN = 1;
 	private static final String howTo = "\nSelect strategies to be used for each attribute";
@@ -89,8 +90,12 @@ public class SelectionStrategiesPanel extends JPanel {
 		panel.add(label);
 		add(panel, BorderLayout.NORTH);
 		columnNames.add("Attributes");
+		int column = 0;
 		for (Context context : strategy) {
+			++column;
             columnNames.add(context.getName());
+            if (context.getName().equalsIgnoreCase("never"))
+				neverColumn = column;
         }
 		buildTable();
 	}
@@ -98,7 +103,6 @@ public class SelectionStrategiesPanel extends JPanel {
 	//===============================================================
 	private void buildTable() {
 		StrategyTableModel model = new StrategyTableModel();
-		//noinspection NullableProblems
 		JTable table = new JTable(model) {
 			public String getToolTipText(MouseEvent event) {
 				return manageTooltip(event);
@@ -144,14 +148,11 @@ public class SelectionStrategiesPanel extends JPanel {
 		String tip = null;
 		if (isVisible()) {
 			Point p = event.getPoint();
-			switch (table.columnAtPoint(p)) {
-				case NAME:
-					tip = Utils.buildTooltip(howTo);
-					break;
-				default:
-					Context context = strategy.get(table.columnAtPoint(p)-1);
-					tip = Utils.buildTooltip(context.getHtmlDescription());
-					break;
+			if (table.columnAtPoint(p) == NAME) {
+				tip = Utils.buildTooltip(howTo);
+			} else {
+				Context context = strategy.get(table.columnAtPoint(p) - 1);
+				tip = Utils.buildTooltip(context.getHtmlDescription());
 			}
 		}
 		return tip;
@@ -187,36 +188,50 @@ public class SelectionStrategiesPanel extends JPanel {
 	//===============================================================
 	//===============================================================
     private void manageCellClicked(int row, int column) {
+		int neverIndex = neverColumn-1;
         if (column!=NAME) {
             //  Toggle this context
             HdbAttribute attribute = hdbAttributeList.get(row);
-            switch (column) {
-                case ALWAYS_COLUMN:
-                    //  Set ALWAYS
-                    attribute.get(ALWAYS_INDEX).setUsed(true);
-                    // if always set -> reset others
-                    for (int i=ALWAYS_INDEX+1 ; i<attribute.size() ; i++)
-                        attribute.get(i).setUsed(false);
-                    break;
-                default:
-                    //  Reset ALWAYS
-                    attribute.get(ALWAYS_INDEX).setUsed(false);
-                    //  Toggle specified one
-                    attribute.get(column-1).toggleUsed();
-                    //  if used --> reset always
-                    boolean used = attribute.get(column-1).isUsed();
-                    if (used)
-                        attribute.get(ALWAYS_INDEX).setUsed(false);
-                    else {
-                        //  Check if any context is used -> set Always
-                        used = false;
-                        for (int i=ALWAYS_INDEX+1 ; i<attribute.size() && !used ; i++)
-                            used = attribute.get(i).isUsed();
-                        if (!used)
-                            attribute.get(ALWAYS_INDEX).setUsed(true);
-                    }
-                    break;
-            }
+			if (column == ALWAYS_COLUMN) {
+				//  Set ALWAYS
+				attribute.get(ALWAYS_INDEX).setUsed(true);
+				// if always set -> reset others
+				for (int i = ALWAYS_INDEX + 1 ; i<attribute.size() ; i++)
+					attribute.get(i).setUsed(false);
+
+				//	Reset NEVER if exists
+				if (neverColumn>0)
+					attribute.get(neverIndex).setUsed(false);
+			}
+			else
+			if (column==neverColumn) {
+				//  Set NEVER
+				attribute.get(neverIndex).setUsed(true);
+				// if NEVER, set -> reset others
+				for (int i = ALWAYS_INDEX ; i<attribute.size() ; i++)
+					if (i!=neverIndex)
+						attribute.get(i).setUsed(false);
+			}
+			else {
+				//  Reset ALWAYS (& NEVER if exists)
+				attribute.get(ALWAYS_INDEX).setUsed(false);
+				if (neverColumn>0)
+					attribute.get(neverIndex).setUsed(false);
+
+				//  Toggle specified one
+				attribute.get(column - 1).toggleUsed();
+				//  if used --> reset always
+				boolean used = attribute.get(column - 1).isUsed();
+				if (used)
+					attribute.get(ALWAYS_INDEX).setUsed(false);
+				else {
+					//  Check if any context is used -> set Always
+					for (int i = ALWAYS_INDEX + 1 ; i<attribute.size() && !used ; i++)
+						used = attribute.get(i).isUsed();
+					if (!used)
+						attribute.get(ALWAYS_INDEX).setUsed(true);
+				}
+			}
         }
         repaint();
     }

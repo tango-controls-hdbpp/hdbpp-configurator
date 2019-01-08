@@ -383,7 +383,7 @@ public class StrategyMainPanel extends JDialog {
      * @param args the command line arguments
      */
 	//=======================================================
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 		try {
       		new StrategyMainPanel(null, null).setVisible(true);
 		}

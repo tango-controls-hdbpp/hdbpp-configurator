@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.10 - 08/01/19:
+    Manage context NEVER if exist.
+
 #### hdb_configurator-3.9 - 06/11/18:
     Add a HDB++/LimitedAccessTangoHosts free property
     Small features for extenal process

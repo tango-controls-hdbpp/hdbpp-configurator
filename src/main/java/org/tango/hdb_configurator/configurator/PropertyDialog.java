@@ -59,7 +59,7 @@ import java.util.List;
 //===============================================================
 
 
-@SuppressWarnings({"MagicConstant", "Convert2Diamond"})
+@SuppressWarnings({"MagicConstant"})
 public class PropertyDialog extends JDialog implements TangoConst {
     private JFrame parent;
     private SubscriberMap subscriberMap;
@@ -497,7 +497,6 @@ public class PropertyDialog extends JDialog implements TangoConst {
      * Verify if value set are coherent and if at least one is set.
      */
     //===============================================================
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private boolean checkValues() {
         if (getNbDays()<0) {
             ErrorPane.showErrorMessage(this, null, new Exception("TTL input syntax error"));
@@ -529,7 +528,6 @@ public class PropertyDialog extends JDialog implements TangoConst {
         }
         return true;
     }
-
     //===============================================================
     //===============================================================
     private boolean writeValues() {
@@ -776,7 +774,7 @@ public class PropertyDialog extends JDialog implements TangoConst {
     public static void main(String[] args) {
         try {
             HdbAttribute attribute =
-                    new HdbAttribute("tango://orion.esrf.fr:10000/sy/ps-rips/manager/state");
+                    new HdbAttribute("tango://orion.esrf.fr:10000/sys/hqps-accumulator/5a/speed");
             //  Build subscriber map
             SubscriberMap subscriberMap = new SubscriberMap(Utils.getConfiguratorProxy());
             Subscriber subscriber = subscriberMap.getSubscriberList().get(2);
