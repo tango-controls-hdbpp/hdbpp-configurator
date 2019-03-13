@@ -64,7 +64,6 @@ import java.util.List;
 //===============================================================
 
 
-@SuppressWarnings("MagicConstant")
 public class AttributesTableDialog extends JDialog {
 
     private List<ExtendedAttribute> filteredAttributes = new ArrayList<>();

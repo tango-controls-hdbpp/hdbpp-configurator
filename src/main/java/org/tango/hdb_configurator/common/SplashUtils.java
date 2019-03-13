@@ -80,6 +80,7 @@ public class SplashUtils {
             ImageIcon icon = Utils.getInstance().getIcon(imageFile);
             splash = new Splash(icon, Color.black, myBar);
             splash.setTitle(Utils.getInstance().getApplicationName());
+            splash.setCopyright("ESRF 2015");
             splash.setMessage("Starting....");
             splash.setVisible(true);
             splashProgress = 0;
