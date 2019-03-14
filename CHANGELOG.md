@@ -1,6 +1,6 @@
 # Changelog
 
-#### hdb_configurator-3.10 - 14/03/19:
+#### hdb_configurator-3.11 - 14/03/19:
     Fix a bug in case of TANGO_HOST is an alias
 
 #### hdb_configurator-3.10 - 08/01/19:
