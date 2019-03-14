@@ -46,7 +46,7 @@ The project has the following dependencies.
 
 #### Toolchain Dependencies 
 
-* javac 7 or higher
+* javac 8 or higher
 * maven
   
 

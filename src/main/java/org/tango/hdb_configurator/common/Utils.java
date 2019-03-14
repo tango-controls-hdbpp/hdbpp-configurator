@@ -88,8 +88,6 @@ public class Utils {
             Except.throw_exception("FILE_NOT_FOUND",
                     "Icon file  " + filename + "  not found");
         }
-
-        //noinspection ConstantConditions
         return new ImageIcon(url);
     }
     //===============================================================

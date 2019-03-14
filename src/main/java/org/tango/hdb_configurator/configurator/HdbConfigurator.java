@@ -67,7 +67,6 @@ import java.util.StringTokenizer;
  * @author  Pascal Verdier
  */
 //=======================================================
-@SuppressWarnings({"MagicConstant", "Convert2Diamond", "WeakerAccess"})
 public class HdbConfigurator extends JFrame {
     private JFrame parent;
     private DeviceProxy configuratorProxy;
@@ -400,7 +399,7 @@ public class HdbConfigurator extends JFrame {
         attributeTable.updateAttributeList(attributes);
 
         String s = (attributes.size() > 1) ? "s" : "";
-        jLabel.setText(Integer.toString(attributes.size()) + " attribute" + s);
+        jLabel.setText(attributes.size() + " attribute" + s);
 
         //  move horizontal scroll bar to see end of attribute name
         JScrollBar horizontal = scrollPane.getVerticalScrollBar();
@@ -1452,7 +1451,7 @@ public class HdbConfigurator extends JFrame {
      * @param args the command line arguments
      */
 	//=======================================================
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 		try {
             UIManager.put("ToolTip.foreground", new ColorUIResource(Color.black));
             UIManager.put("ToolTip.background", new ColorUIResource(Utils.toolTipBackground));
@@ -1588,7 +1587,6 @@ public class HdbConfigurator extends JFrame {
             subscriberMenu.setVisible(subscriberList.size()>1);
         }
         //======================================================
-        //noinspection PointlessArithmeticExpression
         private void showMenu(MouseEvent event, List<HdbAttribute> attributes) {
             String str;
             if (attributes.size()==1)

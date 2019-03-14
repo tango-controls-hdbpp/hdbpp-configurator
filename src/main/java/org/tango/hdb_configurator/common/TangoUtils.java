@@ -60,7 +60,7 @@ public class TangoUtils {
     //======================================================================
     public static String getDefaultTangoHost() throws DevFailed {
         //return ApiUtil.get_db_obj().get_tango_host();
-        return new TangoUrl().getTangoHost();
+        return getTangoHost(new TangoUrl().getTangoHost());
     }
     //======================================================================
     //======================================================================
@@ -69,7 +69,7 @@ public class TangoUtils {
         if (eventTangoHost==null)
             eventTangoHost = System.getenv("EVENT_TANGO_HOST");
         if (eventTangoHost==null || eventTangoHost.isEmpty()) {
-            return   ApiUtil.get_db_obj().get_tango_host();
+            return getTangoHost(ApiUtil.getTangoHost());
         }
         else
             return getTangoHost(eventTangoHost.toLowerCase());

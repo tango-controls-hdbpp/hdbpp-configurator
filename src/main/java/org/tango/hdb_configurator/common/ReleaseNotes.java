@@ -16,7 +16,9 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 08-01-2019  14:24</center>\n" + 
+		"generated: 14-03-2019  09:03</center>\n" + 
+		"<li><b>hdb_configurator-3.10 - 14/03/19:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Fix a bug in case of TANGO_HOST is an alias<br>" + 
 		"<li><b>hdb_configurator-3.10 - 08/01/19:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Manage context NEVER if exist.<br>" + 
 		"<li><b>hdb_configurator-3.9 - 06/11/18:</b><br>" + 
