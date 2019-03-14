@@ -128,7 +128,6 @@ public class PropertyDialog extends JDialog implements TangoConst {
         attributeListArea.setColumns(length + 1);
         attributeListArea.setText(sb.toString().trim());
         attributeListArea.setEditable(false);
-
         pack();
         ATKGraphicsUtils.centerDialog(this);
     }
@@ -145,7 +144,9 @@ public class PropertyDialog extends JDialog implements TangoConst {
                 BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Events Subscription"));
 
         // Add tooltips
-        pushedByCodeButton.setToolTipText(Utils.buildTooltip("Select if event is pushed by code"));
+        pushedByCodeButton.setToolTipText(Utils.buildTooltip(
+                "The TANGO class manages events by push_archive_event method.\n"+
+                "The polling period and the event criteria will not be checked when adding to HDB++."));
         startArchivingButton.setToolTipText(Utils.buildTooltip("Select to start archiving at subscription"));
         archiverLabel.setToolTipText(Utils.buildTooltip("Select archiver to manage storage"));
         subscriberComboBox.setToolTipText(Utils.buildTooltip("Select archiver to manage storage"));
