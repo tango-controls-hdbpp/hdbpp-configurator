@@ -40,10 +40,12 @@ import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoDs.Except;
 import org.tango.hdb_configurator.common.Subscriber;
 import org.tango.hdb_configurator.common.SubscriberMap;
+import org.tango.hdb_configurator.common.TangoUtils;
 import org.tango.hdb_configurator.common.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -56,6 +58,7 @@ import java.util.List;
 
 public class SubscriberCommand {
     private  List<Subscriber>   subscribers;
+    private static Hashtable<String, DeviceProxy> configuratorProxyTable = new Hashtable<>();
     //===============================================================
     //===============================================================
     private SubscriberCommand(DeviceProxy configuratorProxy) throws DevFailed {
@@ -66,23 +69,23 @@ public class SubscriberCommand {
     //===============================================================
     //===============================================================
     private void executeCommand(String commandName) throws Exception {
-        String errorMessage = "";
+        StringBuilder errorMessage = new StringBuilder();
         for (Subscriber subscriber : subscribers) {
             try {
                 subscriber.command_inout(commandName);
             }
             catch (DevFailed e) {
-                errorMessage += subscriber.getLabel() + ": "+e.errors[0].desc+"\n";
+                errorMessage.append(subscriber.getLabel()).append(": ").append(e.errors[0].desc).append("\n");
             }
         }
-        if (!errorMessage.isEmpty()) {
-            throw new Exception(errorMessage);
+        if (errorMessage.length()>0) {
+            throw new Exception(errorMessage.toString());
         }
     }
     //===============================================================
     //===============================================================
     private void saveEventNumber(String fileName) throws Exception {
-        String errorMessage = "";
+        StringBuilder errorMessage = new StringBuilder();
         long totalEvents = 0;
         long totalAttributes = 0;
         //  read event number for each subscriber
@@ -98,7 +101,7 @@ public class SubscriberCommand {
                 }
              }
             catch (DevFailed e) {
-                errorMessage += subscriber.getLabel() + ": "+e.errors[0].desc+"\n";
+                errorMessage.append(subscriber.getLabel()).append(": ").append(e.errors[0].desc).append("\n");
             }
         }
         System.out.println("Total events:   " + totalEvents + "/" + totalAttributes);
@@ -113,8 +116,8 @@ public class SubscriberCommand {
                 "\t" + totalEvents + "\t" + totalAttributes + "\n";
         Utils.writeFile(fileName, code);
 
-        if (!errorMessage.isEmpty()) {
-            throw new Exception(errorMessage);
+        if (errorMessage.length()>0) {
+            throw new Exception(errorMessage.toString());
         }
     }
     //=======================================================
@@ -125,10 +128,21 @@ public class SubscriberCommand {
     }
     //===============================================================
     //===============================================================
+    private static DeviceProxy getConfiguratorProxy() throws DevFailed {
+        String configuratorDeviceName = TangoUtils.getConfiguratorDeviceName();
+        DeviceProxy configuratorProxy = configuratorProxyTable.get(configuratorDeviceName);
+        if (configuratorProxy==null) {
+            configuratorProxy = new DeviceProxy(configuratorDeviceName);
+            configuratorProxyTable.put(configuratorDeviceName, configuratorProxy);
+        }
+        return configuratorProxy;
+    }
+    //===============================================================
+    //===============================================================
     public static void main(String[] args) {
         if (args.length>0) {
             try {
-                SubscriberCommand   subscriberCommand = new SubscriberCommand(Utils.getConfiguratorProxy());
+                SubscriberCommand   subscriberCommand = new SubscriberCommand(getConfiguratorProxy());
                 String commandName = args[0];
                 if (commandName.equals("-save")) {
                     if (args.length>1) {
@@ -140,6 +154,7 @@ public class SubscriberCommand {
                 }
                 else
                     subscriberCommand.executeCommand(commandName);
+                System.out.println(commandName + "  done");
             }
             catch (Exception e) {
                 if (e instanceof DevFailed) {

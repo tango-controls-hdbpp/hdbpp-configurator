@@ -50,7 +50,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.*;
@@ -79,7 +78,7 @@ public class FaultyAttributesDialog extends JDialog {
     private static List<String> defaultTangoHosts;
 
 
-    private static final int columnWidth[] = { 400, 500, 60 };
+    private static final int[] columnWidth = { 400, 500, 60 };
     private static final  String[] columnNames = {
             "Attribute Names", "Fault description", "Selection" };
 
@@ -184,7 +183,7 @@ public class FaultyAttributesDialog extends JDialog {
             //  Copy to filtered (no filter at start up)
         filteredFaultyAttributes = new ArrayList<>();
         filteredFaultyAttributes.addAll(faultyAttributes);
-        Collections.sort(filteredFaultyAttributes, new AttributeComparator());
+        filteredFaultyAttributes.sort(new AttributeComparator());
     }
     //===============================================================
     //===============================================================
@@ -267,7 +266,7 @@ public class FaultyAttributesDialog extends JDialog {
         selectedColumn = tableHeader.columnAtPoint(event.getPoint());
         int mask = event.getModifiers();
         if ((mask & MouseEvent.BUTTON1_MASK) != 0) {
-            Collections.sort(filteredFaultyAttributes, new AttributeComparator());
+            filteredFaultyAttributes.sort(new AttributeComparator());
             model.fireTableDataChanged();
         }
         else
@@ -480,7 +479,7 @@ public class FaultyAttributesDialog extends JDialog {
 
     //===============================================================
     //===============================================================
-    private class AttributeErrorMessage {
+    private static class AttributeErrorMessage {
         private String message;
         private int    counter = 0;
         private AttributeErrorMessage(String message) {
@@ -506,14 +505,13 @@ public class FaultyAttributesDialog extends JDialog {
             }
             attributeErrorMessage.counter++;
         }
-        Collections.sort(errorMessages, new ErrorComparator());
+        errorMessages.sort(new ErrorComparator());
 
         //  Then build a string and display
         StringBuilder sb = new StringBuilder();
-        sb.append(Integer.toString(faultyAttributes.size())).append(" Attributes on error:\n\n");
+        sb.append(faultyAttributes.size()).append(" Attributes on error:\n\n");
         for (AttributeErrorMessage errorMessage : errorMessages) {
-            sb.append(Integer.toString(errorMessage.counter)).append(":  ")
-                    .append(errorMessage.message).append("\n");
+            sb.append(errorMessage.counter).append(":  ").append(errorMessage.message).append("\n");
         }
         JOptionPane.showMessageDialog(this, sb.toString(),
                 "Attribute Errors", JOptionPane.INFORMATION_MESSAGE);
@@ -684,7 +682,7 @@ public class FaultyAttributesDialog extends JDialog {
 
     //===============================================================
     //===============================================================
-    private class FaultyAttribute {
+    private static class FaultyAttribute {
         String attributeName;
         String faultDescription;
         String shortFaultDescription;
@@ -700,8 +698,10 @@ public class FaultyAttributesDialog extends JDialog {
             this.faultDescription = faultDescription;
             String tangoHost = TangoUtils.getOnlyTangoHost(attributeName);
             for (String defaultTangoHost : defaultTangoHosts) {
-                if (tangoHost.equals(defaultTangoHost))
+                if (tangoHost.equals(defaultTangoHost)) {
                     useDefaultTangoHost = true;
+                    break;
+                }
             }
             //  Check if fault description could be shorter
             //  without attribute name (only attribute field name)
@@ -771,7 +771,7 @@ public class FaultyAttributesDialog extends JDialog {
         for (FaultyAttribute attribute : faultyAttributes) {
             sb.append(attribute.attributeName).append('\n');
         }
-        Utils.copyToClipboard(sb.toString());
+        CopyUtils.copyToClipboard(sb.toString());
     }
     //=========================================================================
     //=========================================================================
@@ -882,17 +882,14 @@ public class FaultyAttributesDialog extends JDialog {
         }
         //==========================================================
         private Color getBackground(int row, int column) {
-            switch (column) {
-                case 0:
-                    return firstColumnBackground;
-
-                default:
-                    if (selectedRow>=0) {
-                        if (row==selectedRow)
-                            return selectionBackground;
-                    }
-                    return Color.white;
+            if (column == 0) {
+                return firstColumnBackground;
             }
+            if (selectedRow >= 0) {
+                if (row == selectedRow)
+                    return selectionBackground;
+            }
+            return Color.white;
         }
         //==========================================================
     }
@@ -934,11 +931,7 @@ public class FaultyAttributesDialog extends JDialog {
 
             for (String menuLabel : headerMenuLabels) {
                 JMenuItem btn = new JMenuItem(menuLabel);
-                btn.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        menuActionPerformed(evt);
-                    }
-                });
+                btn.addActionListener(this::menuActionPerformed);
                 add(btn);
             }
         }
@@ -1018,11 +1011,7 @@ public class FaultyAttributesDialog extends JDialog {
 
             for (String menuLabel : tableMenuLabels) {
                 JMenuItem btn = new JMenuItem(menuLabel);
-                btn.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        menuActionPerformed(evt);
-                    }
-                });
+                btn.addActionListener(this::menuActionPerformed);
                 add(btn);
             }
         }
@@ -1031,7 +1020,6 @@ public class FaultyAttributesDialog extends JDialog {
             title.setText(faultyAttribute.attributeName);
             selectedAttribute = faultyAttribute;
 
-            //noinspection PointlessArithmeticExpression
             getComponent(OFFSET + CONFIGURE).setEnabled(faultyAttribute.useDefaultTangoHost);
             getComponent(OFFSET + COPY_MESSAGE).setEnabled(selectedAttribute!=null);
             show(table, event.getX(), event.getY());
@@ -1060,12 +1048,12 @@ public class FaultyAttributesDialog extends JDialog {
                     break;
                 case COPY_NAME:
                     if (selectedAttribute!=null) {
-                        Utils.copyToClipboard(selectedAttribute.attributeName);
+                        CopyUtils.copyToClipboard(selectedAttribute.attributeName);
                     }
                     break;
                 case COPY_MESSAGE:
                     if (selectedAttribute!=null) {
-                        Utils.copyToClipboard(selectedAttribute.faultDescription);
+                        CopyUtils.copyToClipboard(selectedAttribute.faultDescription);
                     }
                     break;
             }
@@ -1101,7 +1089,7 @@ public class FaultyAttributesDialog extends JDialog {
     }
     //===============================================================
     //===============================================================
-    private class ErrorComparator implements Comparator<AttributeErrorMessage> {
+    private static class ErrorComparator implements Comparator<AttributeErrorMessage> {
         //======================================================
         public int compare(AttributeErrorMessage attribute1, AttributeErrorMessage attribute2) {
             if (attribute1.counter==attribute2.counter)

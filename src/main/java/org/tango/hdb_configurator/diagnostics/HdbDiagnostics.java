@@ -52,7 +52,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -712,7 +711,7 @@ public class HdbDiagnostics extends JFrame {
      * @param args the command line arguments
      */
 	//=======================================================
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 		try {
 		    UIManager.put("ToolTip.foreground", new ColorUIResource(Color.black));
             UIManager.put("ToolTip.background", new ColorUIResource(Utils.toolTipBackground));
@@ -791,11 +790,7 @@ public class HdbDiagnostics extends JFrame {
                     add(new Separator());
                 else {
                     JMenuItem btn = new JMenuItem(menuLabel);
-                    btn.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            hostActionPerformed(evt);
-                        }
-                    });
+                    btn.addActionListener(this::hostActionPerformed);
                     add(btn);
                 }
             }
@@ -846,7 +841,7 @@ public class HdbDiagnostics extends JFrame {
                     stopFaultyAttributes(selectedSubscriber);
                     break;
                 case COPY_DEVICE_NAME:
-                    Utils.copyToClipboard(selectedSubscriber.getName());
+                    CopyUtils.copyToClipboard(selectedSubscriber.getName());
                     break;
 
                 case SERVER_STATUS:

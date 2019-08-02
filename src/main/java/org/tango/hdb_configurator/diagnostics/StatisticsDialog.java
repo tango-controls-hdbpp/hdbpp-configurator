@@ -42,11 +42,7 @@ import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoDs.Except;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
-import org.tango.hdb_configurator.common.Subscriber;
-import org.tango.hdb_configurator.common.SubscriberMap;
-import org.tango.hdb_configurator.common.SplashUtils;
-import org.tango.hdb_configurator.common.TangoUtils;
-import org.tango.hdb_configurator.common.Utils;
+import org.tango.hdb_configurator.common.*;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -54,7 +50,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.*;
@@ -92,7 +87,7 @@ public class StatisticsDialog extends JDialog {
     private static List<String> defaultTangoHosts;
     private static JFileChooser fileChooser = null;
 
-    private static final int columnWidth[] = { 300, 100, 80, 100, 80 };
+    private static final int[] columnWidth = { 300, 100, 80, 100, 80 };
     private static final  String[] columnNames = {
             "Attribute Names", "Ev. since reset", "Av.Period.", "Events", "Av.Period." };
 
@@ -211,9 +206,9 @@ public class StatisticsDialog extends JDialog {
         else
             title = subscriberName + " - ";
         if (filteredHdbAttributes.size()!=hdbAttributes.size()) {
-            title += Integer.toString(filteredHdbAttributes.size()) + " filtered / ";
+            title += filteredHdbAttributes.size() + " filtered / ";
         }
-        title += Integer.toString(hdbAttributes.size()) + " Attributes";
+        title += hdbAttributes.size() + " Attributes";
 
         if (resetTime>0) {
             title += " - Reset: " + formatResetTime(resetTime);
@@ -275,7 +270,7 @@ public class StatisticsDialog extends JDialog {
             }
         }
         readTime = System.currentTimeMillis();
-        Collections.sort(hdbAttributes, new AttributeComparator());
+        hdbAttributes.sort(new AttributeComparator());
 
         //  Copy to filtered (no filter at start up)
         filteredHdbAttributes = new ArrayList<>();
@@ -290,7 +285,6 @@ public class StatisticsDialog extends JDialog {
             model = new DataTableModel();
 
             // Create the table
-            //noinspection NullableProblems
             table = new JTable(model) {
                 //	Implements table cell tool tip
                 public String getToolTipText(MouseEvent e) {
@@ -357,7 +351,7 @@ public class StatisticsDialog extends JDialog {
     private void tableHeaderActionPerformed(java.awt.event.MouseEvent event) {
         //	Get specified column
         selectedColumn = table.getTableHeader().columnAtPoint(new Point(event.getX(), event.getY()));
-        Collections.sort(filteredHdbAttributes, new AttributeComparator());
+        filteredHdbAttributes.sort(new AttributeComparator());
     }
     //===============================================================
     //===============================================================
@@ -688,7 +682,6 @@ public class StatisticsDialog extends JDialog {
         private double averagePeriod = -1;
         private Subscriber subscriber;
         private String deviceName;
-        private String tangoHost;
         private double resetPeriod;
         private String resetPeriodString;
 
@@ -721,10 +714,12 @@ public class StatisticsDialog extends JDialog {
             }
 
             deviceName = shortName.substring(0, shortName.lastIndexOf('/'));
-            tangoHost = TangoUtils.getOnlyTangoHost(name);
+            String tangoHost = TangoUtils.getOnlyTangoHost(name);
             for (String defaultTangoHost : defaultTangoHosts) {
-                if (tangoHost.equals(defaultTangoHost))
+                if (tangoHost.equals(defaultTangoHost)) {
                     useDefaultTangoHost = true;
+                    break;
+                }
             }
         }
         //===========================================================
@@ -882,17 +877,14 @@ public class StatisticsDialog extends JDialog {
         }
         //==========================================================
         private Color getBackground(int row, int column) {
-            switch (column) {
-                case 0:
-                    return firstColumnBackground;
-
-                default:
-                    if (selectedRow>=0) {
-                        if (row==selectedRow)
-                            return selectionBackground;
-                    }
-                    return Color.white;
+            if (column == 0) {
+                return firstColumnBackground;
             }
+            if (selectedRow >= 0) {
+                if (row == selectedRow)
+                    return selectionBackground;
+            }
+            return Color.white;
         }
         //==========================================================
     }
@@ -933,11 +925,7 @@ public class StatisticsDialog extends JDialog {
 
             for (String menuLabel : menuLabels) {
                 JMenuItem btn = new JMenuItem(menuLabel);
-                btn.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        menuActionPerformed(evt);
-                    }
-                });
+                btn.addActionListener(this::menuActionPerformed);
                 add(btn);
             }
             //  Check if extraction available
@@ -977,7 +965,7 @@ public class StatisticsDialog extends JDialog {
                     break;
                 case COPY_ATTR:
                     if (selectedAttribute!=null) {
-                        Utils.copyToClipboard(selectedAttribute.name);
+                        CopyUtils.copyToClipboard(selectedAttribute.name);
                     }
                     break;
             }
