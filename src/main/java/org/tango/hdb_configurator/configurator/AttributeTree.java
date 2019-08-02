@@ -88,8 +88,10 @@ public class AttributeTree extends JTree {
 
         List<String> defaultTangoHosts = TangoUtils.getDefaultTangoHostList();
         for (String defaultTangoHost : defaultTangoHosts) {
-            if (tangoHost.equals(defaultTangoHost))
+            if (tangoHost.equals(defaultTangoHost)) {
                 useDefaultTangoHost = true;
+                break;
+            }
         }
 
         //  Check if change TANGO_HOST available
@@ -434,15 +436,13 @@ public class AttributeTree extends JTree {
     private void updateSelectedPathInfo() {
 
         //  Do it later after GUI refreshing.
-        Runnable doItLater = new Runnable() {
-            public void run() {
-                Object userObject = selectedNode.getUserObject();
-                //  If parent is HdbConfigurator display path
-                if (userObject instanceof PathComponent)
-                    parent.displayPathInfo(tangoHost, ((PathComponent) userObject).path);
-                else
-                    parent.displayPathInfo(tangoHost, "");
-            }
+        Runnable doItLater = () -> {
+            Object userObject = selectedNode.getUserObject();
+            //  If parent is HdbConfigurator display path
+            if (userObject instanceof PathComponent)
+                parent.displayPathInfo(tangoHost, ((PathComponent) userObject).path);
+            else
+                parent.displayPathInfo(tangoHost, "");
         };
         SwingUtilities.invokeLater(doItLater);
     }
@@ -514,7 +514,7 @@ public class AttributeTree extends JTree {
      *  Define a generic Tango path component (domain, family, ....)
      */
     //===============================================================
-    private class PathComponent {
+    private static class PathComponent {
         String name;
         String path;
     }
@@ -523,7 +523,7 @@ public class AttributeTree extends JTree {
 	 *	Domain object definition
 	 */
     //===============================================================
-    private class Domain extends PathComponent {
+    private static class Domain extends PathComponent {
         //===========================================================
         private Domain(String name) {
             this.name = name;
@@ -540,7 +540,7 @@ public class AttributeTree extends JTree {
 	 *	Family object definition
 	 */
     //===============================================================
-    private class Family extends PathComponent {
+    private static class Family extends PathComponent {
         Domain domain;
         //===========================================================
         private Family(String name, Domain domain) {
@@ -559,7 +559,7 @@ public class AttributeTree extends JTree {
 	 *	Member object definition
 	 */
     //===============================================================
-    private class Member extends PathComponent {
+    private static class Member extends PathComponent {
         Family family;
         //===========================================================
         private Member(String name, Family family) {
@@ -592,15 +592,13 @@ public class AttributeTree extends JTree {
         }
         //===========================================================
         private void checkIfSubscribedLater() {
-            Runnable doItLater = new Runnable() {
-                public void run() {
-                    parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-                    checked = false;
-                    checkIfSubscribed();
-                    checked = true;
-                    repaint();
-                    parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                }
+            Runnable doItLater = () -> {
+                parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                checked = false;
+                checkIfSubscribed();
+                checked = true;
+                repaint();
+                parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             };
             //  Do it later to display tree without waiting
             SwingUtilities.invokeLater(doItLater);
@@ -647,7 +645,7 @@ public class AttributeTree extends JTree {
 	 *	A Dummy object definition
 	 */
     //===============================================================
-    private class DummyNode extends DefaultMutableTreeNode {
+    private static class DummyNode extends DefaultMutableTreeNode {
         public String toString() {
             return "? ?";
         }
@@ -794,17 +792,9 @@ public class AttributeTree extends JTree {
             add(new JPopupMenu.Separator());
 
             for (String menuLabel : menuLabels) {
-                if (menuLabel==null)
-                    add(new Separator());
-                else {
-                    JMenuItem btn = new JMenuItem(menuLabel);
-                    btn.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            hostActionPerformed(evt);
-                        }
-                    });
-                    add(btn);
-                }
+                JMenuItem btn = new JMenuItem(menuLabel);
+                btn.addActionListener(this::hostActionPerformed);
+                add(btn);
             }
         }
         //======================================================

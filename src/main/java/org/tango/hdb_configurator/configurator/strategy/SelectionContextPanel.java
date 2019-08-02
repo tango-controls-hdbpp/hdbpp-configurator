@@ -89,7 +89,6 @@ public class SelectionContextPanel extends JPanel {
 	//===============================================================
 	private void buildTable() {
 		StrategyTableModel model = new StrategyTableModel();
-		//noinspection NullableProblems
 		JTable table = new JTable(model) {
 			public String getToolTipText(MouseEvent event) {
 				return manageTooltip(event);

@@ -45,6 +45,7 @@ import org.tango.hdb_configurator.common.*;
 import org.tango.hdb_configurator.configurator.strategy.EditStrategiesDialog;
 import org.tango.hdb_configurator.configurator.strategy.SelectionStrategiesDialog;
 import org.tango.hdb_configurator.configurator.strategy.StrategyMainPanel;
+import org.tango.hdb_configurator.configurator.wildcard_selection.WildcardSelectionDialog;
 
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
@@ -521,11 +522,12 @@ public class HdbConfigurator extends JFrame {
         javax.swing.JSplitPane jSplitPane1 = new javax.swing.JSplitPane();
         attrTreePanel = new javax.swing.JPanel();
         javax.swing.JPanel addingPanel = new javax.swing.JPanel();
-        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
+        javax.swing.JPanel titlePanel = new javax.swing.JPanel();
         titleLabel = new javax.swing.JLabel();
         attributeField = new javax.swing.JTextField();
-        addAttributeButton = new javax.swing.JButton();
         searchButton = new javax.swing.JButton();
+        addAttributeButton = new javax.swing.JButton();
+        wildcardButton = new javax.swing.JButton();
         javax.swing.JPanel statusPanel = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         deviceFilterText = new javax.swing.JTextField();
@@ -589,7 +591,7 @@ public class HdbConfigurator extends JFrame {
 
         titleLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         titleLabel.setText("HDB++ Configurator");
-        jPanel4.add(titleLabel);
+        titlePanel.add(titleLabel);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -597,7 +599,7 @@ public class HdbConfigurator extends JFrame {
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        addingPanel.add(jPanel4, gridBagConstraints);
+        addingPanel.add(titlePanel, gridBagConstraints);
 
         attributeField.setColumns(26);
         attributeField.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -613,6 +615,21 @@ public class HdbConfigurator extends JFrame {
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 0);
         addingPanel.add(attributeField, gridBagConstraints);
 
+        searchButton.setText("Search");
+        searchButton.setToolTipText("Search specified domain,family/member");
+        searchButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 0);
+        addingPanel.add(searchButton, gridBagConstraints);
+
         addAttributeButton.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         addAttributeButton.setText(" + ");
         addAttributeButton.setToolTipText("Add selection to HDB");
@@ -626,22 +643,24 @@ public class HdbConfigurator extends JFrame {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 10);
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 0);
         addingPanel.add(addAttributeButton, gridBagConstraints);
 
-        searchButton.setText("Search");
-        searchButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        searchButton.addActionListener(new java.awt.event.ActionListener() {
+        wildcardButton.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        wildcardButton.setText(" W ");
+        wildcardButton.setToolTipText("Attribute selection using wildcard");
+        wildcardButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        wildcardButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchButtonActionPerformed(evt);
+                wildcardButtonActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 0);
-        addingPanel.add(searchButton, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 10);
+        addingPanel.add(wildcardButton, gridBagConstraints);
 
         attrTreePanel.add(addingPanel, java.awt.BorderLayout.NORTH);
 
@@ -1267,7 +1286,6 @@ public class HdbConfigurator extends JFrame {
     //=======================================================
     @SuppressWarnings("UnusedParameters")
     private void principleItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_principleItemActionPerformed
-        // TODO add your handling code here:
         try {
             JOptionPane.showMessageDialog(this, null, "HDB++ Principle",
                     JOptionPane.INFORMATION_MESSAGE, Utils.getInstance().getIcon("Principle.png"));
@@ -1279,7 +1297,6 @@ public class HdbConfigurator extends JFrame {
     //=======================================================
     @SuppressWarnings("UnusedParameters")
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
         try {
             SplashUtils.getInstance().startSplash();
             SplashUtils.getInstance().increaseSplashProgress(10, "Building GUI");
@@ -1290,7 +1307,23 @@ public class HdbConfigurator extends JFrame {
             ErrorPane.showErrorMessage(this, null, e);
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
+    //=======================================================
+    //=======================================================
+    @SuppressWarnings("UnusedParameters")
+    private void wildcardButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wildcardButtonActionPerformed
+        // TODO add your handling code here:
+        try {
+            WildcardSelectionDialog dialog = new WildcardSelectionDialog(new JFrame());
+            if (dialog.isAvailable()) {
+                if (dialog.showDialog() == JOptionPane.OK_OPTION) {
+                    addAttributeList(dialog.getSelection());
+                }
+            }
+        }
+        catch (DevFailed e) {
+            ErrorPane.showErrorMessage(this, null, e);
+        }
+    }//GEN-LAST:event_wildcardButtonActionPerformed
 	//=======================================================
 	//=======================================================
     private void restartApplication() {
@@ -1315,7 +1348,7 @@ public class HdbConfigurator extends JFrame {
     }
     //=======================================================
     //=======================================================
-    private void addAttributeList(List<String> attributeNames) {
+    public void addAttributeList(List<String> attributeNames) {
         try {
             Strategy strategy = Strategy.getContextsFromDB(null);
             List<HdbAttribute> attributeList = new ArrayList<>();
@@ -1504,6 +1537,7 @@ public class HdbConfigurator extends JFrame {
     private javax.swing.JScrollPane stoppedScrollPane;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JLabel titleLabel;
+    private javax.swing.JButton wildcardButton;
     // End of variables declaration//GEN-END:variables
 	//=======================================================
 
