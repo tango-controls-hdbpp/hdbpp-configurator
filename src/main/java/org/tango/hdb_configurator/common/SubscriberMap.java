@@ -158,6 +158,7 @@ public class SubscriberMap {
         }
         catch (DevFailed e) {
             SplashUtils.getInstance().showSplash(false);
+            System.err.println(e.errors[0].desc);
             e.printStackTrace();
             ErrorPane.showErrorMessage(new JFrame(), e.getMessage(), e);
             SplashUtils.getInstance().showSplash(true);

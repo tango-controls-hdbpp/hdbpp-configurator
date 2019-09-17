@@ -88,16 +88,15 @@ public class AtkMoniTrend extends Trend {
     //===============================================================
     //===============================================================
     private String buildAtkMoniConfig(List<String> attributeNames) {
-        String code = replace(atkMoniConfigHeader, "TITLE", title);
+        StringBuilder code = new StringBuilder(replace(atkMoniConfigHeader, "TITLE", title));
 
         //  Add each attribute
         int curveNumber = 0;
         for (String attributeName : attributeNames) {
             SplashUtils.getInstance().increaseSplashProgress(2, "Create configuration");
-            code += buildAtkMoniConfig(attributeName, curveNumber++);
+            code.append(buildAtkMoniConfig(attributeName, curveNumber++));
         }
-
-        return replace(code, "NB_CURVES", Integer.toString(curveNumber));
+        return replace(code.toString(), "NB_CURVES", Integer.toString(curveNumber));
     }
     //===============================================================
     //===============================================================
@@ -141,12 +140,12 @@ public class AtkMoniTrend extends Trend {
 
     //===============================================================
     //===============================================================
-    private class MyGradient extends Gradient {
+    private static class MyGradient extends Gradient {
         private final int nbColors = 256;
         private int step = nbColors / 2;
         private int colorIdx = -step;
         private int[] colorMap;
-        private ArrayList<Integer> colors = new ArrayList<Integer>();
+        private List<Integer> colors = new ArrayList<>();
 
         //===========================================================
         private MyGradient() {
@@ -212,8 +211,7 @@ public class AtkMoniTrend extends Trend {
                     "y1min:0.0\n" +
                     "y1max:1.0\n" +
                     "y1autoscale:true\n" +
-                    "y1scale:1\n" +
-                    "y1format:1\n" +
+                    "y1scale:0\n" +
                     "y1title:'Events / second'\n" +
                     "y1color:0,0,0\n" +
                     "y1label_font:dialog,1,11\n" +

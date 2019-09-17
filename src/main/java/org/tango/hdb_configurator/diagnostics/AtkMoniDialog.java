@@ -38,6 +38,7 @@ import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import org.tango.hdb_configurator.common.SplashUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 
@@ -72,7 +73,7 @@ public class AtkMoniDialog extends JDialog {
         initComponents();
 
         atkMoniTrend = new AtkMoniTrend(title, attributeNames);
-        getContentPane().add(atkMoniTrend, java.awt.BorderLayout.CENTER);
+        getContentPane().add(atkMoniTrend, BorderLayout.CENTER);
 
         //titleLabel.setText(title);
         titleLabel.setVisible(false);
