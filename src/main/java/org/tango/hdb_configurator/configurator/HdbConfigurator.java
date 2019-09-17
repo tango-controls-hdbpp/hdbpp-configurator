@@ -124,10 +124,11 @@ public class HdbConfigurator extends JFrame {
         }
 
         //  Check if change TANGO_HOST available
-        String onlyOnCS = System.getenv("SingleControlSystem");
-        if (onlyOnCS!=null && onlyOnCS.equals("true")) {
+        String onlyOneCS = System.getenv("SingleControlSystem");
+        if (onlyOneCS!=null && onlyOneCS.equals("true")) {
             //  Remove change Tango Host menu item
             changeCsItem.setVisible(false);
+            wildcardButton.setVisible(false);
         }
         pack();
         ATKGraphicsUtils.centerFrameOnScreen(this);

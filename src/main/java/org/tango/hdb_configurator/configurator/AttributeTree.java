@@ -95,8 +95,8 @@ public class AttributeTree extends JTree {
         }
 
         //  Check if change TANGO_HOST available
-        String onlyOnCS = System.getenv("SingleControlSystem");
-        multiTangoHosts = ! (onlyOnCS!=null && onlyOnCS.equals("true"));
+        String onlyOneCS = System.getenv("SingleControlSystem");
+        multiTangoHosts = ! (onlyOneCS!=null && onlyOneCS.equals("true"));
         menu = new AttributeTreePopupMenu(this);
         setSelectionPath(null);
     }
