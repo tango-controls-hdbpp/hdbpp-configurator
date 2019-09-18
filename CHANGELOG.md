@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.14 - 18/09/19:
+    Fix a problem in distriution display.
+
 #### hdb_configurator-3.13 - 17/09/19:
     Cosmetics
 

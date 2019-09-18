@@ -143,7 +143,6 @@ public class DistributionDialog extends JDialog {
         DataTableModel model = new DataTableModel();
 
         // Create the table
-        //noinspection NullableProblems
         table = new JTable(model) {
             //	Implements table cell tool tip
             public String getToolTipText(MouseEvent e) {
@@ -197,14 +196,14 @@ public class DistributionDialog extends JDialog {
             tableColumn = (TableColumn) columnEnum.nextElement();
             tableColumn.setPreferredWidth(columnWidth[i++]);
         }
-        Collections.sort(archivers, new ArchiverComparator());
+        archivers.sort(new ArchiverComparator());
     }
     //===============================================================
     //===============================================================
     private void tableHeaderActionPerformed(java.awt.event.MouseEvent event) {
         //	Get specified column
         selectedColumn = table.getTableHeader().columnAtPoint(new Point(event.getX(), event.getY()));
-        Collections.sort(archivers, new ArchiverComparator());
+        archivers.sort(new ArchiverComparator());
     }
 	//===============================================================
     /** This method is called from within the constructor to
@@ -435,8 +434,8 @@ public class DistributionDialog extends JDialog {
             nbEvents += archiver.totalEvents;
         }
         Archiver archiver = archivers.get(0);
-        double average = (double)nbEvents / (archiver.sinceReset/1000);
-        String statistics = Long.toString(nbEvents) +
+        double average = (double)nbEvents / ((double) archiver.sinceReset/1000);
+        String statistics = nbEvents +
                 "  events received during " + archiver.getResetDuration() +
                 "  ->  average = " + String.format("%.3f", average) + " ev/sec.";
         globalLabel.setText(statistics);
@@ -497,11 +496,7 @@ public class DistributionDialog extends JDialog {
             this.addMenuItem(new JMenuItem(labels[SEPARATOR]));
             JMenuItem updateItem = new JMenuItem(labels[UPDATE_DATA]);
             updateItem.setSelected(true);
-            updateItem.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(ActionEvent evt) {
-                    menuActionPerformed(evt);
-                }
-            });
+            updateItem.addActionListener(this::menuActionPerformed);
             this.addMenuItem(updateItem);
         }
         //===============================================================
@@ -608,14 +603,11 @@ public class DistributionDialog extends JDialog {
         private JLDataView okDataView;
         private JLDataView eventDataView;
         private int attributeCount;
-        private final String[] axisNames = {
-                "Archivers",  "Attributes", "Events Number"
-        };
-        private final String[] curveNames = {
-                "Attributes Not OK", "Attributes OK", "Events Received"
-        };
         //===============================================================
         private AttributeChart() throws DevFailed {
+            String[] axisNames = { "Archivers", "Attributes", "Events Number" };
+            String[] curveNames = { "Attributes Not OK", "Attributes OK", "Events Received" };
+
             setJLChartListener(this);
             buildAxises(axisNames);
             int i =0;
@@ -630,6 +622,7 @@ public class DistributionDialog extends JDialog {
                 }
             });
             getXAxis().setMaximum(archivers.size()+0.6);
+            getXAxis().setMinimum(-0.8);
         }
         //===============================================================
         private void updateValues() throws DevFailed {
@@ -742,14 +735,10 @@ public class DistributionDialog extends JDialog {
         private JLDataView processDataView;
         private JLDataView storeDataView;
         private JLDataView pendingDataView;
-        private final String[] axisNames = {
-                "Archivers",  "Time (millis)", "Attributes"
-        };
-        private final String[] curveNames = {
-                "Process Time", "Store Time", "Max Pending"
-        };
         //===============================================================
         private PerformancesChart() throws DevFailed {
+            String[] axisNames = { "Archivers", "Time (millis)", "Attributes" };
+            String[] curveNames = { "Process Time", "Store Time", "Max Pending" };
             setJLChartListener(this);
             buildAxises(axisNames);
             int i=0;
@@ -822,7 +811,7 @@ public class DistributionDialog extends JDialog {
 
     //===============================================================
     //===============================================================
-    private class Archiver {
+    private static class Archiver {
         private Subscriber  subscriber;
         private String      title;
         private String[]    attributeOk;
@@ -830,14 +819,13 @@ public class DistributionDialog extends JDialog {
         private int         totalEvents = 0;
         private int         pending;
         private double      maxProcess;
-        @SuppressWarnings("unused")
         private double      minProcess;
         private double      maxStore;
         private double      minStore;
         private long        resetTime=-1;
         private long        sinceReset=0;
         //===========================================================
-        private Archiver(Subscriber subscriber) throws DevFailed {
+        private Archiver(Subscriber subscriber) {
             this.subscriber = subscriber;
             title = subscriber.getLabel() + "  (" +
                     TangoUtils.getOnlyDeviceName(subscriber.getName()) + ") :";
@@ -920,7 +908,7 @@ public class DistributionDialog extends JDialog {
         }
         //===========================================================
         public String getResetDuration() {
-            return  Utils.strPeriod(sinceReset / 1000);
+            return  Utils.strPeriod((double) sinceReset / 1000);
 
         }
         //===========================================================
@@ -1052,12 +1040,10 @@ public class DistributionDialog extends JDialog {
         }
         //==========================================================
         private Color getBackground(int column) {
-            switch (column) {
-                case SUBSCRIBER_NAME:
-                    return firstColumnBackground;
-                default:
-                    return Color.white;
+            if (column == SUBSCRIBER_NAME) {
+                return firstColumnBackground;
             }
+            return Color.white;
         }
         //==========================================================
     }

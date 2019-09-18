@@ -16,7 +16,9 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 17-09-2019  13:55</center>\n" + 
+		"generated: 18-09-2019  11:29</center>\n" + 
+		"<li><b>hdb_configurator-3.14 - 18/09/19:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Fix a problem in distriution display.<br>" + 
 		"<li><b>hdb_configurator-3.13 - 17/09/19:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Cosmetics<br>" + 
 		"<li><b>hdb_configurator-3.12 - 02/08/19:</b><br>" + 
