@@ -622,7 +622,7 @@ public class DistributionDialog extends JDialog {
                 }
             });
             getXAxis().setMaximum(archivers.size()+0.6);
-            getXAxis().setMinimum(-0.8);
+            getXAxis().setMinimum(-0.2);
         }
         //===============================================================
         private void updateValues() throws DevFailed {

@@ -76,6 +76,7 @@ public class HdbDiagnostics extends JFrame {
     private boolean buildSubscriberMap;
     private ServerInfoTable serverInfoTable = null;
     private HdbConfigurator hdbConfigurator = null;
+    private boolean fromExternal = true;
 
     private static final String[] ATTRIBUTES = {
             "AttributeNokNumber",
@@ -102,6 +103,7 @@ public class HdbDiagnostics extends JFrame {
         this(parent, null);
         if (parent instanceof  HdbConfigurator)
             hdbConfigurator = (HdbConfigurator) parent;
+        fromExternal = false;
     }
 	//=======================================================
 	//=======================================================
@@ -233,6 +235,16 @@ public class HdbDiagnostics extends JFrame {
         }
     }
 	//=======================================================
+    //=======================================================
+    @Override
+    public void setTitle(String title) {
+        if (titleLabel==null)
+            super.setTitle(title);
+        else
+            titleLabel.setText(title);
+        pack();
+    }
+	//=======================================================
 	//=======================================================
     private void managerTableActionPerformed(java.awt.event.MouseEvent evt) {
         //int row = subscriberTableViewer.getJTable().rowAtPoint(new Point(evt.getX(), evt.getY()));
@@ -269,11 +281,9 @@ public class HdbDiagnostics extends JFrame {
     }
 	//=======================================================
 	//=======================================================
-    private void subscriberTableActionPerformed(java.awt.event.MouseEvent evt) {
-        int mask = evt.getModifiers();
-
-        int row = subscriberTableViewer.getJTable().rowAtPoint(new Point(evt.getX(), evt.getY()));
-        int column = subscriberTableViewer.getJTable().columnAtPoint(new Point(evt.getX(), evt.getY()));
+    private void subscriberTableActionPerformed(MouseEvent event) {
+        int row = subscriberTableViewer.getJTable().rowAtPoint(new Point(event.getX(), event.getY()));
+        int column = subscriberTableViewer.getJTable().columnAtPoint(new Point(event.getX(), event.getY()));
         String  label = labels.get(row);
         //  do any thing only if manager
         if (label.toLowerCase().contains("manager"))
@@ -282,15 +292,15 @@ public class HdbDiagnostics extends JFrame {
         try {
             Subscriber subscriber =  subscriberMap.getSubscriberByLabel(label);
 
-            if (evt.getClickCount()==2 && (mask & MouseEvent.BUTTON1_MASK)!=0) {
+            if (event.getClickCount()==2 && event.getButton()==1) {
                 if (column>0) { //  Not the line label
                     showAttributes(subscriber, column-1);
                 }
             } else
-            if ((mask & MouseEvent.BUTTON3_MASK)!=0) {
+            if (event.getButton()==3) {
                 //	Display menu if on line label
                 if (column==0) {
-                    subscriberMenu.showMenu(evt, label, subscriber);
+                    subscriberMenu.showMenu(event, label, subscriber);
                 }
             }
         }
@@ -638,16 +648,18 @@ public class HdbDiagnostics extends JFrame {
                     Strategy strategy = Strategy.getContextsFromDB(subscriber);
                     String[] contextNames = strategy.getNames();
                     if (contextNames.length>2) {
-                        //  if more than ALWAYS and another, remove ALWAYS (not a context)
-                        String[]tmp = new String[contextNames.length-1];
-                        System.arraycopy(contextNames, 1, tmp, 0, contextNames.length - 1);
-                        contextNames = tmp;
+                        //  Remove ALWAYS and NEVER (not contexts) if any
+                        List<String> tmp = new ArrayList<>();
+                        for (String contextName : contextNames) {
+                            if (!contextName.equalsIgnoreCase("always") && !contextName.equalsIgnoreCase("never"))
+                                tmp.add(contextName);
+                        }
 
                         //  And propose to select one of them.
                         String context = (String) JOptionPane.showInputDialog(this,
                                 "Context ? ", "Selection",
                                 JOptionPane.QUESTION_MESSAGE, null,
-                                contextNames, subscriber.getContext());
+                                tmp.toArray(new String[0]), subscriber.getContext());
                         if (context!=null) {
                             subscriber.setContext(context);
                         }
@@ -811,6 +823,7 @@ public class HdbDiagnostics extends JFrame {
 
             getComponent(OFFSET + STOP_FAULTY).setVisible(subscriber.hasFaultyAttribute());
 
+            getComponent(OFFSET + CONFIGURE_ARCHIVER).setVisible(!fromExternal);
             getComponent(OFFSET + TEST_ARCHIVER).setVisible(expert);
             getComponent(OFFSET + TEST_CONFIGURATOR).setVisible(expert);
             show(subscriberTableViewer.getJTable(), event.getX(), event.getY());
