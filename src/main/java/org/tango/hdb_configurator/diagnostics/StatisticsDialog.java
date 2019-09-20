@@ -70,7 +70,7 @@ import static org.tango.hdb_configurator.common.Utils.selectionBackground;
 
 @SuppressWarnings("MagicConstant")
 public class StatisticsDialog extends JDialog {
-
+    private JFrame parent;
     private List<HdbAttribute> filteredHdbAttributes;
     private List<HdbAttribute> hdbAttributes;
     private JTable table;
@@ -103,6 +103,7 @@ public class StatisticsDialog extends JDialog {
 	//===============================================================
     public StatisticsDialog(JFrame parent, SubscriberMap subscriberMap, int statisticsTimeWindow) throws DevFailed {
         super(parent, false);
+        this.parent = parent;
         SplashUtils.getInstance().startSplash();
         try {
             defaultTangoHosts = TangoUtils.getDefaultTangoHostList();
@@ -116,16 +117,41 @@ public class StatisticsDialog extends JDialog {
         }
         SplashUtils.getInstance().stopSplash();
     }
-
     //===============================================================
 	/**
 	 *	Creates new form StatisticsDialog for one subscriber
 	 */
 	//===============================================================
-	public StatisticsDialog(JFrame parent, Subscriber subscriber,
-                            int statisticsTimeWindow, long resetTime) throws DevFailed {
-		super(parent, false);
-        this.resetTime = resetTime;
+	public StatisticsDialog(JFrame parent, String subscriberDeviceName) throws DevFailed {
+        super(parent, false);
+        this.parent = parent;
+
+        //  Search subscriber label
+        List<String[]> labels = TangoUtils.getSubscriberLabels();
+        String label = subscriberDeviceName;
+        for (String[] tuple : labels) {
+            if (tuple[0].equalsIgnoreCase(subscriberDeviceName))
+                label = tuple[1];
+        }
+        //  Build the subscriber and build the form
+        DeviceProxy managerProxy = Utils.getConfiguratorProxy();
+        Subscriber subscriber = new Subscriber(subscriberDeviceName, label, managerProxy);
+        buildForOneSubscriber(subscriber);
+    }
+    //===============================================================
+	/**
+	 *	Creates new form StatisticsDialog for one subscriber
+	 */
+	//===============================================================
+	public StatisticsDialog(JFrame parent, Subscriber subscriber) throws DevFailed {
+        super(parent, false);
+        this.parent = parent;
+        buildForOneSubscriber(subscriber);
+    }
+    //===============================================================
+    //===============================================================
+    private void buildForOneSubscriber(Subscriber subscriber) throws DevFailed {
+        this.resetTime = subscriber.getStatisticsResetTime();
         if (resetTime>0) {
             sinceReset = System.currentTimeMillis() - resetTime;
         }
@@ -136,7 +162,7 @@ public class StatisticsDialog extends JDialog {
             subscriberName = subscriber.getLabel();
             subscribers = new ArrayList<>(1);
             subscribers.add(subscriber);
-            finalizeConstruction(statisticsTimeWindow, "Subscriber " + subscriber.getLabel(), false);
+            finalizeConstruction(subscriber.getStatisticsTimeWindow(), "Subscriber " + subscriber.getLabel(), false);
         }
         catch (DevFailed e) {
             SplashUtils.getInstance().stopSplash();
@@ -146,8 +172,7 @@ public class StatisticsDialog extends JDialog {
 	}
     //===============================================================
     //===============================================================
-    private void finalizeConstruction(int statisticsTimeWindow,
-                                      String title, boolean allowReset) throws DevFailed {
+    private void finalizeConstruction(int statisticsTimeWindow, String title, boolean allowReset) throws DevFailed {
         try {
             buildRecords();
         }
@@ -614,16 +639,11 @@ public class StatisticsDialog extends JDialog {
             Utils.popupError(this, "No attribute selected !");
             return;
         }
-        HdbAttribute    attribute = filteredHdbAttributes.get(selectedRow);
+        HdbAttribute attribute = filteredHdbAttributes.get(selectedRow);
         System.out.println("Display " + attribute.name);
         try {
             //  Use new HDB API
             Utils.startHdbViewer(attribute.name);
-            /*
-            Component extractor = Utils.getInstance().startExternalApplication(
-                    new JFrame(), extractionClass, new String[] {attribute.name});
-            extractor.setVisible(false);
-            */
         }
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this, e.toString(), e);
@@ -649,8 +669,12 @@ public class StatisticsDialog extends JDialog {
 	 */
 	//===============================================================
 	private void doClose() {
-        setVisible(false);
-        dispose();
+	    if (parent==null)
+	        System.exit(0);
+	    else {
+            setVisible(false);
+            dispose();
+        }
 	}
     //===============================================================
     //===============================================================
@@ -662,6 +686,23 @@ public class StatisticsDialog extends JDialog {
     private javax.swing.JMenuItem resetItem;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
+	//===============================================================
+
+
+
+	//===============================================================
+	//===============================================================
+	public static void main(String[] args) {
+	    try {
+	        String subscriberDeviceName = "sys/hdb-es/srvac-press";
+	        if (args.length>0) subscriberDeviceName = args[0];
+	        new StatisticsDialog(null, subscriberDeviceName).setVisible(true);
+        }
+	    catch (DevFailed e) {
+	        ErrorPane.showErrorMessage(new JFrame(), null, e);
+        }
+    }
+    //===============================================================
 	//===============================================================
 
 

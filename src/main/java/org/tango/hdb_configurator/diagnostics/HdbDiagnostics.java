@@ -639,8 +639,7 @@ public class HdbDiagnostics extends JFrame {
                     break;
                 case RECORD_FREQUENCY:
                 case FAILURE_FREQUENCY:
-                    new StatisticsDialog(this, subscriber,
-                            statisticsTimeWindow, statisticsResetTime).setVisible(true);
+                    new StatisticsDialog(this, subscriber).setVisible(true);
                     return;
 
                 case CONTEXT:
