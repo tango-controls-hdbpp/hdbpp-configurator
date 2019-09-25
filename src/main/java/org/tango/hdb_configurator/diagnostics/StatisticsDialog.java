@@ -42,6 +42,7 @@ import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoDs.Except;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
+import fr.esrf.tangoatk.widget.util.chart.*;
 import org.tango.hdb_configurator.common.*;
 
 import javax.swing.*;
@@ -83,13 +84,14 @@ public class StatisticsDialog extends JDialog {
     private long resetTime = 0;
     private long readTime = 0;
     private long sinceReset = 0;
+    private StatisticsChart statisticsChart;
 
     private static List<String> defaultTangoHosts;
     private static JFileChooser fileChooser = null;
 
-    private static final int[] columnWidth = { 300, 100, 80, 100, 80 };
+    private static final int[] columnWidth = { 300, 100, 80, };// 100, 80 };
     private static final  String[] columnNames = {
-            "Attribute Names", "Ev. since reset", "Av.Period.", "Events", "Av.Period." };
+            "Attribute Names", "Ev. since reset", "Av.Period.", }; // "Events", "Av.Period." };
 
     private static final int ATTRIBUTE_NAME = 0;
     private static final int EVENTS_RESET   = 1;
@@ -184,16 +186,26 @@ public class StatisticsDialog extends JDialog {
                 ErrorPane.showErrorMessage(this, "Read Subscribe Failed", e);
             }
         }
-        updateColumnNames(statisticsTimeWindow);
+        //updateColumnNames(statisticsTimeWindow);
         buildTableComponent();
         setTitle(title);
         displayTitle();
+
+        //  Build chart and adapt size to table size
+        statisticsChart = new StatisticsChart();
+        Dimension dimension = table.getParent().getParent().getPreferredSize();
+        if (dimension.height<400)
+            dimension.height = 400;
+        dimension.width = 800;
+        statisticsChart.setPreferredSize(dimension);
+        getContentPane().add(statisticsChart, BorderLayout.CENTER);
+
 
         //  Do not allow for one subscriber
         resetItem.setVisible(allowReset);
 
         //  Check if extraction available
-        String s = System.getProperty("HDB_TYPE");
+        String s = System.getenv("HDB_TYPE");
         readHdbItem.setVisible(s!=null && !s.isEmpty());
 
         pack();
@@ -346,8 +358,8 @@ public class StatisticsDialog extends JDialog {
 
             //	Put it in scrolled pane
             JScrollPane scrollPane = new JScrollPane(table);
+            getContentPane().add(scrollPane, BorderLayout.WEST);
             model.fireTableDataChanged();
-            getContentPane().add(scrollPane, BorderLayout.CENTER);
 
             //  Set column width
             final Enumeration columnEnum = table.getColumnModel().getColumns();
@@ -377,6 +389,7 @@ public class StatisticsDialog extends JDialog {
         //	Get specified column
         selectedColumn = table.getTableHeader().columnAtPoint(new Point(event.getX(), event.getY()));
         filteredHdbAttributes.sort(new AttributeComparator());
+        statisticsChart.updateValues();
     }
     //===============================================================
     //===============================================================
@@ -578,6 +591,7 @@ public class StatisticsDialog extends JDialog {
             buildRecords();
             model.fireTableDataChanged();
             displayTitle();
+            statisticsChart.updateValues();
         }
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this, "Update", e);
@@ -635,6 +649,26 @@ public class StatisticsDialog extends JDialog {
     //===============================================================
     @SuppressWarnings("UnusedParameters")
     private void readHdbItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readHdbItemActionPerformed
+        try {
+            List<String> attributeNames = new ArrayList<>();
+            for (HdbAttribute attribute : filteredHdbAttributes)
+                attributeNames.add(attribute.name);
+            List<String> selectionList = new ItemSelectionDialog(
+                    this, "Attribute Selection", attributeNames, false).showDialog();
+            if (!selectionList.isEmpty()) {
+                if (selectionList.size()>16)
+                    JOptionPane.showMessageDialog(this, "Too many selected attributes !");
+                else
+                    Utils.startHdbViewer(selectionList);
+            }
+        }
+        catch (DevFailed e) {
+            ErrorPane.showErrorMessage(this, e.toString(), e);
+        }
+    }//GEN-LAST:event_readHdbItemActionPerformed
+	//===============================================================
+	//===============================================================
+    private void readOnAttributeFromHdb() {
         if (selectedRow<0) {
             Utils.popupError(this, "No attribute selected !");
             return;
@@ -648,8 +682,7 @@ public class StatisticsDialog extends JDialog {
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this, e.toString(), e);
         }
-    }//GEN-LAST:event_readHdbItemActionPerformed
-
+    }
 	//===============================================================
 	//===============================================================
     private void applyFilter() {
@@ -661,6 +694,7 @@ public class StatisticsDialog extends JDialog {
             }
         }
         model.fireTableDataChanged();
+        statisticsChart.updateValues();
         displayTitle();
     }
 	//===============================================================
@@ -824,12 +858,10 @@ public class StatisticsDialog extends JDialog {
         public int getColumnCount() {
             return columnNames.length;
         }
-
         //==========================================================
         public int getRowCount() {
             return filteredHdbAttributes.size();
         }
-
         //==========================================================
         public String getColumnName(int columnIndex) {
             String title;
@@ -846,7 +878,6 @@ public class StatisticsDialog extends JDialog {
 
             return title;
         }
-
         //==========================================================
         public Object getValueAt(int row, int column) {
             //  Value to display is returned by
@@ -870,7 +901,6 @@ public class StatisticsDialog extends JDialog {
             else
                 return null;
         }
-        //==========================================================
         //==========================================================
     }
     //=========================================================================
@@ -901,18 +931,20 @@ public class StatisticsDialog extends JDialog {
                 case ATTRIBUTE_NAME:
                     setText(filteredHdbAttributes.get(row).shortName);
                     break;
-                case EVENTS_STAT:
-                    setText(Integer.toString(filteredHdbAttributes.get(row).nbStatistics));
-                    break;
-                case PERIOD_STAT:
-                    setText(filteredHdbAttributes.get(row).averagePeriodString);
-                    break;
                 case EVENTS_RESET:
                     setText(Integer.toString(filteredHdbAttributes.get(row).nbEvents));
                     break;
                 case PERIOD_RESET:
                     setText(filteredHdbAttributes.get(row).resetPeriodString);
                     break;
+                    /*
+                case EVENTS_STAT:
+                    setText(Integer.toString(filteredHdbAttributes.get(row).nbStatistics));
+                    break;
+                case PERIOD_STAT:
+                    setText(filteredHdbAttributes.get(row).averagePeriodString);
+                    break;
+                     */
             }
             return this;
         }
@@ -932,6 +964,74 @@ public class StatisticsDialog extends JDialog {
     //=========================================================================
     //=========================================================================
 
+
+
+    //=========================================================================
+    //=========================================================================
+    private class StatisticsChart extends JLChart  implements IJLChartListener {
+        private JLDataView statDataView = new JLDataView();
+        //=====================================================================
+        private StatisticsChart() {
+            setJLChartListener(this);
+            //  Create X axis.
+            getXAxis().setName("Attributes");
+            getXAxis().setAnnotation(JLAxis.VALUE_ANNO);
+            getXAxis().setAutoScale(false);
+            getXAxis().setMinimum(-1.0);
+            //  Maxi will be set after to know archivers number
+
+            //  Create Y1
+            getY1Axis().setName(columnNames[EVENTS_RESET]);
+            getY1Axis().setAutoScale(true);
+            getY1Axis().setScale(JLAxis.LINEAR_SCALE);
+            getY1Axis().setGridVisible(true);
+            getY1Axis().setSubGridVisible(true);
+
+            statDataView.setColor(Color.red);
+            statDataView.setFillColor(Color.red);
+            statDataView.setName("Statistics");
+            statDataView.setFill(true);
+            statDataView.setLabelVisible(false);
+            statDataView.setViewType(JLDataView.TYPE_BAR);
+            statDataView.setBarWidth(1);
+            statDataView.setFillStyle(JLDataView.FILL_STYLE_SOLID);
+            getY1Axis().addDataView(statDataView);
+
+            updateValues();
+        }
+        //=====================================================================
+        private void updateValues() {
+            statDataView.reset();
+            double x = 1.0;
+            for (HdbAttribute attribute : filteredHdbAttributes) {
+                statDataView.add(x, attribute.nbEvents);
+                x++;
+            }
+            getXAxis().setMaximum(filteredHdbAttributes.size()+2);
+            repaint();
+        }
+        //=====================================================================
+        @Override
+        public String[] clickOnChart(JLChartEvent event) {
+            int index = event.getDataViewIndex();
+            //  Set table selection
+            selectedRow = index;
+            table.repaint();
+            //  Build message to be displayed
+            HdbAttribute attribute = filteredHdbAttributes.get(index);
+            return new String[] {
+                    attribute.deviceName,
+                    "Receive:   " + attribute.nbEvents + " events",
+                    "Period av.:" + attribute.resetPeriodString,
+            };
+        }
+        //=====================================================================
+    }
+    //=========================================================================
+    //=========================================================================
+
+    
+    
 
     //======================================================
     /**
@@ -999,7 +1099,7 @@ public class StatisticsDialog extends JDialog {
                     selectedAttribute.configureEvent();
                     break;
                 case READ_HDB:
-                    readHdbItemActionPerformed(null);
+                    readOnAttributeFromHdb();
                     break;
                 case TEST_EVENT:
                     Utils.getTestEvents().add(selectedAttribute.name);
@@ -1019,14 +1119,15 @@ public class StatisticsDialog extends JDialog {
      */
     //=========================================================================
     private class AttributeComparator implements Comparator<HdbAttribute> {
-
         //======================================================
         public int compare(HdbAttribute hdbAttribute1, HdbAttribute hdbAttribute2) {
             switch (selectedColumn) {
+                /*
                 case EVENTS_STAT:
                     return valueSort(hdbAttribute2.nbStatistics, hdbAttribute1.nbStatistics);
                 case PERIOD_STAT:
                     return valueSort(hdbAttribute1.averagePeriod, hdbAttribute2.averagePeriod);
+                 */
                 case EVENTS_RESET:
                     return valueSort(hdbAttribute2.nbEvents, hdbAttribute1.nbEvents);
                 case PERIOD_RESET:

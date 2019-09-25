@@ -452,17 +452,23 @@ public class Utils {
     //======================================================================
     //======================================================================
     public static void startHdbViewer(String fullAttributeName) throws DevFailed {
-        //  Split tango host and attribute name
-        String tangoHost = TangoUtils.getOnlyTangoHost(fullAttributeName);
-        String attributeName = TangoUtils.getOnlyDeviceName(fullAttributeName);
-        System.out.println(attributeName);
-        System.out.println(tangoHost);
+        List<String> list = new ArrayList<>();
+        list.add(fullAttributeName);
+        startHdbViewer(list);
+    }
+    //======================================================================
+    //======================================================================
+    public static void startHdbViewer(List<String> fullAttributeNames) throws DevFailed {
 
-        //  Start hdb viewer
         try {
             HDBViewer.MainPanel hdbViewer = new HDBViewer.MainPanel(false, true);
+            for (String fullAttributeName : fullAttributeNames) {
+                //  Split tango host and attribute name
+                String tangoHost = TangoUtils.getOnlyTangoHost(fullAttributeName);
+                String attributeName = TangoUtils.getOnlyDeviceName(fullAttributeName);
+                hdbViewer.addAttribute(tangoHost, attributeName);
+            }
             hdbViewer.setTimeInterval(3); // Last day
-            hdbViewer.addAttribute(tangoHost, attributeName);
             hdbViewer.setVisible(true);
             hdbViewer.performSearch();
         }

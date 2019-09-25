@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.15 - 25/09/19:
+    Add a chart in statistics dialog
+
 #### hdb_configurator-3.14 - 18/09/19:
     Fix a problem in distribution display.
 
