@@ -198,7 +198,7 @@ public class StatisticsDialog extends JDialog {
             dimension.height = 400;
         dimension.width = 800;
         statisticsChart.setPreferredSize(dimension);
-        getContentPane().add(statisticsChart, BorderLayout.CENTER);
+        getContentPane().add(statisticsChart, BorderLayout.EAST);
         statisticsChart.setVisible(false);
 
         //  Do not allow for one subscriber
@@ -358,7 +358,7 @@ public class StatisticsDialog extends JDialog {
 
             //	Put it in scrolled pane
             JScrollPane scrollPane = new JScrollPane(table);
-            getContentPane().add(scrollPane, BorderLayout.WEST);
+            getContentPane().add(scrollPane, BorderLayout.CENTER);
             model.fireTableDataChanged();
 
             //  Set column width
