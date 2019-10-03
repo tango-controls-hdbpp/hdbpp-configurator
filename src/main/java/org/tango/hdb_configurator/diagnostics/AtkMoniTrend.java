@@ -71,7 +71,6 @@ public class AtkMoniTrend extends Trend {
         setPreferredSize(trendSize);
         fr.esrf.tangoatk.core.DeviceFactory.getInstance().startRefresher();
     }
-
     //===============================================================
     //===============================================================
     private String buildAtkMoniConfig(String attributeName, int curveNumber) {
@@ -84,7 +83,6 @@ public class AtkMoniTrend extends Trend {
             code = replace(code, "dv0_selected:3\n", "dv0_selected:2\n");
         return code;
     }
-
     //===============================================================
     //===============================================================
     private String buildAtkMoniConfig(List<String> attributeNames) {

@@ -199,7 +199,7 @@ public class StatisticsDialog extends JDialog {
         dimension.width = 800;
         statisticsChart.setPreferredSize(dimension);
         getContentPane().add(statisticsChart, BorderLayout.CENTER);
-
+        statisticsChart.setVisible(false);
 
         //  Do not allow for one subscriber
         resetItem.setVisible(allowReset);
@@ -436,6 +436,7 @@ public class StatisticsDialog extends JDialog {
         javax.swing.JMenuItem dismissItem = new javax.swing.JMenuItem();
         javax.swing.JMenu viewMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem updateItem = new javax.swing.JMenuItem();
+        javax.swing.JCheckBoxMenuItem chartItem = new javax.swing.JCheckBoxMenuItem();
         readHdbItem = new javax.swing.JMenuItem();
 
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -450,7 +451,6 @@ public class StatisticsDialog extends JDialog {
 
         getContentPane().add(topPanel, java.awt.BorderLayout.NORTH);
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         jLabel1.setText("Filter:   ");
         bottomPanel.add(jLabel1);
 
@@ -513,8 +513,18 @@ public class StatisticsDialog extends JDialog {
         });
         viewMenu.add(updateItem);
 
+        chartItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
+        chartItem.setMnemonic('G');
+        chartItem.setText("Graphical display");
+        chartItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chartItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(chartItem);
+
         readHdbItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
-        readHdbItem.setText("Read attribute from HDB");
+        readHdbItem.setText("Read attributeList from HDB");
         readHdbItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 readHdbItemActionPerformed(evt);
@@ -644,7 +654,6 @@ public class StatisticsDialog extends JDialog {
         }
 
     }
-
     //===============================================================
     //===============================================================
     @SuppressWarnings("UnusedParameters")
@@ -666,7 +675,15 @@ public class StatisticsDialog extends JDialog {
             ErrorPane.showErrorMessage(this, e.toString(), e);
         }
     }//GEN-LAST:event_readHdbItemActionPerformed
-	//===============================================================
+    //===============================================================
+    //===============================================================
+    @SuppressWarnings("UnusedParameters")
+    private void chartItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chartItemActionPerformed
+        JCheckBoxMenuItem  button = (JCheckBoxMenuItem) evt.getSource();
+        statisticsChart.setVisible(button.isSelected());
+        pack();
+    }//GEN-LAST:event_chartItemActionPerformed
+    //===============================================================
 	//===============================================================
     private void readOnAttributeFromHdb() {
         if (selectedRow<0) {

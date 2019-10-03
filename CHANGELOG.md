@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.16 - XX/YY/19:
+    Add a menu item to set visible the statistics chart
+
 #### hdb_configurator-3.15 - 25/09/19:
     Add a chart in statistics dialog
 
