@@ -4,7 +4,7 @@
 
     <groupId>org.tango.hdb</groupId>
     <artifactId>hdbpp-configurator</artifactId>
-    <version>3.16</version>
+    <version>3.17-SNAPSHOT</version>
 
     <name>hdbpp-configurator</name>
     <description>hdbpp-configurator</description>
@@ -13,7 +13,7 @@
         <connection>scm:git:git@github.com:tango-controls/hdbpp-configurator.git</connection>
         <developerConnection>scm:git:git@github.com:tango-controls/hdbpp-configurator.git</developerConnection>
         <url>https://github.com/tango-controls/hdbpp-configurator</url>
-        <tag>hdbpp-configurator-3.16</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
