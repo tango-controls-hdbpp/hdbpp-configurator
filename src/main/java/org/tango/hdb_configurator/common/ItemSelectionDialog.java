@@ -35,6 +35,7 @@ import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -57,8 +58,19 @@ public class ItemSelectionDialog extends JDialog {
 	private boolean ok;
 	//===============================================================
 	//===============================================================
+	public ItemSelectionDialog(JFrame parent, String title, List<String> names, boolean selected) {
+		super(parent, true);
+		buildTheForm(title, names, selected);
+	}
+	//===============================================================
+	//===============================================================
 	public ItemSelectionDialog(JDialog parent, String title, List<String> names, boolean selected) {
 		super(parent, true);
+		buildTheForm(title, names, selected);
+	}
+	//===============================================================
+	//===============================================================
+	private void buildTheForm(String title, List<String> names, boolean selected) {
 		initComponents();
 		for (String name : names)
 			itemList.add(new Item(name, selected));
@@ -66,7 +78,7 @@ public class ItemSelectionDialog extends JDialog {
 		getContentPane().remove(centerPanel);
 		SelectionTable table = new SelectionTable(selected);
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setPreferredSize(new Dimension(table.getTableWidth(), 400));
+		scrollPane.setPreferredSize(table.getTableDimension());
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 
 		titleLabel.setText(title);
@@ -213,7 +225,7 @@ public class ItemSelectionDialog extends JDialog {
 		attributeList.add("srvac/v-ip/c04-sept-1/pressure");
 
 		List<String> selectionList = new ItemSelectionDialog(
-				null, "Attribute Selection", attributeList, true).showDialog();
+				(JFrame) null, "Attribute Selection", attributeList, true).showDialog();
 		if (selectionList.isEmpty())
 			System.out.println("No Selection");
 		else {
@@ -241,7 +253,6 @@ public class ItemSelectionDialog extends JDialog {
 
 
 
-	private static final int[] COLUMN_WIDTH = { 600, 40 };
 	private static final String[] COLUMN_HEADERS = {
 			"Name", "Sel.",
 	};
@@ -251,6 +262,7 @@ public class ItemSelectionDialog extends JDialog {
 	//===============================================================
 	//===============================================================
 	public class SelectionTable extends JTable {
+		private LabelCellRenderer labelCellRenderer = new LabelCellRenderer();
 		private int tableWidth = 0;
 		private int selectedRow = -1;
 		private boolean selected;
@@ -262,7 +274,7 @@ public class ItemSelectionDialog extends JDialog {
 			DataTableModel model = new DataTableModel();
 			setModel(model);
 			setRowSelectionAllowed(true);
-			setDefaultRenderer(String.class, new LabelCellRenderer());
+			setDefaultRenderer(String.class, labelCellRenderer);
 			getTableHeader().addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent event) {
 					tableHeaderActionPerformed(event);
@@ -281,9 +293,10 @@ public class ItemSelectionDialog extends JDialog {
 			int i = 0;
 			TableColumn tableColumn;
 			while (columnEnum.hasMoreElements()) {
-				tableWidth += COLUMN_WIDTH[i];
+				int width = getColumnWidth(i++);
+				tableWidth += width;
 				tableColumn = (TableColumn) columnEnum.nextElement();
-				tableColumn.setPreferredWidth(COLUMN_WIDTH[i++]);
+				tableColumn.setPreferredWidth(width);
 			}
 		}
 		//===============================================================
@@ -310,8 +323,35 @@ public class ItemSelectionDialog extends JDialog {
 		}
 		//===============================================================
 		//===============================================================
-		public int getTableWidth() {
-			return tableWidth;
+		private int getColumnWidth(int column) {
+			int width = 0;
+			for (int row = 0; row < getRowCount(); row++) {
+				TableCellRenderer renderer = getCellRenderer(row, column);
+				Component comp = prepareRenderer(renderer, row, column);
+				width = Math.max (comp.getPreferredSize().width, width);
+			}
+			if (width<30)	width = 30;
+			return width;
+
+		}
+		//===============================================================
+		//===============================================================
+		private int getTableHeight() {
+			Component cell = labelCellRenderer.getTableCellRendererComponent(this, getValueAt(0, 0), false, false, 0, 0);
+			Font font = cell.getFont();
+			FontMetrics metrics = cell.getFontMetrics(font);
+			int cellHeight = metrics.getHeight()+1;
+
+			JTableHeader header = getTableHeader();
+			font = header.getFont();
+			int headerHeight = header.getFontMetrics(font).getHeight() + 10; // + border
+			return itemList.size()*cellHeight + headerHeight;
+		}
+		//===============================================================
+		//===============================================================
+		public Dimension getTableDimension() {
+			// Add a margin in case of scroll bar
+			return new Dimension(tableWidth + 40, getTableHeight());
 		}
 		//===============================================================
 		//===============================================================

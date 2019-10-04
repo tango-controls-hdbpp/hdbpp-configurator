@@ -937,7 +937,6 @@ public class StatisticsDialog extends JDialog {
             //setFont(new Font("Dialog", Font.BOLD, 11));
             setOpaque(true); //MUST do this for background to show up.
         }
-
         //==========================================================
         public Component getTableCellRendererComponent(
                 JTable table, Object value,

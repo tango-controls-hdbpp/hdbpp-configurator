@@ -546,6 +546,7 @@ public class HdbDiagnostics extends JFrame {
     @SuppressWarnings("UnusedParameters")
     private void frequencyTrendItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frequencyTrendItemActionPerformed
         try {
+            /*
             List<String> attributeNames = new ArrayList<>();
             if (configuratorProxy!=null)
                 attributeNames.add(configuratorProxy.name() + "/" + ATTRIBUTES[RECORD_FREQUENCY]);
@@ -553,7 +554,24 @@ public class HdbDiagnostics extends JFrame {
                 attributeNames.add( TangoUtils.getOnlyDeviceName(
                         subscriberMap.getSubscriberByLabel(label).name) + "/" + ATTRIBUTES[RECORD_FREQUENCY]);
             }
-            new AtkMoniDialog(this, attributeNames, "HDB storage frequency").setVisible(true);
+             */
+            List<String> labels = subscriberMap.getLabelList();
+            labels.add(0, "Manager");
+            List<String> selections =
+                    new ItemSelectionDialog(new JFrame(), "Subscribers to monitor ?", labels, false).showDialog();
+            if (!selections.isEmpty()) {
+                List<String> attributeNames = new ArrayList<>();
+                for (String label : selections) {
+                    String deviceName;
+                    if (label.equalsIgnoreCase("Manager"))
+                        deviceName = Utils.getConfiguratorProxy().name();
+                    else
+                        deviceName = TangoUtils.getOnlyDeviceName(
+                                subscriberMap.getSubscriberByLabel(label).getName());
+                    attributeNames.add(deviceName + '/' + ATTRIBUTES[RECORD_FREQUENCY]);
+                }
+                new AtkMoniDialog(this, attributeNames, "HDB storage frequency").setVisible(true);
+            }
         }
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this, e.getMessage(), e);

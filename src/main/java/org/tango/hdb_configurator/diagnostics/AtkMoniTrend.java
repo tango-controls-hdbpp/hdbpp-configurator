@@ -52,8 +52,8 @@ import java.util.List;
 
 
 public class AtkMoniTrend extends Trend {
-
     private String  title;
+    private int colorIndex = 0;
     private static final Dimension trendSize = new Dimension(1024, 640);
     //===============================================================
     /**
@@ -77,10 +77,14 @@ public class AtkMoniTrend extends Trend {
         String code = atkMoniLinearAttributeConfig;
         code = replace(code, "dv0", "dv" + curveNumber);
         code = replace(code, "ATTRIBUTE", "\'" + attributeName + "\'");
-        String newColor = getNewColorString();
+        String newColor;
+        if (colorIndex<defaultColor.length) {
+            Color color = defaultColor[colorIndex++];
+            newColor = "" + color.getRed() + "," + color.getGreen() + "," + color.getBlue();
+        }
+        else
+            newColor = getNewColorString();
         code = replace(code, "COLOR", newColor);
-        if (curveNumber==0) //  Put first (manager) on Y1 axis
-            code = replace(code, "dv0_selected:3\n", "dv0_selected:2\n");
         return code;
     }
     //===============================================================
@@ -112,16 +116,12 @@ public class AtkMoniTrend extends Trend {
 
 
 
-
-
-
     //===============================================================
     /**
      *  Color management
      */
     //===============================================================
     private MyGradient gradient = null;
-
     //===============================================================
     //===============================================================
     private String getNewColorString() {
@@ -144,13 +144,11 @@ public class AtkMoniTrend extends Trend {
         private int colorIdx = -step;
         private int[] colorMap;
         private List<Integer> colors = new ArrayList<>();
-
         //===========================================================
         private MyGradient() {
             buildRainbowGradient();
             colorMap = buildColorMap(nbColors);
         }
-
         //===========================================================
         private boolean alreadyUsed(int idx) {
             for (int i : colors)
@@ -158,7 +156,6 @@ public class AtkMoniTrend extends Trend {
                     return true;
             return false;
         }
-
         //===========================================================
         private Color getNextColor() {
             if (colors.size() == nbColors) {
@@ -184,7 +181,7 @@ public class AtkMoniTrend extends Trend {
 
     private static final String atkMoniConfigHeader =
             "graph_title:'TITLE'\n" +
-                    "label_visible:false\n" +
+                    "label_visible:true\n" +
                     "graph_background:204,204,204\n" +
                     "title_font:dialog,1,24\n" +
                     "display_duration:14400000\n" +
@@ -218,7 +215,7 @@ public class AtkMoniTrend extends Trend {
 
     private static final String atkMoniLinearAttributeConfig =
             "dv0_name:ATTRIBUTE\n" +
-                    "dv0_selected:3\n" +
+                    "dv0_selected:2\n" +
                     "dv0_linecolor:COLOR\n" +
                     "dv0_linewidth:1\n" +
                     "dv0_linestyle:0\n" +

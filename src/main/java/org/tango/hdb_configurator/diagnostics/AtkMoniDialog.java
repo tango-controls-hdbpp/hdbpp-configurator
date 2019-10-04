@@ -34,11 +34,14 @@
 package org.tango.hdb_configurator.diagnostics;
 
 
+import fr.esrf.Tango.DevFailed;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
-import org.tango.hdb_configurator.common.SplashUtils;
+import fr.esrf.tangoatk.widget.util.ErrorPane;
+import org.tango.hdb_configurator.common.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -81,6 +84,7 @@ public class AtkMoniDialog extends JDialog {
         cancelBtn.setVisible(false);
         pack();
         SplashUtils.getInstance().stopSplash();
+        new RepaintThread().start();
     }
     //===============================================================
     //===============================================================
@@ -145,7 +149,6 @@ public class AtkMoniDialog extends JDialog {
     //===============================================================
     //===============================================================
     private void doClose() {
-
         if (parent == null)
             System.exit(0);
         else {
@@ -165,5 +168,55 @@ public class AtkMoniDialog extends JDialog {
     private javax.swing.JButton cancelBtn;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
+    //===============================================================
+
+
+
+    //===============================================================
+    //===============================================================
+    public static void main(String[] args) {
+        try {
+            SubscriberMap subscriberMap = new SubscriberMap(Utils.getConfiguratorProxy());
+            String attribute = "AttributeRecordFreq";
+            List<String> labels = subscriberMap.getLabelList();
+            labels.add(0, "Manager");
+            List<String> selections =
+                    new ItemSelectionDialog(new JFrame(), "Subscribers to monitor ?", labels, false).showDialog();
+            if (selections.isEmpty()) {
+                System.exit(0);
+            } else {
+                List<String> attributeNames = new ArrayList<>();
+                for (String label : selections) {
+                    String deviceName;
+                    if (label.equalsIgnoreCase("Manager"))
+                        deviceName = Utils.getConfiguratorProxy().name();
+                    else
+                        deviceName = TangoUtils.getOnlyDeviceName(
+                                subscriberMap.getSubscriberByLabel(label).getName());
+                    attributeNames.add(deviceName + '/' + attribute);
+                }
+                new AtkMoniDialog(null, attributeNames, "Event Subscriber Trend").setVisible(true);
+            }
+        }catch (DevFailed e) {
+            ErrorPane.showErrorMessage(new JFrame(), null, e);
+        }
+    }
+    //===============================================================
+    //===============================================================
+
+
+
+    //===============================================================
+    // A small thread to force trend to repaint after a while
+    // (why trend do not do it itself ? I don't know)
+    //===============================================================
+    private class RepaintThread extends Thread {
+        @Override
+        public void run() {
+            try { sleep(2000); } catch (InterruptedException e) { /* */ }
+            atkMoniTrend.repaint();
+        }
+    }
+    //===============================================================
     //===============================================================
 }
