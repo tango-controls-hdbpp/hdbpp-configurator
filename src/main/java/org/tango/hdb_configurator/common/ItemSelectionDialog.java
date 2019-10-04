@@ -262,7 +262,6 @@ public class ItemSelectionDialog extends JDialog {
 	//===============================================================
 	//===============================================================
 	public class SelectionTable extends JTable {
-		private LabelCellRenderer labelCellRenderer = new LabelCellRenderer();
 		private int tableWidth = 0;
 		private int selectedRow = -1;
 		private boolean selected;
@@ -274,7 +273,7 @@ public class ItemSelectionDialog extends JDialog {
 			DataTableModel model = new DataTableModel();
 			setModel(model);
 			setRowSelectionAllowed(true);
-			setDefaultRenderer(String.class, labelCellRenderer);
+			setDefaultRenderer(String.class, new LabelCellRenderer());
 			getTableHeader().addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent event) {
 					tableHeaderActionPerformed(event);
@@ -337,11 +336,14 @@ public class ItemSelectionDialog extends JDialog {
 		//===============================================================
 		//===============================================================
 		private int getTableHeight() {
-			Component cell = labelCellRenderer.getTableCellRendererComponent(this, getValueAt(0, 0), false, false, 0, 0);
+		    //  Rows as cell in 0,0
+			Component cell = getCellRenderer(0,0).
+                    getTableCellRendererComponent(this, getValueAt(0, 0), false, false, 0, 0);
 			Font font = cell.getFont();
 			FontMetrics metrics = cell.getFontMetrics(font);
 			int cellHeight = metrics.getHeight()+1;
 
+			//  Add header
 			JTableHeader header = getTableHeader();
 			font = header.getFont();
 			int headerHeight = header.getFontMetrics(font).getHeight() + 10; // + border
