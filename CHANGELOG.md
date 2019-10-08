@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.17 - 08/10/19:
+    Update ScalarTableViewer tool
+
 #### hdb_configurator-3.16 - 04/10/19:
     Add a subscriber selector to frequency trend.
     Add a menu item to set visible the statistics chart

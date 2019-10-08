@@ -40,8 +40,8 @@ import fr.esrf.TangoApi.DeviceAttribute;
 import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoDs.Except;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
+import fr.esrf.tangoatk.widget.util.ErrorHistory;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
-import org.tango.hdb_configurator.atktable.TableScalarViewer;
 import org.tango.hdb_configurator.common.*;
 import org.tango.hdb_configurator.common.Strategy;
 import org.tango.hdb_configurator.configurator.HdbConfigurator;
@@ -69,10 +69,11 @@ public class HdbDiagnostics extends JFrame {
     private SubscriberMap subscriberMap;
     private SubscriberMenu subscriberMenu = new SubscriberMenu();
     private List<String> labels;
-    private TableScalarViewer subscriberTableViewer;
+    private ScalarTableViewer subscriberTableViewer;
     private JFrame parent;
     private int  statisticsTimeWindow;
     private long statisticsResetTime;
+    private ErrorHistory errorHistory = new ErrorHistory();
     private boolean buildSubscriberMap;
     private ServerInfoTable serverInfoTable = null;
     private HdbConfigurator hdbConfigurator = null;
@@ -198,14 +199,13 @@ public class HdbDiagnostics extends JFrame {
         }
 
         //  Add an ATK table viewer
-        subscriberTableViewer = new TableScalarViewer(labels, columnNames, attributeNames, columnWiths);
-        subscriberTableViewer.setPanelTitleVisible(false);
-        subscriberTableViewer.getJTable().addMouseListener(new MouseAdapter() {
+        subscriberTableViewer = new ScalarTableViewer(attributeNames, labels, columnNames, false, errorHistory);
+        subscriberTableViewer.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 subscriberTableActionPerformed(evt);
             }
         });
-        getContentPane().add(subscriberTableViewer, java.awt.BorderLayout.CENTER);
+        getContentPane().add(subscriberTableViewer.getScrollPane(columnWiths), java.awt.BorderLayout.CENTER);
 
         //  If map has not been passed, could have several managers
         if (buildSubscriberMap) {
@@ -221,16 +221,15 @@ public class HdbDiagnostics extends JFrame {
                 List<String> rows=new ArrayList<>();
                 rows.add("E.S.  Manager");
 
-                TableScalarViewer managerTableViewer=
-                        new TableScalarViewer(rows, columnNames, managerAttributes, columnWiths);
-                managerTableViewer.setPanelTitleVisible(false);
-                managerTableViewer.setTableFont(new Font("Dialog", Font.BOLD, 14));
-                managerTableViewer.getJTable().addMouseListener(new MouseAdapter() {
+                ScalarTableViewer managerTableViewer=
+                        new ScalarTableViewer(managerAttributes, rows, columnNames, false, errorHistory);
+                managerTableViewer.setFont(new Font("Dialog", Font.BOLD, 14));
+                managerTableViewer.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent evt) {
                         managerTableActionPerformed(evt);
                     }
                 });
-                getContentPane().add(managerTableViewer, BorderLayout.SOUTH);
+                getContentPane().add(managerTableViewer.getScrollPane(columnWiths), BorderLayout.SOUTH);
             }
         }
     }
@@ -248,7 +247,7 @@ public class HdbDiagnostics extends JFrame {
 	//=======================================================
     private void managerTableActionPerformed(java.awt.event.MouseEvent evt) {
         //int row = subscriberTableViewer.getJTable().rowAtPoint(new Point(evt.getX(), evt.getY()));
-        int column = subscriberTableViewer.getJTable().columnAtPoint(new Point(evt.getX(), evt.getY()));
+        int column = subscriberTableViewer.columnAtPoint(new Point(evt.getX(), evt.getY()));
 
         if (column==CONTEXT+1 && evt.getClickCount()==2) {
             try {
@@ -282,8 +281,8 @@ public class HdbDiagnostics extends JFrame {
 	//=======================================================
 	//=======================================================
     private void subscriberTableActionPerformed(MouseEvent event) {
-        int row = subscriberTableViewer.getJTable().rowAtPoint(new Point(event.getX(), event.getY()));
-        int column = subscriberTableViewer.getJTable().columnAtPoint(new Point(event.getX(), event.getY()));
+        int row = subscriberTableViewer.rowAtPoint(new Point(event.getX(), event.getY()));
+        int column = subscriberTableViewer.columnAtPoint(new Point(event.getX(), event.getY()));
         String  label = labels.get(row);
         //  do any thing only if manager
         if (label.toLowerCase().contains("manager"))
@@ -502,7 +501,7 @@ public class HdbDiagnostics extends JFrame {
     //=======================================================
     @SuppressWarnings("UnusedParameters")
     private void viewerAtkErrorItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewerAtkErrorItemActionPerformed
-        subscriberTableViewer.showErrorHistory();
+        errorHistory.setVisible(true);
     }//GEN-LAST:event_viewerAtkErrorItemActionPerformed
 
     //=======================================================
@@ -843,7 +842,7 @@ public class HdbDiagnostics extends JFrame {
             getComponent(OFFSET + CONFIGURE_ARCHIVER).setVisible(!fromExternal);
             getComponent(OFFSET + TEST_ARCHIVER).setVisible(expert);
             getComponent(OFFSET + TEST_CONFIGURATOR).setVisible(expert);
-            show(subscriberTableViewer.getJTable(), event.getX(), event.getY());
+            show(subscriberTableViewer, event.getX(), event.getY());
         }
         //======================================================
         private void hostActionPerformed(ActionEvent evt) {

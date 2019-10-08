@@ -16,7 +16,9 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 04-10-2019  10:27</center>\n" + 
+		"generated: 08-10-2019  08:47</center>\n" + 
+		"<li><b>hdb_configurator-3.17 - 08/10/19:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Update ScalarTableViewer tool<br>" + 
 		"<li><b>hdb_configurator-3.16 - 04/10/19:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Add a subscriber selector to frequency trend.<br>" + 
 		"&nbsp; &nbsp; &nbsp; Add a menu item to set visible the statistics chart<br>" + 
