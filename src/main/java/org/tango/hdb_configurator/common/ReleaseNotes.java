@@ -16,8 +16,8 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 20-12-2019  14:23</center>\n" + 
-		"<li><b>hdb_configurator-3.18 - 20/12/19:</b><br>" + 
+		"generated: 20-12-2019  14:48</center>\n" + 
+		"<li><b>hdb_configurator-3.19 - 20/12/19:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Add a context manager button if specified.<br>" + 
 		"<li><b>hdb_configurator-3.17 - 08/10/19:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Update ScalarTableViewer tool<br>" + 

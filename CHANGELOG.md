@@ -1,6 +1,6 @@
 # Changelog
 
-#### hdb_configurator-3.18 - 20/12/19:
+#### hdb_configurator-3.19 - 20/12/19:
     Add a context manager button if specified.
 
 #### hdb_configurator-3.17 - 08/10/19:
