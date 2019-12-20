@@ -120,7 +120,7 @@ public class ScalarTableViewer extends MultiScalarTableViewer
         setFont(new Font("Dialog", Font.BOLD, 12));
         getTableHeader().setFont(new Font("Dialog", Font.BOLD, 14));
         setUnitVisible(unitVisible);
-        setEnabled(false);
+        setEnabled(false); // Disable write attribute
 
         //  Set a default column width
         //  Set column width

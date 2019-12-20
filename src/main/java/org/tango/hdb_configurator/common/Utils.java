@@ -194,7 +194,7 @@ public class Utils {
 
         try {
             //	Retrieve class object
-            Class	_class = Class.forName(className);
+            Class _class = Class.forName(className);
 
             //	And build object
             Constructor[] constructors = _class.getDeclaredConstructors();

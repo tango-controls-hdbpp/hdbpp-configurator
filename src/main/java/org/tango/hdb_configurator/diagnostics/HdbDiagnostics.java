@@ -47,6 +47,8 @@ import org.tango.hdb_configurator.common.Strategy;
 import org.tango.hdb_configurator.configurator.HdbConfigurator;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
 import javax.swing.plaf.ColorUIResource;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,10 +141,34 @@ public class HdbDiagnostics extends JFrame {
         titleLabel.setIcon(icon);
         setIconImage(icon.getImage());
 
+        if (System.getenv("CONTEXT_MANAGER")!=null) {
+            JPanel panel = (JPanel) titleLabel.getParent();
+            panel.add(new JLabel("               "));
+            JButton button = new JButton(Utils.getInstance().getIcon("calendar.png", 0.4));
+            button.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+            button.setToolTipText("Context Manager");
+            button.addActionListener(evt -> calendarActionPerformed());
+            panel.add(button);
+        }
         pack();
         ATKGraphicsUtils.centerFrameOnScreen(this);
         SplashUtils.getInstance().stopSplash();
 	}
+    //=======================================================
+    //=======================================================
+    private void calendarActionPerformed() {
+        String className = System.getenv("CONTEXT_MANAGER");
+        if (className!=null) {
+            try {
+                JFrame contextManager =
+                        (JFrame) Utils.getInstance().startExternalApplication(this, className);
+                contextManager.setVisible(true);
+            }
+            catch (DevFailed e) {
+                ErrorPane.showErrorMessage(this, null, e);
+            }
+        }
+    }
     //=======================================================
     //=======================================================
     private void initOwnComponents() throws DevFailed {
