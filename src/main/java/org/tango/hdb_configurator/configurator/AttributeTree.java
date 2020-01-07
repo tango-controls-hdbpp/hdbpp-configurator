@@ -403,8 +403,14 @@ public class AttributeTree extends JTree {
         Object  userObject = getSelectedObject();
         if (userObject instanceof Attribute) {
             Attribute   attribute = ((Attribute)userObject);
-            parent.addSpecifiedAttribute(TangoUtils.fullName(tangoHost, attribute.path));
-            attribute.checkIfSubscribedLater();
+            if (attribute.archiver==null) {
+                parent.addSpecifiedAttribute(TangoUtils.fullName(tangoHost, attribute.path));
+                attribute.checkIfSubscribedLater();
+            }
+            else {
+                // ToDo Already archived (select archiver)
+                selectArchiver();
+            }
         }
     }
     //===============================================================

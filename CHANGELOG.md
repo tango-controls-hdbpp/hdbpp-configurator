@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.20 - 07/01/20:
+    Improve subscriber and attribute selection on archived attributes.
+
 #### hdb_configurator-3.19 - 20/12/19:
     Add a context manager button if specified.
 

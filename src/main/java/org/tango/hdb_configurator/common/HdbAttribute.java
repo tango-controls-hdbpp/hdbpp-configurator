@@ -277,7 +277,7 @@ public class HdbAttribute extends Strategy {
     //===============================================================
     /* A list of attribute name components ( domain, family,...)*/
     //===============================================================
-    private class AttributeNameComponents extends ArrayList<String> {
+    private static class AttributeNameComponents extends ArrayList<String> {
         //===========================================================
         private AttributeNameComponents(String name) {
             int start = name.lastIndexOf('/');
@@ -306,10 +306,11 @@ public class HdbAttribute extends Strategy {
             add(attributeName);
         }
         //===========================================================
+        @Override
         public String toString() {
-            String str = "";
-            for (String s : this) str += " - " + s + "\n";
-            return str;
+            StringBuilder sb = new StringBuilder();
+            for (String s : this) sb.append(" - ").append(s).append("\n");
+            return sb.toString();
         }
         //===========================================================
     }

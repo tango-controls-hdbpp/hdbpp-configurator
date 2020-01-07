@@ -105,7 +105,7 @@ public class AttributeTable extends JTable {
 	        this.row = row;
         }
         public void run() {
-            try { sleep(500); } catch (InterruptedException e) {}
+            try { sleep(500); } catch (InterruptedException e) { /*  */ }
             //  Do the selection
             table.setRowSelectionInterval(row, row);
             //  Set selection visible

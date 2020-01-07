@@ -51,7 +51,6 @@ import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -373,7 +372,7 @@ public class HdbConfigurator extends JFrame {
                 startedAttrLabel, pausedAttrLabel, stoppedAttrLabel
         };
         //  Get displayed list
-        int selection =  tabbedPane.getSelectedIndex();
+        int selection = tabbedPane.getSelectedIndex();
         List<HdbAttribute> attributeList = subscriber.getAttributeList(selection, true);
         AttributeTable table = attributeTableList.get(selection);
         updateAttributeList(table,
@@ -1406,22 +1405,49 @@ public class HdbConfigurator extends JFrame {
     }
     //=======================================================
     //=======================================================
-    public void selectAttributeInList(String attributeName) {
-        //  Search in which table.
-        AttributeTable  table = attributeTableList.get(Subscriber.ATTRIBUTE_STARTED);
-        int row = attributeRow(table, attributeName);
-        if (row<0) {
-            table = attributeTableList.get(Subscriber.ATTRIBUTE_STOPPED);
-            row = attributeRow(table, attributeName);
-            if(row<0) {
-                table = attributeTableList.get(Subscriber.ATTRIBUTE_PAUSED);
-                row = attributeRow(table, attributeName);
-                if (row<0)
-                    return;
+    private boolean updateAllAttributeLists() {
+        try {
+            //  Get selected subscriber
+            String archiverLabel = (String) archiverComboBox.getSelectedItem();
+            Subscriber subscriber = subscriberMap.getSubscriberByLabel(archiverLabel);
+            //  And update 3 lists for the specified subscriber
+            for (int i = Subscriber.ATTRIBUTE_STARTED ; i<=Subscriber.ATTRIBUTE_STOPPED ; i++) {
+                List<HdbAttribute> attributeList = subscriber.getAttributeList(i, true);
+                AttributeTable table = attributeTableList.get(i);
+                HdbAttributeComparator.sort(attributeList);
+                table.updateAttributeList(attributeList);
             }
+            return true;
         }
-        //  Do selection
-        table.setSelectedRow(row);
+        catch (DevFailed e) {
+            ErrorPane.showErrorMessage(this, null, e);
+            return false;
+        }
+    }
+    //=======================================================
+    //=======================================================
+    public void selectAttributeInList(String attributeName) {
+        //  ToDo Update lists and search in which table.
+        if (updateAllAttributeLists()) {
+            AttributeTable table = attributeTableList.get(Subscriber.ATTRIBUTE_STARTED);
+            int row = attributeRow(table, attributeName);
+            if (row<0) {
+                table = attributeTableList.get(Subscriber.ATTRIBUTE_STOPPED);
+                row = attributeRow(table, attributeName);
+                if (row<0) {
+                    table = attributeTableList.get(Subscriber.ATTRIBUTE_PAUSED);
+                    row = attributeRow(table, attributeName);
+                    if (row<0)
+                        return;
+                    else
+                        tabbedPane.setSelectedIndex(Subscriber.ATTRIBUTE_PAUSED);
+                } else
+                    tabbedPane.setSelectedIndex(Subscriber.ATTRIBUTE_STOPPED);
+            } else
+                tabbedPane.setSelectedIndex(Subscriber.ATTRIBUTE_STARTED);
+            //  Do selection
+            table.setSelectedRow(row);
+        }
     }
 	//=======================================================
 	//=======================================================
@@ -1591,11 +1617,7 @@ public class HdbConfigurator extends JFrame {
                 }
                 else {
                     JMenuItem btn = new JMenuItem(menuLabel);
-                    btn.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            menuActionPerformed(evt);
-                        }
-                    });
+                    btn.addActionListener(this::menuActionPerformed);
                     add(btn);
                 }
             }
@@ -1611,11 +1633,7 @@ public class HdbConfigurator extends JFrame {
             for (String subscriber : subscriberList) {
                 if (!subscriber.equals(selected)) {
                     JMenuItem item = new JMenuItem(subscriber);
-                    item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            menuActionPerformed(evt);
-                        }
-                    });
+                    item.addActionListener(this::menuActionPerformed);
                     subscriberMenu.add(item);
                 }
             }
