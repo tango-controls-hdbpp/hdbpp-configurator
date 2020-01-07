@@ -4,7 +4,7 @@
 
     <groupId>org.tango.hdb</groupId>
     <artifactId>hdbpp-configurator</artifactId>
-    <version>3.19-SNAPSHOT</version>
+    <version>3.20-SNAPSHOT</version>
 
     <name>hdbpp-configurator</name>
     <description>hdbpp-configurator</description>
