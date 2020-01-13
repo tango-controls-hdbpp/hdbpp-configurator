@@ -50,7 +50,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.*;
@@ -102,10 +101,12 @@ public class ServerInfoTable extends JDialog {
             for (String subscriberDeviceName : subscriberDeviceNames) {
                 ServerInfo serverInfo =
                         new ServerInfo(getLabel(subscriberDeviceName), subscriberDeviceName);
-                if (!isInList(serverInfo))
+                if (!isInList(serverInfo)) {
                     serverInfoList.add(serverInfo);
+                    System.out.println(serverInfo.deviceName);
+                }
             }
-            Collections.sort(serverInfoList, new ServerComparator());
+            serverInfoList.sort(new ServerComparator());
 
             computeColumnWidth();
             buildTable();
@@ -129,26 +130,14 @@ public class ServerInfoTable extends JDialog {
 	//===============================================================
 	//===============================================================
     private List<String> getSubscriberDeviceNames() throws DevFailed {
-	    String property = System.getProperty("HdbDeviceList");
-	    if (property==null) {
-	        //  Get it form manager
-            DeviceProxy configuratorProxy = Utils.getConfiguratorProxy();
-            DeviceAttribute attribute = configuratorProxy.read_attribute("ArchiverList");
-            String[] archivers = attribute.extractStringArray();
-            List<String> list = new ArrayList<>();
-            list.add(configuratorProxy.name());
-            list.addAll(Arrays.asList(archivers));
-            return list;
-        }
-        else {
-            //  Get it from property (coming from external process)
-            StringTokenizer stk = new StringTokenizer(property, ",");
-            List<String> list = new ArrayList<>();
-            while (stk.hasMoreTokens())
-                list.add(stk.nextToken());
-            System.out.println(property);
-            return list;
-        }
+        //  Get it form manager
+        DeviceProxy configuratorProxy = Utils.getConfiguratorProxy();
+        DeviceAttribute attribute = configuratorProxy.read_attribute("ArchiverList");
+        String[] archivers = attribute.extractStringArray();
+        List<String> list = new ArrayList<>();
+        list.add(configuratorProxy.name());
+        list.addAll(Arrays.asList(archivers));
+        return list;
     }
 	//===============================================================
 	//===============================================================
@@ -260,6 +249,7 @@ public class ServerInfoTable extends JDialog {
 	//===============================================================
 	public void setSelection(String selection) {
         int row=0;
+        System.out.println("setSelection(" + selection + ")");
         for (ServerInfo serverInfo : serverInfoList) {
             if (serverInfo.label.equals(selection) ||
                 serverInfo.serverName.equals(selection))
@@ -361,7 +351,7 @@ public class ServerInfoTable extends JDialog {
      * @param args the command line arguments
      */
     //===============================================================
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         UIManager.put("ToolTip.foreground", new ColorUIResource(Color.black));
         UIManager.put("ToolTip.background", new ColorUIResource(Utils.toolTipBackground));
         try {
@@ -532,16 +522,11 @@ public class ServerInfoTable extends JDialog {
             add(new JPopupMenu.Separator());
             for (String menuLabel : menuLabels) {
                 JMenuItem btn = new JMenuItem(menuLabel);
-                btn.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        menuActionPerformed(evt);
-                    }
-                });
+                btn.addActionListener(this::menuActionPerformed);
                 add(btn);
             }
         }
         //======================================================
-        //noinspection PointlessArithmeticExpression
         private void showMenu(MouseEvent event) {
             ServerInfo serverInfo = serverInfoList.get(selectedRow);
             title.setText("  " + serverInfo.label);
@@ -713,13 +698,11 @@ public class ServerInfoTable extends JDialog {
                 return selectionBackground;
 			if (serverInfoList.get(row).configurator)
 				return firstColumnBackground;
-			switch (column) {
-				case 0:
-					return firstColumnBackground;
-				default:
-					return Color.white;
-			}
-		}
+            if (column == 0)
+                return firstColumnBackground;
+            else
+                return Color.white;
+        }
 		//==========================================================
 	}
 	//==============================================================

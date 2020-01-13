@@ -732,7 +732,7 @@ public class HdbDiagnostics extends JFrame {
         try {
             if (serverInfoTable==null)
                 serverInfoTable = new ServerInfoTable(this);
-            serverInfoTable.setSelection( subscriber.getLabel());
+            serverInfoTable.setSelection(subscriber.getLabel());
             serverInfoTable.setVisible(true);
         }
         catch (DevFailed e) {
@@ -803,7 +803,7 @@ public class HdbDiagnostics extends JFrame {
     private static final int COPY_DEVICE_NAME   = 10;
 
     private static final int TEST_ARCHIVER      = 11;
-    private static final int TEST_CONFIGURATOR  = 12;
+    private static final int TEST_MANAGER       = 12;
     private static final int OFFSET = 3;    //	Label And separator
 
     private static final int FAILURE_FREQUENCY  = 6; // not used for menu (Column number)
@@ -823,7 +823,7 @@ public class HdbDiagnostics extends JFrame {
             "Copy device name",
 
             "Test  Archiver",
-            "Test  Configurator",
+            "Test  Manager",
     };
 
     private class SubscriberMenu extends JPopupMenu {
@@ -865,9 +865,10 @@ public class HdbDiagnostics extends JFrame {
 
             getComponent(OFFSET + STOP_FAULTY).setVisible(subscriber.hasFaultyAttribute());
 
+            getComponent(OFFSET + SERVER_STATUS).setVisible(!fromExternal);
             getComponent(OFFSET + CONFIGURE_ARCHIVER).setVisible(!fromExternal);
             getComponent(OFFSET + TEST_ARCHIVER).setVisible(expert);
-            getComponent(OFFSET + TEST_CONFIGURATOR).setVisible(expert);
+            getComponent(OFFSET + TEST_MANAGER).setVisible(expert);
             show(subscriberTableViewer, event.getX(), event.getY());
         }
         //======================================================
@@ -905,7 +906,7 @@ public class HdbDiagnostics extends JFrame {
                 case TEST_ARCHIVER:
                     testDevice(selectedSubscriber);
                     break;
-                case TEST_CONFIGURATOR:
+                case TEST_MANAGER:
                     testDevice(configuratorProxy);
                     break;
             }

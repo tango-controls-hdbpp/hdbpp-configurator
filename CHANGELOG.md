@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.21 - 13/01/20:
+    Small features for extenal process
+
 #### hdb_configurator-3.20 - 07/01/20:
     Improve subscriber and attribute selection on archived attributes.
 
