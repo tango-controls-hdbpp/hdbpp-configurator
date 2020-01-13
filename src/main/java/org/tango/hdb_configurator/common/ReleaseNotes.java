@@ -16,7 +16,9 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 07-01-2020  16:03</center>\n" + 
+		"generated: 13-01-2020  13:53</center>\n" + 
+		"<li><b>hdb_configurator-3.21 - 13/01/20:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Small features for extenal process<br>" + 
 		"<li><b>hdb_configurator-3.20 - 07/01/20:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Improve subscriber and attribute selection on archived attributes.<br>" + 
 		"<li><b>hdb_configurator-3.19 - 20/12/19:</b><br>" + 
