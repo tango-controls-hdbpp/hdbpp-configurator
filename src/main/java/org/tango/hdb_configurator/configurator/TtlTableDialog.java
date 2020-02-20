@@ -250,6 +250,7 @@ public class TtlTableDialog extends JDialog {
                 tableColumn = (TableColumn) columnEnum.nextElement();
                 tableColumn.setPreferredWidth(columnWidth[i++]);
             }
+            getTableHeader().setReorderingAllowed(false);
         }
         //===========================================================
         private void tableActionPerformed(MouseEvent event) {

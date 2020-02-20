@@ -196,6 +196,7 @@ public class DistributionDialog extends JDialog {
             tableColumn = (TableColumn) columnEnum.nextElement();
             tableColumn.setPreferredWidth(columnWidth[i++]);
         }
+        table.getTableHeader().setReorderingAllowed(false);
         archivers.sort(new ArchiverComparator());
     }
     //===============================================================

@@ -138,6 +138,8 @@ public class EditStrategiesDialog extends JDialog {
             tableColumn = (TableColumn) columnEnum.nextElement();
             tableColumn.setPreferredWidth(columnWidth[i++]);
         }
+        table.getTableHeader().setReorderingAllowed(false);
+
         //	Put it in scrolled pane
         JScrollPane scrollPane = new JScrollPane(table);
         subscriberPropertyPanel.add(scrollPane, BorderLayout.CENTER);

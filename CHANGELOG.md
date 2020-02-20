@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.22 - 20/02/20:
+    Add setReorderingAllowed(false) for all tables.
+
 #### hdb_configurator-3.21 - 13/01/20:
     Small features for extenal process
 

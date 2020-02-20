@@ -345,6 +345,7 @@ public class ItemSelectionDialog extends JDialog {
 
 			//  Add header
 			JTableHeader header = getTableHeader();
+			header.setReorderingAllowed(false);
 			font = header.getFont();
 			int headerHeight = header.getFontMetrics(font).getHeight() + 10; // + border
 			return itemList.size()*cellHeight + headerHeight;

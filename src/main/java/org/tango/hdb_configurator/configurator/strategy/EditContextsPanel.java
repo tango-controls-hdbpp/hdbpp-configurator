@@ -185,6 +185,7 @@ public class EditContextsPanel extends JPanel {
 		int nameWidth = getNameColumnWidth();
 		if (nameWidth>columnWidth[CONTEXT])
 			columnWidth[CONTEXT] = nameWidth;
+        table.getTableHeader().setReorderingAllowed(false);
 
 		//  Set column width
 		final Enumeration columnEnum = table.getColumnModel().getColumns();

@@ -103,6 +103,7 @@ public class WildcardSelectionTable extends JTable {
             tableColumn = (TableColumn) columnEnum.nextElement();
             tableColumn.setPreferredWidth(COLUMN_WIDTH[i++]);
         }
+        getTableHeader().setReorderingAllowed(false);
         updateHeader();
     }
     //===============================================================

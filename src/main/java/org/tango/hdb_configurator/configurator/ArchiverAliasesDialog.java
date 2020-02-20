@@ -131,6 +131,8 @@ public class ArchiverAliasesDialog extends JDialog {
             tableColumn = (TableColumn) columnEnum.nextElement();
             tableColumn.setPreferredWidth(columnWidth[i++]);
         }
+		table.getTableHeader().setReorderingAllowed(false);
+
         //	Put it in scrolled pane
         JScrollPane scrollPane = new JScrollPane(table);
         getContentPane().add(scrollPane, BorderLayout.CENTER);

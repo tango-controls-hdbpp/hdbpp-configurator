@@ -177,6 +177,7 @@ public class AttributesTableDialog extends JDialog {
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             table.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 14));
             table.setDefaultRenderer(String.class, new LabelCellRenderer());
+            table.getTableHeader().setReorderingAllowed(false);
 
             //  Set column width
             final Enumeration columnEnum = table.getColumnModel().getColumns();

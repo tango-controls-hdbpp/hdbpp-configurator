@@ -139,6 +139,7 @@ public class ScalarTableViewer extends MultiScalarTableViewer
             tableColumn.setPreferredWidth(width);
             i++;
         }
+        getTableHeader().setReorderingAllowed(false);
         setRowSelectionAllowed(true);
 
         //	Attach an error history

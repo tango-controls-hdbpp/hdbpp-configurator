@@ -88,7 +88,8 @@ public class AttributeTable extends JTable {
 			tableColumn = (TableColumn) columnEnum.nextElement();
 			tableColumn.setPreferredWidth(columnWidth[i++]);
 		}
-    }
+		getTableHeader().setReorderingAllowed(false);
+	}
     //===============================================================
     //===============================================================
     void setSelectedRow(final int row) {

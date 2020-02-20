@@ -247,6 +247,7 @@ public class FaultyAttributesDialog extends JDialog {
                 tableColumn = (TableColumn) columnEnum.nextElement();
                 tableColumn.setPreferredWidth(columnWidth[i++]);
             }
+            table.getTableHeader().setReorderingAllowed(false);
 
             //  Compute size to display
             pack();
