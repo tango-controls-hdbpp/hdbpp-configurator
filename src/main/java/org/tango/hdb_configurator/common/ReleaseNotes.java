@@ -16,7 +16,9 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 20-02-2020  10:15</center>\n" + 
+		"generated: 28-05-2020  10:47</center>\n" + 
+		"<li><b>hdb_configurator-3.23 - 28/05/20:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Fix small bug and improve statistics display.<br>" + 
 		"<li><b>hdb_configurator-3.22 - 20/02/20:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Add setReorderingAllowed(false) for all tables.<br>" + 
 		"<li><b>hdb_configurator-3.21 - 13/01/20:</b><br>" + 

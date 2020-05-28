@@ -73,8 +73,6 @@ public class HdbDiagnostics extends JFrame {
     private List<String> labels;
     private ScalarTableViewer subscriberTableViewer;
     private JFrame parent;
-    private int  statisticsTimeWindow;
-    private long statisticsResetTime;
     private ErrorHistory errorHistory = new ErrorHistory();
     private boolean buildSubscriberMap;
     private ServerInfoTable serverInfoTable = null;
@@ -197,10 +195,10 @@ public class HdbDiagnostics extends JFrame {
         if (labels.size()>0) {
             //  Get the duration from first subscriber
             Subscriber subscriber = subscriberMap.getSubscriberByLabel(labels.get(0));
-            statisticsTimeWindow = subscriber.getStatisticsTimeWindow();
+            int statisticsTimeWindow = subscriber.getStatisticsTimeWindow();
             columnNames[RECORD_FREQUENCY] = "ev/";
             columnNames[FAILURE_FREQUENCY] = "Fail./";
-            if (statisticsTimeWindow==1) {
+            if (statisticsTimeWindow ==1) {
                 columnNames[RECORD_FREQUENCY] += "sec";
                 columnNames[FAILURE_FREQUENCY] += "sec";
             }
@@ -208,8 +206,6 @@ public class HdbDiagnostics extends JFrame {
                 columnNames[RECORD_FREQUENCY] += Utils.strPeriod(statisticsTimeWindow);
                 columnNames[FAILURE_FREQUENCY] += Utils.strPeriod(statisticsTimeWindow);
             }
-
-            statisticsResetTime = subscriber.getStatisticsResetTime();
         }
 
         //  A list of lines (a line per device)
@@ -332,6 +328,13 @@ public class HdbDiagnostics extends JFrame {
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this, null, e);
         }
+    }
+    //=======================================================
+    //=======================================================
+    public HdbConfigurator getHdbConfigurator() throws DevFailed {
+        if (hdbConfigurator == null)
+            hdbConfigurator = new HdbConfigurator(this, true);
+        return hdbConfigurator;
     }
     //=======================================================
     //=======================================================
@@ -541,7 +544,6 @@ public class HdbDiagnostics extends JFrame {
             ErrorPane.showErrorMessage(this, null, e);
         }
     }//GEN-LAST:event_viewerAtkDiagnosticsItemActionPerformed
-
     //=======================================================
     //=======================================================
     @SuppressWarnings("UnusedParameters")
@@ -553,19 +555,17 @@ public class HdbDiagnostics extends JFrame {
             ErrorPane.showErrorMessage(this, null, e);
         }
     }//GEN-LAST:event_distributionItemActionPerformed
-
     //=======================================================
     //=======================================================
     private void statisticsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsItemActionPerformed
         try {
-            new StatisticsDialog(this, subscriberMap, statisticsTimeWindow).setVisible(true);
+            new StatisticsDialog(this, subscriberMap).setVisible(true);
         }
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this,
                     ((JMenuItem)evt.getSource()).getText(), e);
         }
     }//GEN-LAST:event_statisticsItemActionPerformed
-
     //=======================================================
     //=======================================================
     @SuppressWarnings("UnusedParameters")
@@ -602,7 +602,6 @@ public class HdbDiagnostics extends JFrame {
             ErrorPane.showErrorMessage(this, e.getMessage(), e);
         }
     }//GEN-LAST:event_frequencyTrendItemActionPerformed
-
     //=======================================================
     //=======================================================
     @SuppressWarnings("UnusedParameters")
@@ -617,7 +616,6 @@ public class HdbDiagnostics extends JFrame {
             ErrorPane.showErrorMessage(this, e.getMessage(), e);
         }
     }//GEN-LAST:event_serverInformationItemActionPerformed
-
  	//=======================================================
 	//=======================================================
     private void configureArchiver(Subscriber subscriber) {

@@ -46,6 +46,7 @@ import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -499,6 +500,20 @@ public class Utils {
     //===============================================================
     public static int getTableColumnWidth(List<String> lines) {
         return getLongestLine(lines).length() * 8 + hPadding;
+    }
+    //===============================================================
+    /**
+     * Format with time before date, and no millis
+     * @param ms date to format
+     * @return the formatted date
+     */
+    //===============================================================
+    public static String formatDate(long ms) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss  dd/MM/YY");
+        if (ms==0)
+            return "--:--:--  --/--/--";
+        else
+            return simpleDateFormat.format(new Date(ms));
     }
     //===============================================================
     //===============================================================
