@@ -402,6 +402,25 @@ public class Utils {
     }
     //======================================================================
     //======================================================================
+    public static String formatEventFrequency(final double frequency) {
+        double f = frequency;
+        String format = "%.3f ev/sec";
+        if (f==0)
+            format = "0";
+        else
+        if (f<0.018) {
+            f *= 3600;
+            format = "%.3f ev/h";
+        }
+        else
+        if (f<0.17) {
+            f *= 60;
+            format = "%.3f ev/mn";
+        }
+        return String.format(format, f);
+    }
+    //======================================================================
+    //======================================================================
     public static String buildTooltip(String text) {
         StringBuilder sb = new StringBuilder( "<html><BODY TEXT=\"#000000\" BGCOLOR=\"#FFFFD0\">\n");
         if (text.contains("\n"))

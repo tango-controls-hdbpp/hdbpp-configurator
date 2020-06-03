@@ -176,22 +176,29 @@ public class Subscriber extends DeviceProxy {
         this.pausedFilter = pausedFilter;
     }
     //=======================================================
+    private long previousReadTime = 0;
+    private long resetTime = 0;
     //=======================================================
     public long getStatisticsResetTime() {
+        //  If done recently, return previous read value
+        if (System.currentTimeMillis()-previousReadTime<2000)
+            return resetTime;
+
         try {
             DeviceAttribute attribute = read_attribute("StatisticsResetTime");
             if (attribute.hasFailed())
-                return 0;
+                resetTime = 0;
             else {
                 double nbSeconds = attribute.extractDouble();
-                long nbMillis = (long) nbSeconds * 1000;
-                long now = System.currentTimeMillis();
-                return now - nbMillis;
+                long  millis = (long) nbSeconds * 1000;
+                resetTime = System.currentTimeMillis() - millis;
             }
         }
         catch (DevFailed e) {
-            return 0;
+            resetTime = 0;
         }
+        previousReadTime = System.currentTimeMillis();
+        return resetTime;
     }
     //=======================================================
     //=======================================================

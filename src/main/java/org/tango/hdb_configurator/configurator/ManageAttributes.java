@@ -116,7 +116,8 @@ public class ManageAttributes {
      * @throws DevFailed in case of bad subscriber name or connection failed.
      */
     //===============================================================
-    public static void addAttributes(DeviceProxy configuratorProxy, String subscriberName,
+    public static void addAttributes(DeviceProxy configuratorProxy,
+                                     String subscriberName,
                                      List<HdbAttribute> hdbAttributes) throws DevFailed {
         if (hdbAttributes.size()==0)
             return;
@@ -126,10 +127,6 @@ public class ManageAttributes {
         }
         double step = 100.0/hdbAttributes.size();
 
-        //  Get Tango objects
-
-        //  Check subscriber
-        DeviceProxy subscriber = getSubscriber(configuratorProxy, subscriberName);
         //  And lock configurator before adding attributes
         StringBuilder   errors = new StringBuilder();
         ArchiverUtils.lockDevice(configuratorProxy);
@@ -144,12 +141,6 @@ public class ManageAttributes {
                 new AttributeProxy(hdbAttribute.getName());
                 //  Add it to archiver
                 ArchiverUtils.addAttribute(configuratorProxy, subscriberName, hdbAttribute, false);
-                //  And start it if needed
-                /*
-                if (hdbAttribute.needsStart()) {
-                    ArchiverUtils.startAttribute(subscriber, hdbAttribute.getName());
-                }
-                */
             }
             catch (DevFailed e) {
                 errors.append(hdbAttribute.getName());

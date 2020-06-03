@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.24 - 03/06/20:
+    Another statistics display improvement
+
 #### hdb_configurator-3.23 - 28/05/20:
     Fix small bug and improve statistics display.
 

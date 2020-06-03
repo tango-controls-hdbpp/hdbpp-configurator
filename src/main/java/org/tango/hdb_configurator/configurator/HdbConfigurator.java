@@ -153,8 +153,9 @@ public class HdbConfigurator extends JFrame {
                 System.setProperty("HDB_TYPE", archiveName);
         }
         ImageIcon icon = Utils.getInstance().getIcon("hdb++.gif", 0.75);
-        titleLabel.setIcon(icon);
         setIconImage(icon.getImage());
+        titleLabel.setIcon(icon);
+        titleLabel.setToolTipText(Utils.getConfiguratorProxy().name());
 
         //  Set device filter
         String filter = System.getenv("DeviceFilter");
@@ -1367,6 +1368,7 @@ public class HdbConfigurator extends JFrame {
             //  If OK, add them
             String archiverName = propertyDialog.getSubscriber();
 
+            // Get subscriber
             Subscriber  subscriber = subscriberMap.getSubscriberByLabel(archiverName);
             List<HdbAttribute> attributes = propertyDialog.getHdbAttributes();
 

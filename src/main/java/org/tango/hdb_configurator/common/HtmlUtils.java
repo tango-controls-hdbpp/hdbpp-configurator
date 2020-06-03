@@ -49,7 +49,7 @@ public class HtmlUtils {
     //===============================================================
     public static String attributeInfoToHtml(Subscriber subscriber,
                                              String server, String host,
-                                             int nbEvents, long resetTime) {
+                                             int nbEvents, long resetTime, long readTime) {
         StringBuilder sb = new StringBuilder();
         if (server!=null)
             sb.append("<li> Server: ").append(server).append("\n");
@@ -58,7 +58,7 @@ public class HtmlUtils {
 
         sb.append("<br>");
         sb.append(subscriberInfoToHtml(subscriber, resetTime));
-        sb.append(eventsInfoToHtml(nbEvents, resetTime));
+        sb.append(eventsInfoToHtml(nbEvents, resetTime, readTime));
 
         return sb.toString();
     }
@@ -76,24 +76,11 @@ public class HtmlUtils {
     }
     //===============================================================
     //===============================================================
-    public static String eventsInfoToHtml(int nbEvents, long resetTime) {
+    public static String eventsInfoToHtml(int nbEvents, long resetTime, long readTime) {
         // Compute event frequency
-        long sinceReset = System.currentTimeMillis()-resetTime;
+        long sinceReset = readTime-resetTime;
         long nbSeconds = sinceReset/1000;
         double frequency = (double) nbEvents/nbSeconds;
-        String format = "%.3f events/sec";
-        if (frequency==0)
-            format = "0";
-        else
-        if (frequency<0.018) {
-            frequency *= 3600;
-            format = "%.3f events/h";
-        }
-        else
-        if (frequency<0.17) {
-            frequency *= 60;
-            format = "%.3f events/mn";
-        }
 
         // And build info html string
         StringBuilder sb = new StringBuilder();
@@ -102,7 +89,7 @@ public class HtmlUtils {
         sb.append("<li>").append(nbEvents).append(" during ").
                 append(Utils.strPeriod((double) sinceReset/1000)).append("\n");
 
-        sb.append("<li>Average: ").append(String.format(format, frequency))
+        sb.append("<li>Average: ").append(Utils.formatEventFrequency(frequency))
                 .append("").append("\n");
         sb.append("</ul>");
 
