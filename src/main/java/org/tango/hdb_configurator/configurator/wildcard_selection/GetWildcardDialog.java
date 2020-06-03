@@ -35,6 +35,7 @@ import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  *	JDialog Class to get device wildcard and attribute name to select attributes
@@ -60,8 +61,22 @@ public class GetWildcardDialog extends JDialog {
 		attributeTextField.setText(attribute);
 
 		pack();
+		enlargeDialog();
  		ATKGraphicsUtils.centerDialog(this);
 	}
+	//===============================================================
+	//===============================================================
+	private void enlargeDialog() {
+	    // Due to a resize java pb (??), enlarge a bit the dialog
+        Dimension dimension = getPreferredSize();
+        dimension.width += 20;
+        dimension.height += 20;
+        setPreferredSize(dimension);
+    }
+    //===============================================================
+	//===============================================================
+
+
 	//===============================================================
     /** This method is called from within the constructor to
      * initialize the form.
@@ -89,6 +104,7 @@ public class GetWildcardDialog extends JDialog {
                 closeDialog(evt);
             }
         });
+        getContentPane().setLayout(new java.awt.BorderLayout());
 
         titleLabel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         titleLabel.setText("Attribute Selection");
@@ -165,18 +181,18 @@ public class GetWildcardDialog extends JDialog {
 	//===============================================================
     @SuppressWarnings("UnusedParameters")
 	private void okBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okBtnActionPerformed
-		String wildcard = wildcardTextField.getText().trim();
-		String attribute = attributeTextField.getText().trim();
-		if (wildcard.isEmpty() || attribute.isEmpty())
+		String wild = wildcardTextField.getText().trim();
+		String attr = attributeTextField.getText().trim();
+		if (wild.isEmpty() || attr.isEmpty())
 		    return;
-		if (attribute.contains("*")) {
+		if (attr.contains("*")) {
             ErrorPane.showErrorMessage(this, null, new Exception("Attribute name cannot be a wildcard"));
             return;
         }
 
 		//  Store for next display
-		GetWildcardDialog.wildcard = wildcard;
-		GetWildcardDialog.attribute = attribute;
+		wildcard  = wild;
+		attribute = attr;
         returnValue = JOptionPane.OK_OPTION;
 		doClose();
 	}//GEN-LAST:event_okBtnActionPerformed

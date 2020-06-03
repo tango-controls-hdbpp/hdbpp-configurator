@@ -94,7 +94,13 @@ public class WildcardSelectionDialog extends JDialog {
 			SplashUtils.getInstance().startAutoUpdate();
 
 			//	Get device list to build attribute list
-			String[] deviceNames = ApiUtil.get_db_obj().get_device_list(deviceWildcard);
+			String eventTgHost = System.getenv("EVENT_TANGO_HOST");
+			String[] deviceNames;
+			if (eventTgHost==null)
+				deviceNames = ApiUtil.get_db_obj().get_device_list(deviceWildcard);
+			else
+				deviceNames = ApiUtil.get_db_obj(eventTgHost).get_device_list(deviceWildcard);
+
 			if (checkDeviceNumber(deviceNames.length)) {
 				List<String> attributeList = new ArrayList<>();
 				for (String deviceName : deviceNames) {

@@ -1,6 +1,7 @@
 # Changelog
 
 #### hdb_configurator-3.24 - 03/06/20:
+    Fix a bug in wildcard (if event from another tango host)
     Another statistics display improvement
 
 #### hdb_configurator-3.23 - 28/05/20:
