@@ -45,6 +45,7 @@ import fr.esrf.tangoatk.widget.util.ErrorPane;
 import org.tango.hdb_configurator.common.*;
 import org.tango.hdb_configurator.common.Strategy;
 import org.tango.hdb_configurator.configurator.HdbConfigurator;
+import org.tango.hdb_configurator.statistics.StatisticsDialog;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -67,7 +68,7 @@ import java.awt.event.MouseEvent;
 @SuppressWarnings("MagicConstant")
 public class HdbDiagnostics extends JFrame {
 
-    private DeviceProxy   configuratorProxy;
+    private DeviceProxy configuratorProxy;
     private SubscriberMap subscriberMap;
     private SubscriberMenu subscriberMenu = new SubscriberMenu();
     private List<String> labels;
@@ -114,43 +115,47 @@ public class HdbDiagnostics extends JFrame {
         SplashUtils.getInstance().startSplash();
         SplashUtils.getInstance().increaseSplashProgress(10, "Building GUI");
         setTitle(Utils.getInstance().getApplicationName());
+        try {
+            buildSubscriberMap = (subscriberMap == null);
+            initComponents();
+            initOwnComponents();
 
-        buildSubscriberMap = (subscriberMap==null);
-        initComponents();
-        initOwnComponents();
+            //  Build Title
+            if (buildSubscriberMap) {
+                String title = titleLabel.getText();
+                String archiveName = TangoUtils.getArchiveName(configuratorProxy);
+                if (!archiveName.isEmpty()) {
+                    title += "  (" + archiveName + ")";
+                    titleLabel.setText(title);
 
-        //  Build Title
-        if (buildSubscriberMap) {
-            String title=titleLabel.getText();
-            String archiveName=TangoUtils.getArchiveName(configuratorProxy);
-            if (!archiveName.isEmpty()) {
-                title+="  (" + archiveName + ")";
-                titleLabel.setText(title);
+                    //  Check if extraction available
+                    String s = System.getenv("HdbExtraction");
+                    if (s != null && s.equals("true"))
+                        System.setProperty("HDB_TYPE", archiveName);
+                }
+            } else
+                titleLabel.setText("HDB++ Subscribers");
+            ImageIcon icon = Utils.getInstance().getIcon("hdb++.gif", 0.75);
+            titleLabel.setIcon(icon);
+            setIconImage(icon.getImage());
 
-                //  Check if extraction available
-                String s=System.getenv("HdbExtraction");
-                if (s != null && s.equals("true"))
-                    System.setProperty("HDB_TYPE", archiveName);
+            if (System.getenv("CONTEXT_MANAGER") != null) {
+                JPanel panel = (JPanel) titleLabel.getParent();
+                panel.add(new JLabel("               "));
+                JButton button = new JButton(Utils.getInstance().getIcon("calendar.png", 0.4));
+                button.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+                button.setToolTipText("Context Manager");
+                button.addActionListener(evt -> calendarActionPerformed());
+                panel.add(button);
             }
+            pack();
+            ATKGraphicsUtils.centerFrameOnScreen(this);
+            SplashUtils.getInstance().stopSplash();
         }
-        else
-            titleLabel.setText("HDB++ Subscribers");
-        ImageIcon icon = Utils.getInstance().getIcon("hdb++.gif", 0.75);
-        titleLabel.setIcon(icon);
-        setIconImage(icon.getImage());
-
-        if (System.getenv("CONTEXT_MANAGER")!=null) {
-            JPanel panel = (JPanel) titleLabel.getParent();
-            panel.add(new JLabel("               "));
-            JButton button = new JButton(Utils.getInstance().getIcon("calendar.png", 0.4));
-            button.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
-            button.setToolTipText("Context Manager");
-            button.addActionListener(evt -> calendarActionPerformed());
-            panel.add(button);
+        catch (DevFailed e) {
+            SplashUtils.getInstance().stopSplash();
+            throw e;
         }
-        pack();
-        ATKGraphicsUtils.centerFrameOnScreen(this);
-        SplashUtils.getInstance().stopSplash();
 	}
     //=======================================================
     //=======================================================
@@ -175,7 +180,7 @@ public class HdbDiagnostics extends JFrame {
             configuratorProxy=Utils.getConfiguratorProxy();
 
             //  Get subscriber labels if any
-            subscriberMap=Utils.getSubscriberMap(configuratorProxy.name(), true);
+            subscriberMap=Utils.getSubscriberMap(configuratorProxy, true);
             if (subscriberMap.size() == 0) {
                 SplashUtils.getInstance().stopSplash();
                 ErrorPane.showErrorMessage(this, null,
@@ -333,7 +338,7 @@ public class HdbDiagnostics extends JFrame {
     //=======================================================
     public HdbConfigurator getHdbConfigurator() throws DevFailed {
         if (hdbConfigurator == null)
-            hdbConfigurator = new HdbConfigurator(this, true);
+            hdbConfigurator = new HdbConfigurator(this, configuratorProxy);
         return hdbConfigurator;
     }
     //=======================================================
@@ -559,7 +564,7 @@ public class HdbDiagnostics extends JFrame {
     //=======================================================
     private void statisticsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statisticsItemActionPerformed
         try {
-            new StatisticsDialog(this, subscriberMap).setVisible(true);
+            new StatisticsDialog(this, subscriberMap.getSubscriberList()).setVisible(true);
         }
         catch (DevFailed e) {
             ErrorPane.showErrorMessage(this,
@@ -621,7 +626,7 @@ public class HdbDiagnostics extends JFrame {
     private void configureArchiver(Subscriber subscriber) {
         try {
             if (hdbConfigurator == null)
-                hdbConfigurator = new HdbConfigurator(this, true);
+                hdbConfigurator = new HdbConfigurator(this, configuratorProxy);
             hdbConfigurator.selectArchiver(subscriber.getLabel());
             hdbConfigurator.setVisible(true);
         }

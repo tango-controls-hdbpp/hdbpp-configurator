@@ -905,7 +905,7 @@ public class DistributionDialog extends JDialog {
         }
         //===========================================================
         public String getResetTime() {
-            return StatisticsDialog.formatResetTime(resetTime);
+            return Utils.formatDateTime(resetTime);
         }
         //===========================================================
         public String getResetDuration() {

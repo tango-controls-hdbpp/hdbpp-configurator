@@ -70,7 +70,7 @@ public class SubscriberMap {
         //  Get Subscriber labels
         List<String[]> labels = TangoUtils.getSubscriberLabels();
         //  Get Subscriber deviceName
-        String[] subscriberNames = ArchiverUtils.getSubscriberList();
+        String[] subscriberNames = ArchiverUtils.getSubscriberList(configuratorProxy);
 
         String theSubscriberName = System.getenv("Subscriber");
         if (theSubscriberName==null || theSubscriberName.isEmpty()) {

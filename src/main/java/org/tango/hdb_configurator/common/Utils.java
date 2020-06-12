@@ -148,18 +148,18 @@ public class Utils {
     //======================================================================
     //======================================================================
     public static SubscriberMap getSubscriberMap(String configuratorDeviceName) throws DevFailed {
-        return getSubscriberMap(configuratorDeviceName, false);
+        return getSubscriberMap(new DeviceProxy(configuratorDeviceName), false);
     }
     //======================================================================
     //======================================================================
-    public static SubscriberMap getSubscriberMap(String configuratorDeviceName, boolean reInit) throws DevFailed {
-        SubscriberMap subscriberMap = subscriberTable.get(configuratorDeviceName);
+    public static SubscriberMap getSubscriberMap(DeviceProxy configuratorProxy, boolean reInit) throws DevFailed {
+        SubscriberMap subscriberMap = subscriberTable.get(configuratorProxy.name());
         if (subscriberMap==null) {
-            subscriberMap = new SubscriberMap(configuratorDeviceName);
-            subscriberTable.put(configuratorDeviceName, subscriberMap);
+            subscriberMap = new SubscriberMap(configuratorProxy);
+            subscriberTable.put(configuratorProxy.name(), subscriberMap);
         }
         if (reInit) {
-            subscriberMap = new SubscriberMap(configuratorDeviceName);
+            subscriberMap = new SubscriberMap(configuratorProxy);
         }
         return subscriberMap;
     }
@@ -368,6 +368,39 @@ public class Utils {
         }
     }
     //===============================================================
+    /**
+     * Format with time before date, and no millis
+     * @param ms nb milliseconds to format
+     * @return the formatted date
+     */
+    //===============================================================
+    public static String formatDate(long ms) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss  dd/MM/YY");
+        if (ms==0)
+            return "--:--:--  --/--/--";
+        else
+            return simpleDateFormat.format(new Date(ms));
+    }
+    //===============================================================
+    //===============================================================
+    /**
+     * Format with date (month name) before time, and no millis
+     * @param ms milliseconds to format
+     * @return the formatted date
+     */
+    //===============================================================
+    public static String formatDateTime(long ms)  {
+        StringTokenizer st = new StringTokenizer(new Date(ms).toString());
+        List<String> list = new ArrayList<>();
+        while (st.hasMoreTokens())
+            list.add(st.nextToken());
+
+        String  month = list.get(1);
+        String  day   = list.get(2);
+        String  time  = list.get(3);
+        return day+' '+month + ' ' + time;
+    }
+    //===============================================================
     //===============================================================
     public static String strPeriod(double period) {
         if (period<2e-3) {
@@ -519,20 +552,6 @@ public class Utils {
     //===============================================================
     public static int getTableColumnWidth(List<String> lines) {
         return getLongestLine(lines).length() * 8 + hPadding;
-    }
-    //===============================================================
-    /**
-     * Format with time before date, and no millis
-     * @param ms date to format
-     * @return the formatted date
-     */
-    //===============================================================
-    public static String formatDate(long ms) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss  dd/MM/YY");
-        if (ms==0)
-            return "--:--:--  --/--/--";
-        else
-            return simpleDateFormat.format(new Date(ms));
     }
     //===============================================================
     //===============================================================

@@ -337,7 +337,7 @@ public class ManageAttributes {
     //===============================================================
     //===============================================================
     private static DeviceProxy getSubscriber(DeviceProxy configurator, String subscriber) throws DevFailed {
-        String[]  subscriberNames = ArchiverUtils.getSubscriberList();
+        String[]  subscriberNames = ArchiverUtils.getSubscriberList(configurator);
         String fullName = TangoUtils.fullName(subscriber.toLowerCase());
         boolean found = false;
         for (String subscriberName : subscriberNames) {

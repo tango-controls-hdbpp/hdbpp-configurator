@@ -36,6 +36,7 @@ import fr.esrf.TangoApi.ApiUtil;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
 import fr.esrf.tangoatk.widget.util.ErrorPane;
 import org.tango.hdb_configurator.common.SplashUtils;
+import org.tango.hdb_configurator.common.TangoUtils;
 import org.tango.hdb_configurator.common.Utils;
 
 import javax.swing.*;
@@ -94,12 +95,8 @@ public class WildcardSelectionDialog extends JDialog {
 			SplashUtils.getInstance().startAutoUpdate();
 
 			//	Get device list to build attribute list
-			String eventTgHost = System.getenv("EVENT_TANGO_HOST");
-			String[] deviceNames;
-			if (eventTgHost==null)
-				deviceNames = ApiUtil.get_db_obj().get_device_list(deviceWildcard);
-			else
-				deviceNames = ApiUtil.get_db_obj(eventTgHost).get_device_list(deviceWildcard);
+			String eventTgHost = TangoUtils.getEventTangoHost();
+			String[] deviceNames = ApiUtil.get_db_obj(eventTgHost).get_device_list(deviceWildcard);
 
 			if (checkDeviceNumber(deviceNames.length)) {
 				List<String> attributeList = new ArrayList<>();

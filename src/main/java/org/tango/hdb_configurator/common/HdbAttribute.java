@@ -46,7 +46,6 @@ import java.util.*;
 public class HdbAttribute extends Strategy {
     private String  name;
     private boolean pushedByCode;
-    private boolean startIt;
     private boolean isError = false;
     private long ttl = 0;
     //===============================================================
@@ -56,7 +55,7 @@ public class HdbAttribute extends Strategy {
      * @param name  specified attribute name.
      */
     //===============================================================
-    public HdbAttribute(String name, Strategy strategy) throws DevFailed {
+    public HdbAttribute(String name, Strategy strategy) {
         this.name = name;
         try {
             //  Get attribute strategy as String
@@ -68,17 +67,6 @@ public class HdbAttribute extends Strategy {
             setStrategy(strategy);
             System.err.println(e.errors[0].desc);
         }
-    }
-    //===============================================================
-    /**
-     * Create a HdbAttribute object.
-     *
-     * @param name  specified attribute name.
-     *
-    //===============================================================
-    public HdbAttribute(String name, Strategy strategy, String strategyStr) throws DevFailed {
-        this.name = name;
-        setStrategy(strategy, strategyStr);
     }
     //===============================================================
     /**
@@ -101,29 +89,6 @@ public class HdbAttribute extends Strategy {
         this.name = name;
         this.setStrategy(strategy);
         this.pushedByCode = pushedByCode;
-    }
-    //===============================================================
-    /**
-     * Create a HdbAttribute object
-     * @param name            specified attribute name.
-     * @param pushedByCode    true if event will be pushed by device code.
-     *
-    //===============================================================
-    public HdbAttribute(String name, boolean pushedByCode) {
-        this(name, pushedByCode, true);
-    }
-    //===============================================================
-    /**
-     * Create a HdbAttribute object
-     * @param name            specified attribute name.
-     * @param pushedByCode    true if event will be pushed by device code.
-     * @param startIt         true if attribute archiving must be started.
-     *
-    //===============================================================
-    public HdbAttribute(String name, boolean pushedByCode, boolean startIt) {
-        this.name = name;
-        this.pushedByCode = pushedByCode;
-        this.startIt = startIt;
     }
     //===============================================================
     /**
@@ -151,15 +116,6 @@ public class HdbAttribute extends Strategy {
     //===============================================================
     public boolean isPushedByCode() {
         return pushedByCode;
-    }
-    //===============================================================
-    /**
-     * Returns true if the attribute must be started when added to subscriber.
-     * @return true if the attribute must be started when added to subscriber.
-     */
-    //===============================================================
-    public boolean needsStart() {
-        return startIt;
     }
     //===============================================================
     //===============================================================
@@ -193,8 +149,10 @@ public class HdbAttribute extends Strategy {
             //  Check if used
             boolean used = false;
             for (String contextName : contextList) {
-                if (context.getName().equalsIgnoreCase(contextName))
+                if (context.getName().equalsIgnoreCase(contextName)) {
                     used = true;
+                    break;
+                }
             }
             // build new context and add to this
             Context newContext = new Context(context.getName(), used, context.getDescription());
@@ -228,7 +186,7 @@ public class HdbAttribute extends Strategy {
     public String getTtlString() {
         if (ttl==0)
             return "- - -";
-        return Long.toString(ttl/24) + " day" + (ttl>24? "s":"");
+        return (ttl/24) + " day" + (ttl>24? "s":"");
     }
     //===============================================================
     //===============================================================

@@ -31,7 +31,8 @@ documentation:
 	-overview overview.html	\
 		$(SRC_HOME)/org/tango/hdb_configurator/configurator/*.java \
 		$(SRC_HOME)/org/tango/hdb_configurator/diagnostics/*.java  \
-		$(SRC_HOME)/org/tango/hdb_configurator/common/*.java
+        $(SRC_HOME)/org/tango/hdb_configurator/statistics/*java \
+        $(SRC_HOME)/org/tango/hdb_configurator/common/*.java
 
 
 

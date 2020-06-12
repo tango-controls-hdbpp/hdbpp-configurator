@@ -52,8 +52,10 @@ public class ArchiverUtils {
      * @throws DevFailed in case of read device failed.
      */
     //======================================================================
-    public static String[] getSubscriberList() throws DevFailed {
-        DeviceAttribute deviceAttribute = Utils.getConfiguratorProxy().read_attribute("ArchiverList");
+    public static String[] getSubscriberList(DeviceProxy configuratorProxy) throws DevFailed {
+        if (configuratorProxy==null)
+            configuratorProxy = Utils.getConfiguratorProxy();
+        DeviceAttribute deviceAttribute = configuratorProxy.read_attribute("ArchiverList");
         //  Check if list is coherent.
         //  If no archiver, one could be in attribute only with tango hots
         // (e.g.: tango://tgHost.dsds.dd:10000/)

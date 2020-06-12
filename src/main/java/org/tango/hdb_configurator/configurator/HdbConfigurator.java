@@ -46,6 +46,7 @@ import org.tango.hdb_configurator.configurator.strategy.EditStrategiesDialog;
 import org.tango.hdb_configurator.configurator.strategy.SelectionStrategiesDialog;
 import org.tango.hdb_configurator.configurator.strategy.StrategyMainPanel;
 import org.tango.hdb_configurator.configurator.wildcard_selection.WildcardSelectionDialog;
+import org.tango.hdb_configurator.diagnostics.HdbDiagnostics;
 
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
@@ -68,7 +69,7 @@ import java.util.StringTokenizer;
  */
 //=======================================================
 public class HdbConfigurator extends JFrame {
-    private JFrame parent;
+    private Component parent;
     private DeviceProxy configuratorProxy;
     private ListPopupMenu  menu = new ListPopupMenu();
     private JScrollPane    treeScrollPane;
@@ -79,6 +80,7 @@ public class HdbConfigurator extends JFrame {
     private JFrame         diagnosticsPanel = null;
     private List<String>   tangoHostList;
     private UpdateListThread updateListThread;
+    private String eventTangoHost;
 
     private static final String[]  strAttributeState = {
             "Started Attributes","Paused Attributes", "Stopped Attributes"
@@ -90,48 +92,58 @@ public class HdbConfigurator extends JFrame {
 	 *	Creates new form HdbConfigurator
 	 */
 	//=======================================================
-    public HdbConfigurator(JFrame parent) throws DevFailed {
-        this(parent, false);
+    public HdbConfigurator(Component parent) throws DevFailed {
+        this(parent, null, null);
     }
     //=======================================================
-    /**
-	 *	Creates new form HdbConfigurator
-	 */
 	//=======================================================
-    public HdbConfigurator(JFrame parent, boolean parentIsDiagnostic) throws DevFailed {
+    public HdbConfigurator(Component parent, DeviceProxy configuratorProxy) throws DevFailed {
+        this(parent, configuratorProxy, null);
+    }
+    //=======================================================
+	//=======================================================
+    public HdbConfigurator(Component parent,
+                           DeviceProxy configuratorProxy, String eventTangoHost) throws DevFailed {
         this.parent = parent;
+        this.configuratorProxy = configuratorProxy;
+        this.eventTangoHost = eventTangoHost;
         SplashUtils.getInstance().startSplash();
         SplashUtils.getInstance().increaseSplashProgress(10, "Building GUI");
         setTitle(Utils.getInstance().getApplicationName());
+        try {
+            initComponents();
+            initOwnComponents();
+            if (parent instanceof HdbDiagnostics)
+                diagnosticsPanel = (JFrame) parent;
+            ManageAttributes.setDisplay(true);
+            updateListThread = new UpdateListThread();
+            updateListThread.start();
 
-        initComponents();
-        initOwnComponents();
-        if (parentIsDiagnostic)
-            diagnosticsPanel = parent;
-        ManageAttributes.setDisplay(true);
-        updateListThread = new UpdateListThread();
-        updateListThread.start();
+            //  Check expert mode
+            if (TangoUtils.hasLimitedAccess()) {
+                System.out.println("Limited access for " + TangoUtils.getEventTangoHost());
+                //  Remove tools menu items
+                addSubscriberItem.setVisible(false);
+                removeSubscriberItem.setVisible(false);
+                manageAliasesItem.setVisible(false);
+                contextsItem.setVisible(false);
+            }
 
-        //  Check expert mode
-        if (TangoUtils.hasLimitedAccess()) {
-            System.out.println("Limited access for " + TangoUtils.getEventTangoHost());
-            //  Remove tools menu items
-            addSubscriberItem.setVisible(false);
-            removeSubscriberItem.setVisible(false);
-            manageAliasesItem.setVisible(false);
-            contextsItem.setVisible(false);
+            //  Check if change TANGO_HOST available
+            String onlyOneCS = System.getenv("SingleControlSystem");
+            if (onlyOneCS != null && onlyOneCS.equals("true")) {
+                //  Remove change Tango Host menu item
+                changeCsItem.setVisible(false);
+                wildcardButton.setVisible(false);
+            }
+            pack();
+            ATKGraphicsUtils.centerFrameOnScreen(this);
+            SplashUtils.getInstance().stopSplash();
         }
-
-        //  Check if change TANGO_HOST available
-        String onlyOneCS = System.getenv("SingleControlSystem");
-        if (onlyOneCS!=null && onlyOneCS.equals("true")) {
-            //  Remove change Tango Host menu item
-            changeCsItem.setVisible(false);
-            wildcardButton.setVisible(false);
+        catch (DevFailed e) {
+            SplashUtils.getInstance().stopSplash();
+            throw e;
         }
-        pack();
-        ATKGraphicsUtils.centerFrameOnScreen(this);
-        SplashUtils.getInstance().stopSplash();
 	}
     //=======================================================
     //=======================================================
@@ -155,7 +167,7 @@ public class HdbConfigurator extends JFrame {
         ImageIcon icon = Utils.getInstance().getIcon("hdb++.gif", 0.75);
         setIconImage(icon.getImage());
         titleLabel.setIcon(icon);
-        titleLabel.setToolTipText(Utils.getConfiguratorProxy().name());
+        titleLabel.setToolTipText(configuratorProxy.name());
 
         //  Set device filter
         String filter = System.getenv("DeviceFilter");
@@ -195,8 +207,9 @@ public class HdbConfigurator extends JFrame {
     private void initSubscribers() throws DevFailed {
         SplashUtils.getInstance().increaseSplashProgress(25, "Reading devices");
         //  get configurator and subscriber proxies
-        configuratorProxy = Utils.getConfiguratorProxy();
-        subscriberMap = Utils.getSubscriberMap(configuratorProxy.name(), true);
+        if (configuratorProxy==null)
+            configuratorProxy = Utils.getConfiguratorProxy();
+        subscriberMap = Utils.getSubscriberMap(configuratorProxy, true);
 
         //  Check if at least one subscriber is defined
         if (subscriberMap.size()==0) {
@@ -227,7 +240,9 @@ public class HdbConfigurator extends JFrame {
     private void buildAttributeTree() throws DevFailed {
         //  Add a tree to select attribute
         SplashUtils.getInstance().increaseSplashProgress(50, "Building Tree");
-        attributeTree = new AttributeTree(this, TangoUtils.getEventTangoHost());
+        if (eventTangoHost==null)
+            eventTangoHost = TangoUtils.getEventTangoHost();
+        attributeTree = new AttributeTree(this, eventTangoHost);
         treeScrollPane = new JScrollPane();
         treeScrollPane.setViewportView(attributeTree);
         treeScrollPane.setPreferredSize(treeDimension);
@@ -1479,8 +1494,6 @@ public class HdbConfigurator extends JFrame {
             //  If OK add the attribute
             final boolean lock = true;
             ArchiverUtils.addAttribute(configuratorProxy, subscriber.getName(), hdbAttribute, lock);
-            if (hdbAttribute.needsStart())
-                subscriber.startAttribute(hdbAttribute);
 
             updateAttributeList(subscriber);
             new UpdateSubscribedThread(hdbAttribute).start();

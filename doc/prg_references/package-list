@@ -1,3 +1,4 @@
 org.tango.hdb_configurator.common
 org.tango.hdb_configurator.configurator
 org.tango.hdb_configurator.diagnostics
+org.tango.hdb_configurator.statistics

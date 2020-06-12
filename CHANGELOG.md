@@ -1,5 +1,9 @@
 # Changelog
 
+#### hdb_configurator-3.25 - 12/06/20:
+    Another statistics display improvement
+    Add methods to be used from outside
+
 #### hdb_configurator-3.24 - 03/06/20:
     Fix a bug in wildcard (if event from another tango host)
     Another statistics display improvement

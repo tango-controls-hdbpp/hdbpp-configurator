@@ -97,7 +97,7 @@ public class CreateSubscriberPanel extends JDialog {
         //  Customize dialog (Create or Remove)
         if (action==CREATE) {
             titleLabel.setText("Create a Subscriber on " + configuratorProxy.name());
-            String[] archiverDevices = ArchiverUtils.getSubscriberList();
+            String[] archiverDevices = ArchiverUtils.getSubscriberList(configuratorProxy);
             deviceComboBox.addItem("");
             instanceComboBox.addItem("");
             labelComboBox.addItem("");

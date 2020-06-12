@@ -16,7 +16,10 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 03-06-2020  13:25</center>\n" + 
+		"generated: 12-06-2020  14:03</center>\n" + 
+		"<li><b>hdb_configurator-3.25 - 12/06/20:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Another statistics display improvement<br>" + 
+		"&nbsp; &nbsp; &nbsp; Add methods to be used from outside<br>" + 
 		"<li><b>hdb_configurator-3.24 - 03/06/20:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Fix a bug in wildcard (if event from another tango host)<br>" + 
 		"&nbsp; &nbsp; &nbsp; Another statistics display improvement<br>" + 

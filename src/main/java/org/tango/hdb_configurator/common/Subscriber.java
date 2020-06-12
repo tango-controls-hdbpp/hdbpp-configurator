@@ -192,6 +192,7 @@ public class Subscriber extends DeviceProxy {
                 double nbSeconds = attribute.extractDouble();
                 long  millis = (long) nbSeconds * 1000;
                 resetTime = System.currentTimeMillis() - millis;
+                //System.out.println(label+": " + Utils.formatDateTime(resetTime) + " - " + nbSeconds);
             }
         }
         catch (DevFailed e) {
@@ -254,7 +255,7 @@ public class Subscriber extends DeviceProxy {
     }
     //======================================================
     //======================================================
-    List<String> getTangoHostList() {
+    public List<String> getTangoHostList() {
         List<String> list = new ArrayList<>();
         try {
             String[] attributeList = ArchiverUtils.getAttributeList(this, "");
