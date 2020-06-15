@@ -76,6 +76,24 @@ public class TangoUtils {
     }
     //======================================================================
     //======================================================================
+    public static String checkSubscriberLabel(String label) {
+        // If label (not a device name) return it
+        StringTokenizer stk = new StringTokenizer(label, "/");
+        if (stk.countTokens()<3)
+            return label;
+
+        //  if device name, add tango host (if not done)
+        if (label.startsWith("tango://"))
+            return label;
+        try {
+            return "tango://" + getTangoHost(getDefaultTangoHost())+'/'+label;
+        } catch (DevFailed e) {
+            System.err.println(e.errors[0].desc);
+            return label;
+        }
+    }
+    //======================================================================
+    //======================================================================
     public static String getTangoHost(String tangoHost) throws DevFailed {
 
         //  Check syntax

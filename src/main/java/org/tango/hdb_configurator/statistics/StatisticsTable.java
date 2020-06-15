@@ -266,6 +266,7 @@ public class StatisticsTable extends JTable {
                     hdbConfigurator = new HdbConfigurator(
                             parentFrame, subscriber.getConfiguratorProxy(),
                             tangoHostList.size()==1? tangoHostList.get(0) : null);
+                    hdbConfigurator.selectArchiver(subscriber.getLabel());
                 }
                 hdbConfigurator.setVisible(true);
             } catch (DevFailed e) {

@@ -1405,6 +1405,7 @@ public class HdbConfigurator extends JFrame {
 	//=======================================================
     public void selectArchiver(String archiverName) {
         archiverComboBox.setSelectedItem(archiverName);
+        archiverName = TangoUtils.checkSubscriberLabel(archiverName);
         manageSubscriberChanged(archiverName);
     }
     //=======================================================
