@@ -74,24 +74,24 @@ public class PropertyDialog extends JDialog implements TangoConst {
     private static final int MaxRows = 30;
     //===============================================================
     /**
-     * Creates new form PropertyDialog for one attributeList
+     * Creates new form PropertyDialog for one attribute
      */
     //===============================================================
     public PropertyDialog(JFrame parent,
-                          HdbAttribute attributeList,
+                          HdbAttribute attribute,
                           SubscriberMap subscriberMap,
                           String defaultItem) throws DevFailed {
         super(parent, true);
         this.parent = parent;
         this.subscriberMap = subscriberMap;
-        this.attributeList.add(attributeList);
+        this.attributeList.add(attribute);
         initComponents();
         initOwnComponents(defaultItem);
 
         manageProperties = true;
         displayProperty();
 
-        titleLabel.setText(attributeList.getName());
+        titleLabel.setText(attribute.getName());
         attributeListScrollPane.setVisible(false);
         pack();
         ATKGraphicsUtils.centerDialog(this);
