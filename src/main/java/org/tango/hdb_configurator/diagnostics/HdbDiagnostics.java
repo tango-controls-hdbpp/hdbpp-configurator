@@ -294,11 +294,18 @@ public class HdbDiagnostics extends JFrame {
         //  Get List of contexts for subscriber
         Strategy strategy = Strategy.getContextsFromDB();
         String[] strategyNames = strategy.getNames();
+        //  Remove ALWAYS and NEVER (not contexts) if any
+        List<String> tmp = new ArrayList<>();
+        for (String contextName : strategyNames) {
+            if (!contextName.equalsIgnoreCase("always") && !contextName.equalsIgnoreCase("never"))
+                tmp.add(contextName);
+        }
+
         //  And propose to select one of them.
         context = (String) JOptionPane.showInputDialog(this,
                 "Context ? ", "Selection",
                 JOptionPane.QUESTION_MESSAGE, null,
-                strategyNames, context);
+                tmp.toArray(new String[0]), context);
         if (context != null) {
             DeviceAttribute deviceAttribute = new DeviceAttribute("Context");
             deviceAttribute.insert(context);

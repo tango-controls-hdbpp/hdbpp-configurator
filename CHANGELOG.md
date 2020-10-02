@@ -1,5 +1,8 @@
 # Changelog
 
+#### hdb_configurator-3.26 - 02/10/20:
+    Remove contexts ALWAYS and NEVER on context selection to set attribute
+
 #### hdb_configurator-3.25 - 12/06/20:
     Another statistics display improvement
     Add methods to be used from outside

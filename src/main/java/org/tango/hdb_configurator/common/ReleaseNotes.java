@@ -16,7 +16,9 @@ public interface ReleaseNotes {
 		"<body text=\"#000000\" bgColor=\"#FFFFFF\" link=\"#0000FF\" vLink=\"#7F00FF\" aLink=\"#FF0000\">\n" + 
 		"<p><!-------TITLE------></p>\n" + 
 		"<center><h2> Release Notes </h2>\n" + 
-		"generated: 12-06-2020  14:03</center>\n" + 
+		"generated: 02-10-2020  10:40</center>\n" + 
+		"<li><b>hdb_configurator-3.26 - 02/10/20:</b><br>" + 
+		"&nbsp; &nbsp; &nbsp; Remove contexts ALWAYS and NEVER on context selection to set attribute<br>" + 
 		"<li><b>hdb_configurator-3.25 - 12/06/20:</b><br>" + 
 		"&nbsp; &nbsp; &nbsp; Another statistics display improvement<br>" + 
 		"&nbsp; &nbsp; &nbsp; Add methods to be used from outside<br>" + 
