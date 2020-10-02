@@ -441,7 +441,6 @@ public class ItemSelectionDialog extends JDialog {
 		public class LabelCellRenderer extends JLabel implements TableCellRenderer {
 			//==========================================================
 			public LabelCellRenderer() {
-				//setFont(new Font("Dialog", Font.BOLD, 11));
 				setOpaque(true); //MUST do this for background to show up.
 			}
 			//==========================================================
