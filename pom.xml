@@ -16,13 +16,6 @@
         <tag>HEAD</tag>
     </scm>
 
-    <distributionManagement>
-        <repository>
-            <id>bintray-tango-controls</id>
-            <url>https://api.bintray.com/maven/tango-controls/maven/${project.artifactId}/;publish=1</url>
-        </repository>
-    </distributionManagement>
-
     <build>
         <plugins>
             <plugin>
