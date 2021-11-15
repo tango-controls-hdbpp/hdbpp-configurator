@@ -36,6 +36,7 @@
 package org.tango.hdb_configurator.statistics;
 
 import fr.esrf.Tango.DevFailed;
+import fr.esrf.TangoDs.TangoConst;
 import fr.esrf.TangoApi.DeviceAttribute;
 import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoDs.Except;
@@ -246,9 +247,31 @@ public class StatisticsDialog extends JDialog {
                 if (!deviceAttributes[i].hasFailed())
                     frequencies = deviceAttributes[i].extractDoubleArray();
                 i++;
-                int[] eventNumbers = new int[0];
+                long[] eventNumbers = new long[0];
                 if (!deviceAttributes[i].hasFailed())
-                    eventNumbers = deviceAttributes[i].extractLongArray();
+                {
+                    int type = deviceAttributes[i].getType();
+                    switch(type)
+                    {
+                        case TangoConst.Tango_DEV_LONG:
+                            {
+                                int[] evtnb = deviceAttributes[i].extractLongArray();
+                                eventNumbers = new long[evtnb.length];
+                                int j = 0;
+                                for(int evts : evtnb)
+                                {
+                                    eventNumbers[j++] = evts;
+                                }
+                                break;
+                            }
+                        case TangoConst.Tango_DEV_ULONG:
+                            {
+                                eventNumbers = deviceAttributes[i].extractULongArray();
+                                break;
+                            }
+
+                    }
+                }
 
                 //  Build filteredHdbAttributes and store in a list
                 for (int x=0 ; x<hdbAttributeNames.length &&
