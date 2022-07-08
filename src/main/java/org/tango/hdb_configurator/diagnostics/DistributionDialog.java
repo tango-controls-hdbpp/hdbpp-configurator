@@ -36,6 +36,7 @@
 package org.tango.hdb_configurator.diagnostics;
 
 import fr.esrf.Tango.DevFailed;
+import fr.esrf.TangoDs.TangoConst;
 import fr.esrf.TangoApi.DeviceAttribute;
 import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.tangoatk.widget.util.ATKGraphicsUtils;
@@ -817,8 +818,8 @@ public class DistributionDialog extends JDialog {
         private String      title;
         private String[]    attributeOk;
         private String[]    attributeFailed;
-        private int         totalEvents = 0;
-        private int         pending;
+        private long        totalEvents = 0;
+        private long        pending;
         private double      maxProcess;
         private double      minProcess;
         private double      maxStore;
@@ -860,11 +861,29 @@ public class DistributionDialog extends JDialog {
                     attributeFailed = attribute.extractStringArray();
 
                 attribute = attributes[i++];
-                if (!attribute.hasFailed()) {
-                    int[] nbEvents = attribute.extractLongArray();
-                    totalEvents = 0;
-                    for (int nb : nbEvents)
-                        totalEvents += nb;
+                if (!attribute.hasFailed())
+                {
+                    int type = attribute.getType();
+                    switch(type)
+                    {
+                        case TangoConst.Tango_DEV_LONG:
+                            {
+                                int[] nbEvents = attribute.extractLongArray();
+                                totalEvents = 0;
+                                for (int nb : nbEvents)
+                                    totalEvents += nb;
+                                break;
+                            }
+                        case TangoConst.Tango_DEV_ULONG:
+                            {
+                                long[] nbEvents = attribute.extractULongArray();
+                                totalEvents = 0;
+                                for (long nb : nbEvents)
+                                    totalEvents += nb;
+                                break;
+                            }
+
+                    }
                 }
                 resetTime = subscriber.getStatisticsResetTime();
                 if (resetTime>0) {
@@ -891,8 +910,14 @@ public class DistributionDialog extends JDialog {
                 if (minStore<0)   minStore = 0.0;
 
                 attribute = attributes[i];
-                if (attribute.hasFailed())  pending = 0;
-                else pending = attribute.extractLong();
+                if (attribute.hasFailed())
+                {
+                    pending = 0;
+                }
+                else
+                {
+                    pending = attribute.getType() == TangoConst.Tango_DEV_LONG ? attribute.extractLong() : attribute.extractULong();
+                }
             }
             catch (DevFailed e) {
                 attributeOk = new String[0];
@@ -1016,13 +1041,13 @@ public class DistributionDialog extends JDialog {
                     setText(Integer.toString(archiver.attributeCount()));
                     break;
                 case EVENT_NUMBER:
-                    setText(Integer.toString(archiver.totalEvents));
+                    setText(Long.toString(archiver.totalEvents));
                     break;
                 case STORE_TIME:
                     setText(Utils.strPeriod(archiver.maxStore));
                     break;
                 case MAX_PENDING:
-                    setText(Integer.toString(archiver.pending));
+                    setText(Long.toString(archiver.pending));
                     break;
                 case RESET_TIME:
                     if (archiver.resetTime>0)

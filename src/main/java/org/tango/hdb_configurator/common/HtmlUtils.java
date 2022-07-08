@@ -49,7 +49,7 @@ public class HtmlUtils {
     //===============================================================
     public static String attributeInfoToHtml(Subscriber subscriber,
                                              String server, String host,
-                                             int nbEvents, long resetTime, long readTime) {
+                                             long nbEvents, long resetTime, long readTime) {
         StringBuilder sb = new StringBuilder();
         if (server!=null)
             sb.append("<li> Server: ").append(server).append("\n");
@@ -76,7 +76,7 @@ public class HtmlUtils {
     }
     //===============================================================
     //===============================================================
-    public static String eventsInfoToHtml(int nbEvents, long resetTime, long readTime) {
+    public static String eventsInfoToHtml(long nbEvents, long resetTime, long readTime) {
         // Compute event frequency
         long sinceReset = readTime-resetTime;
         long nbSeconds = sinceReset/1000;

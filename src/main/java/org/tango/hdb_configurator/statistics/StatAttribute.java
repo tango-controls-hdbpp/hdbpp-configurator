@@ -54,7 +54,7 @@ public class StatAttribute {
      String name;
      String shortName;
      int nbStatistics;
-     int nbEvents;
+     long nbEvents;
      Subscriber subscriber;
      String deviceName;
      long resetTime;
@@ -73,7 +73,7 @@ public class StatAttribute {
                    long readTime,
                    List<String> defaultTangoHosts,
                    double frequency,
-                   int nbEvents,
+                   long nbEvents,
                    Subscriber subscriber) {
         this.name = name;
         this.shortName = TangoUtils.getOnlyDeviceName(name);

@@ -35,6 +35,7 @@ package org.tango.hdb_configurator.diagnostics;
 
 
 import fr.esrf.Tango.DevFailed;
+import fr.esrf.TangoDs.TangoConst;
 import fr.esrf.TangoApi.DeviceAttribute;
 import fr.esrf.TangoApi.DeviceProxy;
 import fr.esrf.TangoDs.Except;
@@ -93,10 +94,30 @@ public class SubscriberCommand {
             try {
                 DeviceAttribute attribute = subscriber.read_attribute("AttributeEventNumberList");
                 if (!attribute.hasFailed()) {
-                    int[] nbEvents = attribute.extractLongArray();
-                    for (int nb : nbEvents) {
-                        totalEvents += nb;
-                        totalAttributes++;
+                    int type = attribute.getType();
+                    switch(type)
+                    {
+                        case TangoConst.Tango_DEV_LONG:
+                            {
+                                int[] nbEvents = attribute.extractLongArray();
+                                for (int nb : nbEvents)
+                                {
+                                    totalEvents += nb;
+                                    totalAttributes++;
+                                }
+                                break;
+                            }
+                        case TangoConst.Tango_DEV_ULONG:
+                            {
+                                long[] nbEvents = attribute.extractULongArray();
+                                for (long nb : nbEvents)
+                                {
+                                    totalEvents += nb;
+                                    totalAttributes++;
+                                }
+                                break;
+                            }
+
                     }
                 }
              }

@@ -23,17 +23,6 @@
         </repository>
     </distributionManagement>
 
-    <repositories>
-        <repository>
-          <snapshots>
-               <enabled>false</enabled>
-           </snapshots>
-           <id>bintray-tango-controls</id>
-           <name>bintray</name>
-           <url>http://dl.bintray.com/tango-controls/maven</url>
-       </repository>
-    </repositories>
-
     <build>
         <plugins>
             <plugin>
@@ -80,6 +69,11 @@
         <dependency>
             <groupId>org.tango</groupId>
             <artifactId>Jive</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tango</groupId>
+            <artifactId>Astor</artifactId>
             <version>RELEASE</version>
         </dependency>
     </dependencies>
